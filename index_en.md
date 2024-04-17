@@ -12,5 +12,9 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/9db6a418-7e2f-49f5-b1ff-82e3970bac14) [APP Extractor](https://fmoncomble.github.io/APP_extractor/)
 Extract and download documents from [The American Presidency Project](https://www.presidency.ucsb.edu/)  
   
-Moncomble, F. (2024). APP_Extractor (Version 0.7.2) [JavaScript]. Arras, France: Université d’Artois. Available from: https://fmoncomble.github.io/APP_extractor/ (First version 2023)
+Moncomble, F. (2024). *APP_Extractor* (Version 0.7.2) [JavaScript]. Arras, France: Université d’Artois. Available from: https://fmoncomble.github.io/APP_extractor/ (First version 2023)
 
+### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/dd10a477-2dc5-4c06-b52a-3fd17e53987a) [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/)
+Scrape tweets
+
+Moncomble, F. (2024). *𝕏-Scraper* (Version 0.2) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/X-scraper/
