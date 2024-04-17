@@ -14,3 +14,7 @@ Une extension pour extraire et télécharger des documents de [The American Pres
   
 Moncomble, F. (2024). *APP_Extractor* (Version 0.7.2) [JavaScript]. Arras, France: Université d’Artois. Disponible à l'adresse : https://fmoncomble.github.io/APP_extractor/ (Première version 2023)
 
+### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/22704e95-1b87-4c5a-a20e-7c161f3853fa) [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/)
+Une extension pour extraire et télécharger des tweets.
+
+Moncomble, F. (2024). *𝕏-Scraper* (Version 0.2) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/X-scraper/
