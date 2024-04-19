@@ -17,4 +17,4 @@ Moncomble, F. (2024). *APP_Extractor* (Version 0.7.2) [JavaScript]. Arras, Franc
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/dd10a477-2dc5-4c06-b52a-3fd17e53987a) [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/)
 Scrape tweets
 
-Moncomble, F. (2024). *𝕏-Scraper* (Version 0.2) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/X-scraper/
+Moncomble, F. (2024). *𝕏-Scraper* (Version 0.3) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/X-scraper/
