@@ -18,3 +18,8 @@ Moncomble, F. (2024). *APP_Extractor* (Version 0.7.2) [JavaScript]. Arras, Franc
 Une extension pour extraire et télécharger des tweets.
 
 Moncomble, F. (2024). *𝕏-Scraper* (Version 0.3) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/X-scraper/
+
+### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/1a8680a1-af32-4ddb-b498-9b4e21661278) [MastoScraper](https://fmoncomble.github.io/mastoscraper/)
+Une extension pour extraire et télécharger des pouets (posts sur Mastodon)  
+  
+Moncomble, F. (2024). *MastoScraper* (Version 0.2) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/mastoscraper/  
