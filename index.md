@@ -22,7 +22,7 @@ Moncomble, F. (2024). *𝕏-Scraper* (Version 0.3) [JavaScript]. Arras, France :
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/1a8680a1-af32-4ddb-b498-9b4e21661278) [MastoScraper](https://fmoncomble.github.io/mastoscraper/)
 Une extension pour extraire et télécharger des pouets (posts sur Mastodon)  
   
-Moncomble, F. (2024). *MastoScraper* (Version 0.2) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/mastoscraper/  
+Moncomble, F. (2024). *MastoScraper* (Version 0.4) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/mastoscraper/  
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/b0d1f345-1d7b-48ad-8ff9-665225de6f47) [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/README_fr.html)
 Une extension pour extraire et télécharger des posts Bluesky
