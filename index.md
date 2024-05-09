@@ -23,3 +23,20 @@ Moncomble, F. (2024). *𝕏-Scraper* (Version 0.3) [JavaScript]. Arras, France :
 Une extension pour extraire et télécharger des pouets (posts sur Mastodon)  
   
 Moncomble, F. (2024). *MastoScraper* (Version 0.2) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/mastoscraper/  
+
+### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/b0d1f345-1d7b-48ad-8ff9-665225de6f47) [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/README_fr.html)
+Une extension pour extraire et télécharger des posts Bluesky
+
+Moncomble, F. (2024). *BlueskyScraper* (Version 0.1) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/blueskyscraper/  
+
+### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/d668b511-a384-496e-a881-5a319ebe62aa) [RedditScraper](https://fmoncomble.github.io/redditscraper/README_fr.html)
+Une extension pour extraire et télécharger des posts Reddit
+
+Moncomble, F. (2024). RedditScraper (Version 0.1) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://fmoncomble.github.io/redditscraper/
+
+### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/a4691a34-7c7b-4267-b3fe-8472989d10ab) [SocialCorpusScraper](https://fmoncomble.github.io/SocialCorpusScraper/README_fr.html)
+Une extension 4-en-1 qui rassemble [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/README_fr.html), [MastoScraper](https://fmoncomble.github.io/mastoscraper/), [RedditScraper](https://fmoncomble.github.io/redditscraper/README_fr.html) et [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/).
+
+Moncomble, F. (2024). SocialCorpusScraper (Version 0.1) [JavaScript]. Arras, France : Université d’Artois. Disponible à l’adresse : https://fmoncomble.github.io/SocialCorpusScraper/
+
+
