@@ -22,7 +22,7 @@ Moncomble, F. (2024). *𝕏-Scraper* (Version 0.4) [JavaScript]. Arras, France: 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/1a8680a1-af32-4ddb-b498-9b4e21661278) [MastoScraper](https://fmoncomble.github.io/mastoscraper/)
 Scrape and download toots (posts on Mastodon)  
   
-Moncomble, F. (2024). *MastoScraper* (Version 0.5) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/mastoscraper/  
+Moncomble, F. (2024). *MastoScraper* (Version 0.6) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/mastoscraper/  
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/660dab7e-a8e4-42d1-9318-c43f261b6a34) [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/)
 Scrape and download Bluesky posts
@@ -32,12 +32,12 @@ Moncomble, F. (2024). *BlueskyScraper* (Version 0.2) [JavaScript]. Arras, France
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/4b3f83d5-b87d-43e7-8590-2bf3a3f0c9b4) [RedditScraper](https://fmoncomble.github.io/redditscraper/)
 Scrape and download Reddit posts
 
-Moncomble, F. (2024). _RedditScraper_ (Version 0.2) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/redditscraper/
+Moncomble, F. (2024). _RedditScraper_ (Version 0.4) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/redditscraper/
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/25a619f7-4076-4e98-9300-ebf137ba4f59) [SocialCorpusScraper](https://fmoncomble.github.io/SocialCorpusScraper/)
 A 4-in-1 bundle of [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/), [MastoScraper](https://fmoncomble.github.io/mastoscraper/), [RedditScraper](https://fmoncomble.github.io/redditscraper/) and [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/)
 
-Moncomble, F. (2024). _SocialCorpusScraper_ (Version 0.2) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/SocialCorpusScraper/
+Moncomble, F. (2024). _SocialCorpusScraper_ (Version 0.4) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/SocialCorpusScraper/
 
 
 

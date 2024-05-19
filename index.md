@@ -22,7 +22,7 @@ Moncomble, F. (2024). *𝕏-Scraper* (Version 0.4) [JavaScript]. Arras, France :
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/1a8680a1-af32-4ddb-b498-9b4e21661278) [MastoScraper](https://fmoncomble.github.io/mastoscraper/)
 Une extension pour extraire et télécharger des pouets (posts sur Mastodon)  
   
-Moncomble, F. (2024). *MastoScraper* (Version 0.5) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/mastoscraper/  
+Moncomble, F. (2024). *MastoScraper* (Version 0.6) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/mastoscraper/  
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/b0d1f345-1d7b-48ad-8ff9-665225de6f47) [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/README_fr.html)
 Une extension pour extraire et télécharger des posts Bluesky
@@ -32,11 +32,11 @@ Moncomble, F. (2024). *BlueskyScraper* (Version 0.2) [JavaScript]. Arras, France
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/d668b511-a384-496e-a881-5a319ebe62aa) [RedditScraper](https://fmoncomble.github.io/redditscraper/README_fr.html)
 Une extension pour extraire et télécharger des posts Reddit
 
-Moncomble, F. (2024). RedditScraper (Version 0.2) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://fmoncomble.github.io/redditscraper/
+Moncomble, F. (2024). _RedditScraper_ (Version 0.4) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://fmoncomble.github.io/redditscraper/
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/a4691a34-7c7b-4267-b3fe-8472989d10ab) [SocialCorpusScraper](https://fmoncomble.github.io/SocialCorpusScraper/README_fr.html)
 Une extension 4-en-1 qui rassemble [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/README_fr.html), [MastoScraper](https://fmoncomble.github.io/mastoscraper/), [RedditScraper](https://fmoncomble.github.io/redditscraper/README_fr.html) et [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/).
 
-Moncomble, F. (2024). SocialCorpusScraper (Version 0.2) [JavaScript]. Arras, France : Université d’Artois. Disponible à l’adresse : https://fmoncomble.github.io/SocialCorpusScraper/
+Moncomble, F. (2024). _SocialCorpusScraper_ (Version 0.4) [JavaScript]. Arras, France : Université d’Artois. Disponible à l’adresse : https://fmoncomble.github.io/SocialCorpusScraper/
 
 
