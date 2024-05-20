@@ -22,7 +22,7 @@ Moncomble, F. (2024). *𝕏-Scraper* (Version 0.4) [JavaScript]. Arras, France: 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/1a8680a1-af32-4ddb-b498-9b4e21661278) [MastoScraper](https://fmoncomble.github.io/mastoscraper/)
 Scrape and download toots (posts on Mastodon)  
   
-Moncomble, F. (2024). *MastoScraper* (Version 0.6) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/mastoscraper/  
+Moncomble, F. (2024). *MastoScraper* (Version 0.7) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/mastoscraper/  
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/660dab7e-a8e4-42d1-9318-c43f261b6a34) [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/)
 Scrape and download Bluesky posts
