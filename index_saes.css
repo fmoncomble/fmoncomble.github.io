@@ -32,10 +32,11 @@ label.form-ui {
 
 button.form-ui {
     background-color: black;
+    border: none;
     color: white;
-    padding: 5px;
+    padding: 5px 10px;
     border-radius: 4px;
-    height: 24px;
+    height: 2rem;
     display: inline-block;
     margin-right: 5px;
     cursor: pointer;
