@@ -64,6 +64,7 @@ select.form-ui {
 
 input.form-ui {
     height: 40px;
+    width: 90%;
 }
 
 select.form-ui {
