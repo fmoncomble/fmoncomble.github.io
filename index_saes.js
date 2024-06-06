@@ -213,6 +213,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
             return;
         }
         confirmDialog.showModal();
+        confirmDialog.focus();
     }
 
     async function checkTag(tags) {
