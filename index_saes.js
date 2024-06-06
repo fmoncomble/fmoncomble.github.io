@@ -66,17 +66,24 @@ document.addEventListener('DOMContentLoaded', () => {
             'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/tags?per_page=100&page=';
         let i = 1;
         while (url) {
-            const pageUrl = url + i;
-            const response = await fetch(pageUrl);
-            if (response && response.ok) {
-                const data = await response.json();
-                if (data.length > 0) {
-                    tags.push(...data);
-                    i++;
+            try {
+                const pageUrl = url + i;
+                const response = await fetch(pageUrl);
+                if (response && response.ok) {
+                    const data = await response.json();
+                    if (data.length > 0) {
+                        tags.push(...data);
+                        i++;
+                    } else {
+                        break;
+                    }
                 } else {
-                    break;
+                    window.alert(
+                        'Échec de la création de la liste de mots-clefs. Cliquez sur "OK" pour recharger la page.'
+                    );
+                    location.reload();
                 }
-            } else {
+            } catch (error) {
                 window.alert(
                     'Échec de la création de la liste de mots-clefs. Cliquez sur "OK" pour recharger la page.'
                 );
@@ -193,7 +200,9 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
         subContent.innerHTML = `<b>${title}</b><br><br>` + content;
         const subCats = document.getElementById('submission-cats');
         if (categories.length > 0) {
-            subCats.innerHTML = `<b>Catégorie(s) :</b> ${categories.join(', ')}`;
+            subCats.innerHTML = `<b>Catégorie(s) :</b> ${categories.join(
+                ', '
+            )}`;
         }
         const subTags = document.getElementById('submission-tags');
         if (tags.length > 0) {
@@ -206,12 +215,12 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
             const cats = await retrieveCategories(categories);
             submitPost(title, content, cats, tagIDs);
             confirmDialog.close();
-        }
+        };
         noBtn.onclick = () => {
             confirmDialog.close();
             spinner.style.display = 'none';
             return;
-        }
+        };
         confirmDialog.showModal();
         confirmDialog.focus();
     }

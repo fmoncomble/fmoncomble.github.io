@@ -67,6 +67,10 @@ input.form-ui {
     width: 90%;
 }
 
+input#date {
+    width: 8rem;
+}
+
 select.form-ui {
     min-height: 40px;
 }
