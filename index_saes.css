@@ -1,3 +1,7 @@
+body {
+    font-family: system-ui, sans-serif;
+}
+
 label.form-ui {
     display: block;
     text-align: left;
@@ -27,6 +31,11 @@ label.form-ui {
 }
 
 button.form-ui {
+    background-color: black;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    height: 24px;
     display: inline-block;
     margin-right: 5px;
 }
