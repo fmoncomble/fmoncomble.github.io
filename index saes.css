@@ -1,0 +1,117 @@
+label.form-ui {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#spinner {
+    border: solid 5px #ddd;
+    border-left: solid 5px #0379b0;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    display: none;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+button.form-ui {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+button.form-ui:hover {
+    background-color: #1993d1;
+}
+
+button.form-ui:disabled {
+    background-color: #ddd;
+}
+
+input.form-ui,
+select.form-ui {
+    max-width: auto;
+    display: inline-block;
+    margin: 5px;
+    background-color: #eee;
+    border: solid 1px gray;
+    border-radius: 4px;
+    padding: 2px;
+    padding-left: 10px;
+}
+
+input.form-ui {
+    height: 40px;
+}
+
+select.form-ui {
+    min-height: 40px;
+}
+
+div.form-ui {
+    margin: 5px;
+}
+
+label.form-ui {
+    display: inline-block;
+    margin: 5px;
+}
+
+.tag-label {
+	font-size: smaller;
+	background-color: #eee;
+	border-radius: 4px;
+	padding: 0 .3em;
+	margin-right: 1em;
+	display: inline-block;
+	line-height: 2em;
+}
+
+span#tag-span {
+    line-height: 2.5em;
+}
+
+div#consent-box {
+    display: flex;
+}
+
+div#tag-div {
+    margin-top: 1em;
+}
+
+input#consent-check {
+    cursor: auto;
+    width: 20px;
+    height: 20px;
+}
+
+input#captcha {
+    width: 6rem;
+    display: inline-block;
+}
+
+dialog {
+    width: 50%;
+    padding: 20px;
+    border: solid 1px gray;
+    border-radius: 4px;
+}
+
+.confirm-dialog {
+    margin: 10px 0;
+}
+
+button#cancel-btn:hover {
+    background-color: red;
+}

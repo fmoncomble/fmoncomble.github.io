@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <script type="text/javascript" src="index saes.js"></script>
+        <link rel="stylesheet" type="text/css" href="index saes.css" />
+    </head>
+    <body>
+        <div id="instructions">
+            <h2>Détails de l’intervention :</h2>
+        </div>
+        <div id="form-wrapper">
+            <div class="form-ui">
+                <label for="Titre" class="form-ui">Titre : </label
+                ><input
+                    id="title"
+                    class="form-ui required-input"
+                    name="Titre"
+                    type="text"
+                />
+            </div>
+            <div class="form-ui">
+                <label for="Média" class="form-ui">Média : </label
+                ><select id="media" class="form-ui required-input" name="Média">
+                    <option value="" selected disabled>—</option>
+                    <optgroup label="Radio" />
+                    <option value="BBC">BBC</option>
+                    <option value="Europe 1">Europe 1</option>
+                    <option value="France Culture">France Culture</option>
+                    <option value="France Inter">France Inter</option>
+                    <option value="Radio Classique">Radio Classique</option>
+                    <option value="Autre - radio">Autre - radio</option>
+                    <optgroup label="Télévision" />
+                    <option value="Arte">Arte</option>
+                    <option value="France 2">France 2</option>
+                    <option value="France 3">France 3</option>
+                    <option value="France 5">France 5</option>
+                    <option value="France 24">France 24</option>
+                    <option value="Autre - TV">Autre - TV</option>
+                    <optgroup label="Presse" />
+                    <option value="AOC">AOC</option>
+                    <option value="Le Figaro">Le Figaro</option>
+                    <option value="Le Monde">Le Monde</option>
+                    <option value="Libération">Libération</option>
+                    <option value="Médiapart">Médiapart</option>
+                    <option value="The Conversation">The Conversation</option>
+                    <option value="Autre - presse">Autre - presse</option>
+                    <optgroup label="Internet hors TV/radio/presse" />
+                    <option value="Conférence TED">Conférence TED</option>
+                    <option value="YouTube">YouTube</option>
+                    <option value="Autre – internet">Autre – internet</option>
+                </select>
+            </div>
+            <div class="form-ui">
+                <label for="Émission/journal" class="form-ui"
+                    >Émission ou journal : </label
+                ><input
+                    id="paper"
+                    class="form-ui required-input"
+                    name="Émission/journal"
+                    type="text"
+                />
+            </div>
+            <div class="form-ui">
+                <label for="Date" class="form-ui">Date : </label>
+                <input
+                    id="date"
+                    class="form-ui required-input"
+                    name="Date"
+                    type="date"
+                />
+            </div>
+            <div class="form-ui">
+                <label for="URL" class="form-ui">URL : </label>
+                <input
+                    id="url"
+                    class="form-ui required-input"
+                    name="URL"
+                    type="url"
+                    placeholder="https://www.exemple.fr"
+                />
+            </div>
+            <div class="form-ui">
+                <label for="discipline" class="form-ui"
+                    >Champ(s) disciplinaire(s)<br /><span
+                        style="font-size: smaller; font-weight: normal"
+                        >Sélection multiple possible : maintenez la touche Ctrl
+                        (Windows) ou Command (Mac OS) appuyée</span
+                    ><br />
+                    <select
+                        id="discipline"
+                        class="form-ui"
+                        name="discipline"
+                        multiple
+                    >
+                        <option value="littérature">Littérature</option>
+                        <option value="civilisation">Civilisation</option>
+                        <option value="arts (hors cinéma)">
+                            Arts (hors cinéma)
+                        </option>
+                        <option value="cinéma">Cinéma</option>
+                        <option value="linguistique">Linguistique</option>
+                        <option value="phonétique & phonologie">
+                            Phonétique & Phonologie
+                        </option>
+                        <option value="stylistique">Stylistique</option>
+                        <option value="traductologie">Traductologie</option>
+                        <option value="anglais de spécialité">
+                            Anglais de spécialité
+                        </option>
+                        <option value="didactique et acquisistion des langues">
+                            Didactique et acquisition des langues
+                        </option>
+                        <option value="profession: angliciste">
+                            Profession : angliciste
+                        </option>
+                        <option value="théâtre">Théâtre</option>
+                        <option value="séries télévisées">
+                            Séries télévisées
+                        </option>
+                    </select></label
+                >
+            </div>
+            <div class="form-ui">
+                <label for="area" class="form-ui"
+                    >Aire(s) géographique(s)<br /><span
+                        style="font-size: smaller; font-weight: normal"
+                        >Sélection multiple possible : maintenez la touche Ctrl
+                        (Windows) ou Command (Mac OS) appuyée</span
+                    ><br />
+                    <select id="area" class="form-ui" name="area" multiple>
+                        <option value="Etats-Unis">États-Unis</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Royaume-Uni">Royaume-Uni</option>
+                        <option value="Irlande">Irlande</option>
+                        <option value="Australie / Nouvelle Zélande">
+                            Australie / Nouvelle-Zélande
+                        </option>
+                        <option value="Afrique du Sud / Sud de l'Afrique">
+                            Afrique du Sud / Sud de l'Afrique
+                        </option>
+                        <option
+                            value="Afrique du Nord / Afrique de l'Est / Moyen-Orient"
+                        >
+                            Afrique du Nord / Afrique de l’Est / Moyen-Orient
+                        </option>
+                        <option value="Afrique de l'Ouest">
+                            Afrique de l’Ouest
+                        </option>
+                        <option
+                            value="Inde / Sri Lanka / Pakistan / Bangladesh"
+                        >
+                            Inde / Sri Lanka / Pakistan / Bangladesh
+                        </option>
+                        <option value="Caraïbes">Caraïbes</option>
+                        <option
+                            value="Commonwealth / Monde postcolonial anglophone"
+                        >
+                            Commonwealth / Monde postcolonial anglophone
+                        </option>
+                        <option value="monde anglophone en général">
+                            Monde anglophone en général
+                        </option>
+                        <option value="monde francophone">
+                            Monde francophone
+                        </option>
+                        <option value="Europe">Europe</option>
+                        <option value="autre">Autre / peu pertinent</option>
+                    </select></label
+                >
+            </div>
+            <div class="form-ui">
+                <label for="tags" class="form-ui"
+                    >Mots-clefs (un à la fois ; touche Entrée pour valider)<br /><span
+                        style="font-size: smaller; font-weight: normal"
+                        >Privilégiez les mots-clefs suggérés pour optimiser le
+                        référencement</span
+                    ></label
+                >
+                <input name="tags" class="form-ui" id="tags" type="text" />
+                <datalist id="taglist"></datalist>
+                <div id="tag-div">
+                    <span id="tag-span"></span>
+                </div>
+            </div>
+            <div class="form-ui">
+                <h2>Détails de l’intervenant·e :</h2>
+            </div>
+            <div class="form-ui">
+                <label for="Nom de l'intervenant·e" class="form-ui"
+                    >Prénom et nom :
+                </label>
+                <input
+                    id="name"
+                    class="form-ui required-input"
+                    name="Nom de l'intervenant·e"
+                    type="text"
+                />
+            </div>
+            <div class="form-ui">
+                <label for="Statut de l'intervenant·e" class="form-ui"
+                    >Statut :
+                </label>
+                <select
+                    id="status"
+                    class="form-ui required-input"
+                    name="Statut de l'intervenant·e"
+                >
+                    <option value="" selected disabled>—</option>
+                    <option value="Doctorant·e">Doctorant·e</option>
+                    <option value="PRAG/PRCE">PRAG/PRCE</option>
+                    <option value="Maitre·sse de conférences">
+                        Maitre·sse de conférences
+                    </option>
+                    <option value="Maitre·sse de conférences HDR">
+                        Maitre·sse de conférences HDR
+                    </option>
+                    <option value="Professeur·e des universités">
+                        Professeur·e des universités
+                    </option>
+                    <option value="Professeur·e émérite">
+                        Professeur·e émérite
+                    </option>
+                    <option value="Retraité·e">Retraité·e</option>
+                    <option value="Autre">Autre</option>
+                </select>
+            </div>
+            <div class="form-ui">
+                <label for="Affiliation" class="form-ui">Affiliation : </label>
+                <input
+                    id="institution"
+                    name="Affiliation"
+                    class="form-ui required-input"
+                    type="text"
+                />
+            </div>
+            <div class="form-ui">
+                <label for="Laboratoire" class="form-ui">Laboratoire : </label>
+                <input
+                    id="lab"
+                    name="Laboratoire"
+                    class="form-ui"
+                    type="text"
+                />
+            </div>
+            <div class="form-ui">
+                <label for="Courriel" class="form-ui">Courriel : </label>
+                <input
+                    id="email"
+                    class="form-ui required-input"
+                    name="Courriel"
+                    type="email"
+                    placeholder="prenom.nom@univ.fr"
+                />
+            </div>
+            <div id="consent-wrapper" class="form-ui">
+                <br />
+                <i
+                    >Les informations recueillies vous concernant font l’objet
+                    d’une déclaration auprès du service de Protection des
+                    données de l'Université Toulouse-Jean Jaurès, 5 allées
+                    Antonio Machado, 31 058 Toulouse Cedex 9,
+                    <a href="mailto:dpo@univ-tlse2.fr">dpo@univ-tlse2.fr</a
+                    >.<br />La base légale de cette déclaration s’appuie sur
+                    votre consentement.<br />Vous pouvez télécharger la notice
+                    d'information et consentement éclairé
+                    <a
+                        href="https://enquetes.univ-tlse2.fr/upload/surveys/416182/files/Formulaire_consentement.pdf"
+                        target="_blank"
+                        >en cliquant ici</a
+                    >.</i
+                >
+                <div id="consent-box">
+                    <label for="consent" class="form-ui">
+                        <input
+                            name="consent"
+                            class="form-ui"
+                            type="checkbox"
+                            id="consent-check"
+                        />
+                        Je consens à la transmission des réponses à ce
+                        questionnaire.
+                    </label>
+                </div>
+            </div>
+            <div class="form-ui">
+                <span id="captcha-qtn"></span>
+                <input id="captcha" type="number" />
+            </div>
+            <div>
+                <br />
+                N.B. Une fois la soumission effectuée, vous serez
+                automatiquement invité·e à envoyer une notification aux admins :
+                merci de le faire pour faciliter leur travail !<br /><br />
+                <button class="form-ui" id="submit-btn" disabled="true">
+                    Envoyer
+                </button>
+                <span id="spinner" class="form-ui" style="display: none"></span>
+            </div>
+        </div>
+        <dialog id="confirm-dialog">
+            <div id="confirm-message" class="confirm-dialog">
+                <div>
+                    <b>Veuillez vérifier votre contribution avant de l'envoyer :</b>
+                </div>
+                <br />
+                <div id="submission-content" class="confirm-dialog"></div>
+                <div id="submission-cats" class="confirm-dialog"></div>
+                <div id="submission-tags" class="confirm-dialog"></div>
+            </div>
+            <br />
+            <button id="confirm-btn" class="confirm-dialog form-ui">Confirmer</button>
+            <button id="cancel-btn" class="confirm-dialog form-ui">Annuler</button>
+        </dialog>
+    </body>
+</html>
