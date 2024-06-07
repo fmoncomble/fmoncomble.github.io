@@ -214,7 +214,9 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
         }
         const subTags = document.getElementById('submission-tags');
         if (userTags.length > 0) {
-            subTags.innerHTML = `<b>Mot(s)-clef(s) :</b> ${userTags.join(', ')}`;
+            subTags.innerHTML = `<b>Mot(s)-clef(s) :</b> ${userTags.join(
+                ', '
+            )}`;
         }
         const yesBtn = document.getElementById('confirm-btn');
         const noBtn = document.getElementById('cancel-btn');
@@ -230,14 +232,22 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
             const tagIDs = await checkTag(userTags);
             const cats = await retrieveCategories(categories);
             const id = await submitPost(title, content, cats, tagIDs);
+            const closeBtn = document.createElement('span');
+            closeBtn.textContent = '❌';
+            closeBtn.style.float = 'right';
+            closeBtn.style.cursor = 'pointer';
             setTimeout(() => {
+                spinnerDiv.before(closeBtn);
+                sendMail(title, id);
+            }, 1500);
+            closeBtn.onclick = () => {
                 confirmDialog.close();
                 confirmMsg.style.display = 'block';
                 dialogBtns.style.display = 'block';
                 spinnerDiv.style.display = 'none';
                 checkmark.style.display = 'none';
-                sendMail(title, id);
-            }, 1500);
+                closeBtn.remove();
+            };
         };
         noBtn.onclick = () => {
             confirmDialog.close();
@@ -247,22 +257,26 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
         confirmDialog.showModal();
     }
 
-    // Check if user-provided tags exist and retrieve tag IDs
+    // Retrieve tag IDs
     async function checkTag(userTags) {
         const tagIDs = [];
         for (tag of userTags) {
-            const response = await fetch(
-                `https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/tags?search=${tag}`
-            );
-            if (response && response.ok) {
-                const data = await response.json();
-                if (data.length > 0) {
-                    const tagID = data[0].id;
-                    tagIDs.push(tagID);
-                } else {
-                    const tagID = await createTag(tag);
-                    tagIDs.push(tagID);
+            try {
+                const response = await fetch(
+                    `https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/tags?search=${tag}`
+                );
+                if (response && response.ok) {
+                    const data = await response.json();
+                    if (data.length > 0) {
+                        const tagID = data[0].id;
+                        tagIDs.push(tagID);
+                    } else {
+                        const tagID = await createTag(tag);
+                        tagIDs.push(tagID);
+                    }
                 }
+            } catch (error) {
+                console.error(error.message);
             }
         }
         return tagIDs;
@@ -270,31 +284,37 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
 
     // Create new tag
     async function createTag(tag) {
-        const url = 'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/tags';
-        const cred = 'dGVzdDp3TldLaXJybkZob1VsSnBkU05aWFVmRWo=';
-        // const token =
-        //     '';
-        const headers = new Headers();
-        // headers.append('Authorization', 'Bearer ' + token);
-        headers.append('Authorization', 'Basic ' + cred);
-        headers.append('Content-type', 'application/json');
-        const tagData = {
-            name: tag,
-        };
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(tagData),
-        });
-        if (response && response.ok) {
-            const data = await response.json();
-            if (data) {
-                return data.id;
+        try {
+            const url = 'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/tags';
+            const cred = 'dGVzdDp3TldLaXJybkZob1VsSnBkU05aWFVmRWo=';
+            // const token =
+            //     '';
+            const headers = new Headers();
+            // headers.append('Authorization', 'Bearer ' + token);
+            headers.append('Authorization', 'Basic ' + cred);
+            headers.append('Content-type', 'application/json');
+            const tagData = {
+                name: tag,
+            };
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(tagData),
+            });
+            if (response && response.ok) {
+                const data = await response.json();
+                if (data) {
+                    return data.id;
+                }
+            } else {
+                console.error(response.message);
+                window.alert(
+                    `Could not create tag "${tag}": ${response.message}`
+                );
+                return;
             }
-        } else {
-            console.error(response.message);
-            window.alert(`Could not create tag "${tag}": ${response.message}`);
-            return;
+        } catch (error) {
+            console.error(error.message);
         }
     }
 
@@ -376,5 +396,6 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
             'href',
             `mailto:blandine.pennec@univ-tlse2.fr,zachary.baque@univ-tlse2.fr?subject=${mailSubject}&body=${mailBody}`
         );
-        mailLink.click();}
+        mailLink.click();
+    }
 });
