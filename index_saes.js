@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <b>Émission ou journal :</b> ${paper}<br>
 <b>Date :</b> ${postDate}<br>
 <b>URL :</b> <a href="${url}" target="_blank">${url}</a><br><br>
-<b>Intervenant.e :</b><br>
+<b>Intervenant·e :</b><br>
 ${intName}<br>
 ${intStatus}<br>
 ${inst}<br>
@@ -287,6 +287,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
             return;
         };
         confirmDialog.showModal();
+        subContent.focus();
     }
 
     // Retrieve tag IDs
