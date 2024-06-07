@@ -60,11 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Retrieve list of existing tags for input suggestions
+    // Create list of existing tags for input suggestions
     createTagList();
     tagInput.setAttribute('list', 'taglist');
+    const blogTags = [];
     async function createTagList() {
-        const tags = [];
+        // const tags = [];
         const url =
             'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/tags?per_page=100&page=';
         let i = 1;
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response && response.ok) {
                     const data = await response.json();
                     if (data.length > 0) {
-                        tags.push(...data);
+                        blogTags.push(...data);
                         i++;
                     } else {
                         break;
@@ -93,18 +94,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 location.reload();
             }
         }
-        for (tag of tags) {
+        for (tag of blogTags) {
             const opt = document.createElement('option');
             opt.value = tag.name;
             tagList.appendChild(opt);
         }
     }
-    let tags = [];
+    let userTags = [];
     let t = 1;
     tagInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             const tagName = tagInput.value.replaceAll(/<[^>]*>/gu, '').trim();
-            tags.push(tagName);
+            userTags.push(tagName);
             const tagLabel = document.createElement('span');
             tagLabel.id = `tag${t}`;
             tagLabel.classList.add('tag-label');
@@ -114,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tagDelete.style.cursor = 'pointer';
             tagDelete.style.marginLeft = '0.5em';
             tagDelete.onclick = () => {
-                tags = tags.filter((tag) => tag !== tagName);
+                userTags = userTags.filter((tag) => tag !== tagName);
                 tagLabel.remove();
             };
             tagLabel.appendChild(tagDelete);
@@ -124,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Manage required inputs
     const reqInputs = Array.from(
         document.getElementsByClassName('required-input')
     );
@@ -133,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Listen to submit button
     submitBtn.addEventListener('click', buildPost);
 
     // Build draft post contents
@@ -210,8 +213,8 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
             )}`;
         }
         const subTags = document.getElementById('submission-tags');
-        if (tags.length > 0) {
-            subTags.innerHTML = `<b>Mot(s)-clef(s) :</b> ${tags.join(', ')}`;
+        if (userTags.length > 0) {
+            subTags.innerHTML = `<b>Mot(s)-clef(s) :</b> ${userTags.join(', ')}`;
         }
         const yesBtn = document.getElementById('confirm-btn');
         const noBtn = document.getElementById('cancel-btn');
@@ -224,7 +227,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
             spinnerDiv.style.display = 'block';
             checkmark.style.display = 'none';
             spinner.style.display = 'inline-block';
-            const tagIDs = await checkTag(tags);
+            const tagIDs = await checkTag(userTags);
             const cats = await retrieveCategories(categories);
             const id = await submitPost(title, content, cats, tagIDs);
             setTimeout(() => {
@@ -245,9 +248,9 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
     }
 
     // Check if user-provided tags exist and retrieve tag IDs
-    async function checkTag(tags) {
+    async function checkTag(userTags) {
         const tagIDs = [];
-        for (tag of tags) {
+        for (tag of userTags) {
             const response = await fetch(
                 `https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/tags?search=${tag}`
             );
