@@ -120,6 +120,10 @@ input#captcha {
     vertical-align: bottom;
 }
 
+input.form-ui:invalid {
+    outline: solid 2px red;
+}
+
 dialog {
     min-width: 50%;
     max-width: 660px;
