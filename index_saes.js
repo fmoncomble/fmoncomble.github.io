@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     submitBtn.disabled = true;
 
-    // Create "captcha"
+    // Create & listen to "captcha"
     function getRandomNb() {
         return Math.floor(Math.random() * 10);
     }
@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
     }
-
     captchaInput.addEventListener('input', () => {
         const captcha = checkCaptcha();
         if (captcha && consentCheck.checked) {
@@ -51,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Listen to consent checkbox
     consentCheck.addEventListener('change', () => {
         const captcha = checkCaptcha();
         if (captcha && consentCheck.checked) {
@@ -65,11 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
     tagInput.setAttribute('list', 'taglist');
     const blogTags = [];
     async function createTagList() {
-        // const tags = [];
         const url =
             'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/tags?per_page=100&page=';
         let i = 1;
-        while (url) {
+        let morePages = true;
+        while (morePages) {
             try {
                 const pageUrl = url + i;
                 const response = await fetch(pageUrl);
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         blogTags.push(...data);
                         i++;
                     } else {
-                        break;
+                        morePages = false;
                     }
                 } else {
                     window.alert(
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 location.reload();
             }
         }
-        for (tag of blogTags) {
+        for (let tag of blogTags) {
             const opt = document.createElement('option');
             opt.value = tag.name;
             tagList.appendChild(opt);
@@ -150,12 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const categories = [];
         categories.push(media);
-        for (option of disciplineInput.options) {
+        for (let option of disciplineInput.options) {
             if (option.selected) {
                 categories.push(option.value);
             }
         }
-        for (option of areaInput.options) {
+        for (let option of areaInput.options) {
             if (option.selected) {
                 categories.push(option.value);
             }
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const missingValue = reqInputs.find((v) => !v.value);
         if (missingValue) {
             const missing = [];
-            for (i of reqInputs) {
+            for (let i of reqInputs) {
                 if (!i.value) {
                     missing.push(i.name);
                     i.style.outline = 'solid 2px red';
@@ -260,20 +260,14 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
     // Retrieve tag IDs
     async function checkTag(userTags) {
         const tagIDs = [];
-        for (tag of userTags) {
+        for (let tag of userTags) {
             try {
-                const response = await fetch(
-                    `https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/tags?search=${tag}`
-                );
-                if (response && response.ok) {
-                    const data = await response.json();
-                    if (data.length > 0) {
-                        const tagID = data[0].id;
-                        tagIDs.push(tagID);
-                    } else {
-                        const tagID = await createTag(tag);
-                        tagIDs.push(tagID);
-                    }
+                const foundTag = blogTags.find((t) => t.name === tag);
+                if (foundTag) {
+                    tagIDs.push(foundTag.id);
+                } else {
+                    const tagID = await createTag(tag);
+                    tagIDs.push(tagID);
                 }
             } catch (error) {
                 console.error(error.message);
@@ -322,7 +316,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
     async function retrieveCategories(categories) {
         const url = 'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/categories';
         const cats = [];
-        for (cat of categories) {
+        for (let cat of categories) {
             const catUrl = url + `?search=${cat}`;
             const response = await fetch(catUrl);
             if (response && response.ok) {
