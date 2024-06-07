@@ -289,8 +289,8 @@
             </div>
             <div>
                 <br />
-                N.B. Une fois le formulaire envoyé, vous serez
-                automatiquement invité·e à envoyer un courriel de notification aux admins :
+                N.B. Une fois le formulaire envoyé, vous serez automatiquement
+                invité·e à envoyer un courriel de notification aux admins :
                 merci de le faire pour faciliter leur travail !<br /><br />
                 <button class="form-ui" id="submit-btn" disabled="true">
                     Envoyer
@@ -301,7 +301,10 @@
         <dialog id="confirm-dialog">
             <div id="confirm-message" class="confirm-dialog">
                 <div>
-                    <b>Veuillez vérifier votre contribution avant de l'envoyer :</b>
+                    <b
+                        >Veuillez vérifier votre contribution avant de l'envoyer
+                        :</b
+                    >
                 </div>
                 <br />
                 <div id="submission-content" class="confirm-dialog"></div>
@@ -309,9 +312,22 @@
                 <div id="submission-tags" class="confirm-dialog"></div>
             </div>
             <br />
-            <button id="confirm-btn" class="confirm-dialog form-ui">Confirmer</button>
-            <button id="cancel-btn" class="confirm-dialog form-ui">Annuler</button>
-            <span id="spinner" class="form-ui" style="display: none"></span>
+            <div id="dialog-btns">
+                <button id="confirm-btn" class="confirm-dialog form-ui">
+                    Confirmer
+                </button>
+                <button id="cancel-btn" class="confirm-dialog form-ui">
+                    Annuler
+                </button>
+            </div>
+            <div id="spinner-div" style="display: none">
+                <span id="spinner" class="form-ui" style="display: none"></span>
+                <img
+                    src="icons8-checkmark.gif"
+                    id="checkmark"
+                    style="display: none"
+                />
+            </div>
         </dialog>
     </body>
 </html>

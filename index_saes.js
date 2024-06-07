@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const captchaInput = document.getElementById('captcha');
     const submitBtn = document.querySelector('button#submit-btn');
     const spinner = document.getElementById('spinner');
+    const checkmark = document.getElementById('checkmark');
 
     submitBtn.disabled = true;
 
@@ -211,10 +212,25 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
         const yesBtn = document.getElementById('confirm-btn');
         const noBtn = document.getElementById('cancel-btn');
         yesBtn.onclick = async () => {
+            const confirmMsg = document.getElementById('confirm-message');
+            const dialogBtns = document.getElementById('dialog-btns');
+            const spinnerDiv = document.getElementById('spinner-div');
+            confirmMsg.style.display = 'none';
+            dialogBtns.style.display = 'none';
+            spinnerDiv.style.display = 'block';
+            checkmark.style.display = 'none';
+            spinner.style.display = 'inline-block';
             const tagIDs = await checkTag(tags);
             const cats = await retrieveCategories(categories);
-            submitPost(title, content, cats, tagIDs);
-            confirmDialog.close();
+            const id = await submitPost(title, content, cats, tagIDs);
+            setTimeout(() => {
+                confirmDialog.close();
+                confirmMsg.style.display = 'block';
+                dialogBtns.style.display = 'block';
+                spinnerDiv.style.display = 'none';
+                checkmark.style.display = 'none';
+                sendMail(id);
+            }, 1500);
         };
         noBtn.onclick = () => {
             confirmDialog.close();
@@ -296,7 +312,6 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
     }
 
     async function submitPost(title, content, categories, tags) {
-        spinner.style.display = 'inline-block';
         const postUrl = 'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/posts';
         const cred = 'dGVzdDp3TldLaXJybkZob1VsSnBkU05aWFVmRWo=';
         // const token =
@@ -313,7 +328,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
             status: 'draft',
             comment_status: 'closed',
         };
-        fetch(postUrl, {
+        return fetch(postUrl, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(postData),
@@ -322,24 +337,9 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
             .then((data) => {
                 if (data.id) {
                     spinner.style.display = 'none';
-                    submitBtn.textContent = 'Succès !';
-                    submitBtn.style.backgroundColor = 'green';
-                    const mailLink = document.createElement('a');
-                    const mailSubject = encodeURIComponent(
-                        `Nouvelle soumission d'intervention médiatique`
-                    );
-                    const mailBody = encodeURIComponent(
-                        `Veuillez consulter la soumission suivante : ${title}, https://blogs.univ-tlse2.fr/saes/wp-admin/post.php?post=${data.id}&action=edit`
-                    );
-                    mailLink.setAttribute(
-                        'href',
-                        `mailto:blandine.pennec@univ-tlse2.fr,zachary.baque@univ-tlse2.fr?subject=${mailSubject}&body=${mailBody}`
-                    );
-                    mailLink.click();
-                    setTimeout(() => {
-                        submitBtn.textContent = 'Envoyer';
-                        submitBtn.removeAttribute('style');
-                    }, 1000);
+                    checkmark.style.display = 'inline-block';
+                    const id = data.id;
+                    return id;
                 } else {
                     console.error('Failed to create post: ', data);
                     spinner.style.display = 'none';
@@ -351,4 +351,18 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
                 console.error('Error: ', error);
             });
     }
+
+    function sendMail(id) {
+        const mailLink = document.createElement('a');
+        const mailSubject = encodeURIComponent(
+            `Nouvelle soumission d'intervention médiatique`
+        );
+        const mailBody = encodeURIComponent(
+            `Veuillez consulter la soumission suivante : ${title}, https://blogs.univ-tlse2.fr/saes/wp-admin/post.php?post=${id}&action=edit`
+        );
+        mailLink.setAttribute(
+            'href',
+            `mailto:blandine.pennec@univ-tlse2.fr,zachary.baque@univ-tlse2.fr?subject=${mailSubject}&body=${mailBody}`
+        );
+        mailLink.click();}
 });

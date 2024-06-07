@@ -13,8 +13,8 @@ label.form-ui {
     border: solid 5px #ddd;
     border-left: solid 5px #0379b0;
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    width: 48px;
+    height: 48px;
     animation: spin 1s linear infinite;
     display: none;
     vertical-align: middle;
@@ -119,10 +119,22 @@ input#captcha {
 
 dialog {
     width: 50%;
+    height: 600px;
     padding: 20px;
     border: solid 1px gray;
     border-radius: 4px;
     box-shadow: 0 0 10px 5px gray;
+    vertical-align: middle;
+}
+
+#spinner-div {
+    text-align: center;
+    vertical-align: middle;
+    margin-top: 268px;
+}
+
+img#checkmark {
+    vertical-align: middle;
 }
 
 .confirm-dialog {
