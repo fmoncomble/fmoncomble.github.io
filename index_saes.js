@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     submitBtn.disabled = true;
 
+    // Create "captcha"
     function getRandomNb() {
         return Math.floor(Math.random() * 10);
     }
@@ -59,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Retrieve list of existing tags for input suggestions
     createTagList();
     tagInput.setAttribute('list', 'taglist');
     async function createTagList() {
@@ -133,8 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     submitBtn.addEventListener('click', buildPost);
 
+    // Build draft post contents
     async function buildPost() {
-        // spinner.style.display = 'inline-block';
         const title = titleInput.value.replaceAll(/<[^>]*>/gu, '');
         const media = mediaInput.value.replaceAll(/<[^>]*>/gu, '');
         const paper = paperInput.value.replaceAll(/<[^>]*>/gu, '');
@@ -161,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const lab = labInput.value.replaceAll(/<[^>]*>/gu, '');
         const email = emailInput.value.replaceAll(/<[^>]*>/gu, '');
 
+        // Check if all required inputs are filled in & display alert if not
         const missingValue = reqInputs.find((v) => !v.value);
         if (missingValue) {
             const missing = [];
@@ -196,6 +199,7 @@ ${inst}<br>
 ${lab}<br>
 Courriel : <a href="mailto:${email}">${email}</a>`;
 
+        // Build post preview
         const confirmDialog = document.getElementById('confirm-dialog');
         const subContent = document.getElementById('submission-content');
         subContent.innerHTML = `<b>${title}</b><br><br>` + content;
@@ -240,6 +244,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
         confirmDialog.showModal();
     }
 
+    // Check if user-provided tags exist and retrieve tag IDs
     async function checkTag(tags) {
         const tagIDs = [];
         for (tag of tags) {
@@ -260,6 +265,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
         return tagIDs;
     }
 
+    // Create new tag
     async function createTag(tag) {
         const url = 'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/tags';
         const cred = 'dGVzdDp3TldLaXJybkZob1VsSnBkU05aWFVmRWo=';
@@ -289,6 +295,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
         }
     }
 
+    // Retrive category IDs
     async function retrieveCategories(categories) {
         const url = 'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/categories';
         const cats = [];
@@ -311,6 +318,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
         return cats;
     }
 
+    // Post draft to Wordpress API
     async function submitPost(title, content, categories, tags) {
         const postUrl = 'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/posts';
         const cred = 'dGVzdDp3TldLaXJybkZob1VsSnBkU05aWFVmRWo=';
@@ -352,6 +360,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
             });
     }
 
+    // Prompt user to send notification email to admins
     function sendMail(id) {
         const mailLink = document.createElement('a');
         const mailSubject = encodeURIComponent(
