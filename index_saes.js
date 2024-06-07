@@ -25,11 +25,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Create & listen to "captcha"
     function getRandomNb() {
-        return Math.floor(Math.random() * 10);
+        return Math.floor(Math.random() * 9) + 1;
     }
     const nb1 = getRandomNb();
     const nb2 = getRandomNb();
-    captchaQtn.textContent = `${nb1} + ${nb2} = `;
+
+    function drawCaptcha() {
+        const numbers = {
+            '1': 'un',
+            '2': 'deux',
+            '3': 'trois',
+            '4': 'quatre',
+            '5': 'cinq',
+            '6': 'six',
+            '7': 'sept',
+            '8': 'huit',
+            '9': 'neuf'
+        }
+        var canvas = document.createElement('canvas');
+        canvas.width = 170;
+        canvas.height = 60;
+        var ctx = canvas.getContext('2d');
+        ctx.font = '24px Arial';
+        let ltr1 = numbers[nb1] || nb1;
+        let ltr2 = numbers[nb2] || nb2;
+        ctx.fillText(ltr1 + " + " + ltr2 + " = ", 10, 50);
+        var img = document.createElement('img');
+        img.style.display = 'inline-block';
+        img.style.verticalAlign = 'super';
+        canvas.toBlob(function(blob) {
+            img.src = URL.createObjectURL(blob);
+        });
+        captchaQtn.appendChild(img);
+    }
+
+    drawCaptcha();
+
+    // captchaQtn.textContent = `${nb1} + ${nb2} = `;
     function checkCaptcha() {
         const captchaRight = nb1 + nb2;
         const captchaAnswer = Number(captchaInput.value);

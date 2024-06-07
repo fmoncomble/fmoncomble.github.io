@@ -117,6 +117,7 @@ input#consent-check {
 input#captcha {
     width: 6rem;
     display: inline-block;
+    vertical-align: bottom;
 }
 
 dialog {
