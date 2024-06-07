@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.addEventListener('click', buildPost);
 
     async function buildPost() {
-        spinner.style.display = 'inline-block';
+        // spinner.style.display = 'inline-block';
         const title = titleInput.value.replaceAll(/<[^>]*>/gu, '');
         const media = mediaInput.value.replaceAll(/<[^>]*>/gu, '');
         const paper = paperInput.value.replaceAll(/<[^>]*>/gu, '');
@@ -222,7 +222,6 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
             return;
         };
         confirmDialog.showModal();
-        confirmDialog.focus();
     }
 
     async function checkTag(tags) {
@@ -297,6 +296,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
     }
 
     async function submitPost(title, content, categories, tags) {
+        spinner.style.display = 'inline-block';
         const postUrl = 'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/posts';
         const cred = 'dGVzdDp3TldLaXJybkZob1VsSnBkU05aWFVmRWo=';
         // const token =
