@@ -1,7 +1,6 @@
 body {
     font-family: system-ui, sans-serif;
-    background-color: rgba(176, 188, 202, 0.1);
-    border-radius: 4px;
+    background-color: white;
 }
 
 label.form-ui {
