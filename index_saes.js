@@ -236,7 +236,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
                 dialogBtns.style.display = 'block';
                 spinnerDiv.style.display = 'none';
                 checkmark.style.display = 'none';
-                sendMail(id);
+                sendMail(title, id);
             }, 1500);
         };
         noBtn.onclick = () => {
@@ -364,7 +364,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
     }
 
     // Prompt user to send notification email to admins
-    function sendMail(id) {
+    function sendMail(title, id) {
         const mailLink = document.createElement('a');
         const mailSubject = encodeURIComponent(
             `Nouvelle soumission d'intervention médiatique`
