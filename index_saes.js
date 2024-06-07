@@ -167,6 +167,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Correct URL input
+    urlInput.onchange = () => {
+        if (!urlInput.value.startsWith('http')) {
+            urlInput.value = 'https://' + urlInput.value;
+        }
+    }
+
     // Listen to submit button
     submitBtn.addEventListener('click', buildPost);
 
