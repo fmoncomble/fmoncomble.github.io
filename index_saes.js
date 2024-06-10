@@ -1,4 +1,3 @@
-console.log('saes js v3');
 document.addEventListener('DOMContentLoaded', () => {
     const titleInput = document.getElementById('title');
     const mediaInput = document.getElementById('media');
@@ -168,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Correct URL input
     urlInput.onchange = () => {
-        if (!urlInput.value.startsWith('http')) {
+        if (urlInput.value && !urlInput.value.startsWith('http')) {
             urlInput.value = 'https://' + urlInput.value;
         }
     };
@@ -183,9 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const paper = paperInput.value.replaceAll(/<[^>]*>/gu, '');
         const date = dateInput.value.replaceAll(/<[^>]*>/gu, '');
         let url = urlInput.value;
-        if (!url.startsWith('http')) {
-            url = 'https://' + url;
-        }
+        // if (url.length > 0 && !url.startsWith('http')) {
+        //     url = 'https://' + url;
+        // }
         const categories = [];
         categories.push(media);
         for (let option of disciplineInput.options) {
@@ -228,9 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const month = dateArray[1];
         const day = dateArray[2];
         const postDate = `${day}/${month}/${year}`;
-        let content = `<!-- wp:more -->
-<!-- /wp:more -->
-<!--more-->
+        let content = `<!--more-->
 <!-- wp:html -->
         <div style="background-color: #eeeeee; padding: 1.25em 2.375em;">
 <b>Média :</b> ${media}<br>
