@@ -32,16 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function drawCaptcha() {
         const numbers = {
-            '1': 'un',
-            '2': 'deux',
-            '3': 'trois',
-            '4': 'quatre',
-            '5': 'cinq',
-            '6': 'six',
-            '7': 'sept',
-            '8': 'huit',
-            '9': 'neuf'
-        }
+            1: 'un',
+            2: 'deux',
+            3: 'trois',
+            4: 'quatre',
+            5: 'cinq',
+            6: 'six',
+            7: 'sept',
+            8: 'huit',
+            9: 'neuf',
+        };
         var canvas = document.createElement('canvas');
         canvas.width = 170;
         canvas.height = 60;
@@ -49,11 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.font = '24px Arial';
         let ltr1 = numbers[nb1] || nb1;
         let ltr2 = numbers[nb2] || nb2;
-        ctx.fillText(ltr1 + " + " + ltr2 + " = ", 10, 50);
+        ctx.fillText(ltr1 + ' + ' + ltr2 + ' = ', 10, 50);
         var img = document.createElement('img');
         img.style.display = 'inline-block';
         img.style.verticalAlign = 'super';
-        canvas.toBlob(function(blob) {
+        canvas.toBlob(function (blob) {
             img.src = URL.createObjectURL(blob);
         });
         captchaQtn.appendChild(img);
@@ -66,10 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const captchaRight = nb1 + nb2;
         const captchaAnswer = Number(captchaInput.value);
         if (captchaAnswer === captchaRight) {
-            captchaInput.backgroundColor = '#ebfaeb';
             return true;
         } else {
-            captchaInput.backgroundColor = '#ffe6e6';
             return false;
         }
     }
@@ -172,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!urlInput.value.startsWith('http')) {
             urlInput.value = 'https://' + urlInput.value;
         }
-    }
+    };
 
     // Listen to submit button
     submitBtn.addEventListener('click', buildPost);
@@ -229,7 +227,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const month = dateArray[1];
         const day = dateArray[2];
         const postDate = `${day}/${month}/${year}`;
-        let content = `<!-- wp:more --><!-- /wp:more -->
+        let content = `<!-- wp:more -->
+<!-- /wp:more -->
+
+<!-- wp:html -->
+        <div style="background-color: #eeeeee; padding: 1.25em 2.375em;">
 <b>Média :</b> ${media}<br>
 <b>Émission ou journal :</b> ${paper}<br>
 <b>Date :</b> ${postDate}<br>
@@ -239,7 +241,9 @@ ${intName}<br>
 ${intStatus}<br>
 ${inst}<br>
 ${lab}<br>
-Courriel : <a href="mailto:${email}">${email}</a>`;
+Courriel : <a href="mailto:${email}">${email}</a>
+</div>
+<!-- /wp:html -->`;
 
         // Build post preview
         const confirmDialog = document.getElementById('confirm-dialog');
@@ -320,12 +324,10 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
     async function createTag(tag) {
         try {
             const url = 'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/tags';
-            const cred = 'dGVzdDp3TldLaXJybkZob1VsSnBkU05aWFVmRWo=';
-            // const token =
-            //     '';
+            const token =
+                'Ow5wmOLJmEIJTBniP0gZJRnvLkc33pIrgrgqITjXZOu57S67Mby5LNxbo1HcAKaEYAd2chLTy6pH01AEyOLlGfOAJ4JRihrDSx7usXGyXfd64NIquooi5PGcqSIcdK78';
             const headers = new Headers();
-            // headers.append('Authorization', 'Bearer ' + token);
-            headers.append('Authorization', 'Basic ' + cred);
+            headers.append('Authorization', 'Bearer ' + token);
             headers.append('Content-type', 'application/json');
             const tagData = {
                 name: tag,
@@ -352,7 +354,7 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
         }
     }
 
-    // Retrive category IDs
+    // Retrieve category IDs
     async function retrieveCategories(categories) {
         const url = 'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/categories';
         const cats = [];
@@ -378,16 +380,14 @@ Courriel : <a href="mailto:${email}">${email}</a>`;
     // Post draft to Wordpress API
     async function submitPost(title, content, categories, tags) {
         const postUrl = 'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/posts';
-        const cred = 'dGVzdDp3TldLaXJybkZob1VsSnBkU05aWFVmRWo=';
-        // const token =
-        //     '';
+        const token =
+            'Ow5wmOLJmEIJTBniP0gZJRnvLkc33pIrgrgqITjXZOu57S67Mby5LNxbo1HcAKaEYAd2chLTy6pH01AEyOLlGfOAJ4JRihrDSx7usXGyXfd64NIquooi5PGcqSIcdK78';
         const headers = new Headers();
-        // headers.append('Authorization', 'Bearer ' + token);
-        headers.append('Authorization', 'Basic ' + cred);
+        headers.append('Authorization', 'Bearer ' + token);
         headers.append('Content-type', 'application/json');
         let postData = {
             title: title,
-            content: content,
+            content: { raw: content },
             categories: categories,
             tags: tags,
             status: 'draft',

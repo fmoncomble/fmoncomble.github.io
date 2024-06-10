@@ -1,7 +1,9 @@
-body {
+div#wrapper.form-ui {
     font-family: system-ui, sans-serif;
     background-color: white;
-    padding: 0 10px;
+    padding: 10px;
+		border-radius: 4px;
+		border: solid 1px gray;
 }
 
 label.form-ui {
@@ -70,7 +72,7 @@ input.form-ui {
 }
 
 input#date {
-    width: 8rem;
+    width: 10rem;
 }
 
 select.form-ui {
