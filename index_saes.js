@@ -1,5 +1,5 @@
+console.log('saes js v2');
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('saes js v2');
     const titleInput = document.getElementById('title');
     const mediaInput = document.getElementById('media');
     const paperInput = document.getElementById('paper');
