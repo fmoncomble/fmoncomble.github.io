@@ -1,4 +1,4 @@
-console.log('saes js v2');
+console.log('saes js v3');
 document.addEventListener('DOMContentLoaded', () => {
     const titleInput = document.getElementById('title');
     const mediaInput = document.getElementById('media');
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const postDate = `${day}/${month}/${year}`;
         let content = `<!-- wp:more -->
 <!-- /wp:more -->
-
+<!--more-->
 <!-- wp:html -->
         <div style="background-color: #eeeeee; padding: 1.25em 2.375em;">
 <b>Média :</b> ${media}<br>
@@ -360,19 +360,29 @@ Courriel : <a href="mailto:${email}">${email}</a>
         const url = 'https://blogs.univ-tlse2.fr/saes/wp-json/wp/v2/categories';
         const cats = [];
         for (let cat of categories) {
-            const catUrl = url + `?search=${cat}`;
-            const response = await fetch(catUrl);
-            if (response && response.ok) {
-                const data = await response.json();
-                if (data[0]) {
-                    cats.push(data[0].id);
+            try {
+                const catUrl = url + `?search=${cat}`;
+                const response = await fetch(catUrl);
+                if (response && response.ok) {
+                    const data = await response.json();
+                    if (data[0]) {
+                        cats.push(data[0].id);
+                    } else {
+                        window.alert(
+                            `Category ${cat} does not exist, skipping`
+                        );
+                        continue;
+                    }
                 } else {
-                    window.alert(`Category ${cat} does not exist, skipping`);
+                    console.error('Could not fetch categories from blog');
                     continue;
                 }
-            } else {
-                console.error('Could not fetch categories from blog');
-                continue;
+            } catch (error) {
+                console.error(error);
+                window.alert(
+                    `There was a problem retrieving category ${cat}, please try again`
+                );
+                return;
             }
         }
         return cats;
