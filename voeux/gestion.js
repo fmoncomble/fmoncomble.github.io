@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Gestion services v1');
     const profAddInput = document.getElementById('prof-name');
     const profStatusSelect = document.getElementById('status-select');
     const profAddBtn = document.getElementById('prof-add-btn');
@@ -443,9 +444,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const success = await updateFile(url, finalFile, msg);
                 if (success) {
                     spinner.style.display = 'none';
+                    saveChangesBtn.style.backgroundColor = 'green';
                     const saveMsg = document.getElementById('save-msg');
                     saveMsg.textContent = saveMsg.textContent +=
                         'Fichier "' + msg + '" mis à jour\n';
+                        setTimeout(() => {
+                            saveChangesBtn.removeAttribute('style');
+                        }, 1000);
                     profChanged = false;
                 }
             } catch (error) {
@@ -558,16 +563,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             );
             for (f of filières) {
                 const fDiv = document.createElement('h3');
-                // fDiv.style.fontWeight = 'bold';
-                // fDiv.style.marginLeft = '5px';
-                fDiv.textContent = f.value;
-                // coursesDisplay.appendChild(fDiv);
+                fDiv.textContent = f.value.toUpperCase();
                 for (s of semestres) {
                     const sDiv = document.createElement('h4');
-                    // sDiv.style.fontWeight = 'bold';
                     sDiv.style.marginLeft = '2rem';
                     sDiv.textContent = s.value;
-                    // fDiv.appendChild(sDiv);
                     const courses = courseData.filter(
                         (c) => c.filière === f.value && c.semestre === s.value
                     );
@@ -584,11 +584,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
             }
-            // for (c of courseData) {
-            //     const div = document.createElement('div');
-            //     div.textContent = `${c.filière} ${c.semestre} ${c.intitulé} ${c.eqtd}h TD`;
-            //     coursesDisplay.appendChild(div);
-            // }
             showCourses.textContent = 'Masquer la liste des cours 🔼';
             coursesDisplay.style.display = 'block';
         } else if (coursesDisplay.style.display === 'block') {
