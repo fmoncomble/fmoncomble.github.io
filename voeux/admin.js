@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Administration des services v1');
+    console.log('Administration des services v1.1');
     const tokenInput = document.getElementById('token-input');
     const authSaveBtn = document.getElementById('auth-save');
     const fileInput = document.getElementById('file-input');
@@ -236,12 +236,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 newItem = courseItem.cloneNode(true);
                 const courseName = newItem.querySelector('span#course-name');
                 courseTeachers = newItem.querySelector('span#course-teachers');
-                courseName.textContent = `${c.filière} — ${c.semestre} — ${c.intitulé}`;
+                courseName.textContent = `${c.filière.toUpperCase()} — ${c.semestre} — ${c.intitulé}`;
                 courseTeachers.textContent = c.teacher;
                 const courseNumberSpan =
                     newItem.querySelector('span#course-number');
                 const courseNb = courses.filter(
-                    (i) => i.intitulé === c.intitulé
+                    (i) => i.filière === c.filière && i.semestre === c.semestre && i.intitulé === c.intitulé
                 ).length;
                 courseNumberSpan.textContent = `${courseNb} / ${reqNb}`;
                 if (logic === 'course') {
@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const courseNumberSpan =
                     existingItem.querySelector('span#course-number');
                 const courseNb = courses.filter(
-                    (i) => i.intitulé === c.intitulé
+                    (i) => i.filière === c.filière && i.semestre === c.semestre && i.intitulé === c.intitulé
                 ).length;
                 courseNumberSpan.textContent = `${courseNb} / ${reqNb}`;
                 if (logic === 'course') {
@@ -484,6 +484,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     semestreSelect2.addEventListener('change', () => {
         buildCourseAddSelect();
     });
+    filièreSelect2.addEventListener('change', () => {
+        buildCourseAddSelect();
+    });
 
     const profInput2 = document.getElementById('prof-input-2');
     const goProfBtn = document.getElementById('go-prof-btn');
@@ -564,24 +567,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         const profEntry = servicesFile.find((p) => p.Name === prof);
         const courses = profEntry.Cours;
         courses.push(courseToAdd);
-        courses.sort((a, b) => {
-            const intA = a.intitulé.toLowerCase();
-            const intB = b.intitulé.toLowerCase();
-            if (intA < intB) {
-                return -1;
-            }
-            if (intA > intB) {
-                return 1;
-            }
-            return 0;
-        });
+        // courses.sort((a, b) => {
+        //     const intA = a.intitulé.toLowerCase();
+        //     const intB = b.intitulé.toLowerCase();
+        //     if (intA < intB) {
+        //         return -1;
+        //     }
+        //     if (intA > intB) {
+        //         return 1;
+        //     }
+        //     return 0;
+        // });
+        courses.sort(sortByInt);
+        courses.sort(sortBySem);
+        courses.sort(sortByFil);
         buildCourseDeleteSelect();
         const courseAddDiv = document.getElementById('course-add-div');
         const courseAddSpan = document.getElementById('course-add-span');
         const data = computeServiceVol(profEntry);
         const baseService = data[0];
         const totalService = data[1];
-        courseAddSpan.textContent = `${filière} ${semestre} ${courseName} a été ajouté au service de ${prof}. Total : ${totalService} sur ${baseService}`;
+        courseAddSpan.textContent = `${filière.toUpperCase()} ${semestre} ${courseName} a été ajouté au service de ${prof}. Total : ${totalService} sur ${baseService}`;
         courseAddDiv.style.display = 'block';
     }
 
@@ -610,7 +616,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = computeServiceVol(profEntry);
         const baseService = data[0];
         const totalService = data[1];
-        courseDeleteSpan.textContent = `${filière} ${semestre} ${courseName} a été supprimé du service de ${prof}. Total : ${totalService} sur ${baseService}`;
+        courseDeleteSpan.textContent = `${filière.toUpperCase()} ${semestre} ${courseName} a été supprimé du service de ${prof}. Total : ${totalService} sur ${baseService}`;
         courseDeleteDiv.style.display = 'block';
     }
 
@@ -661,4 +667,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 1000);
         saveChgSpinner.style.display = 'none';
     });
+
+    // Course sorting functions
+    function sortByFil(a, b) {
+        const filA = a.filière.toLowerCase();
+        const filB = b.filière.toLowerCase();
+        if (filA < filB) {
+            return -1;
+        }
+        if (filA > filB) {
+            return 1;
+        }
+        return 0;
+    }
+    function sortBySem(a, b) {
+        const semA = a.semestre.toLowerCase();
+        const semB = b.semestre.toLowerCase();
+        if (semA < semB) {
+            return -1;
+        }
+        if (semA > semB) {
+            return 1;
+        }
+        return 0;
+    }
+    function sortByInt(a, b) {
+        const intA = a.intitulé.toLowerCase();
+        const intB = b.intitulé.toLowerCase();
+        if (intA < intB) {
+            return -1;
+        }
+        if (intA > intB) {
+            return 1;
+        }
+        return 0;
+    }
 });

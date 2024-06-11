@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Gestion services v1');
+    console.log('Gestion services v1.1');
     const profAddInput = document.getElementById('prof-name');
     const profStatusSelect = document.getElementById('status-select');
     const profAddBtn = document.getElementById('prof-add-btn');
@@ -287,7 +287,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 c.filière === filièreSelect.value &&
                 c.semestre === semestreSelect.value
         );
-        console.log('Cours existant : ', checkCourse);
         if (checkCourse) {
             if (
                 checkCourse.format !== format ||
@@ -311,7 +310,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const index = courseData.indexOf(checkCourse);
                     courseData.splice(index, 1, newCourse);
                     dialog.close();
-                    console.log('Courses after replace: ', courseData);
                     courseChanged = true;
                 };
                 noBtn.onclick = () => {
@@ -333,7 +331,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const addedCourseDiv = document.getElementById('added-course-div');
             const addedCourseSpan =
                 document.getElementById('added-course-span');
-            addedCourseSpan.textContent = `${filièreSelect.value} ${semestreSelect.value} ${courseInput.value}`;
+            addedCourseSpan.textContent = `${filièreSelect.value.toUpperCase()} ${semestreSelect.value} ${courseInput.value}`;
             addedCourseDiv.style.display = 'block';
             courseInput.value = null;
             volumeInput.value = null;
@@ -392,13 +390,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('Course to delete: ', oldCourse);
         const index = courseData.indexOf(oldCourse);
         const deletedCourse = courseData.splice(index, 1);
-        console.log('Deleted course: ', deletedCourse);
-        console.log('Courses after deletion: ', courseData);
         const deletedCourseDiv = document.getElementById('deleted-course-div');
         const deletedCourseSpan = document.getElementById(
             'deleted-course-span'
         );
-        deletedCourseSpan.textContent = `${filièreSelect2.value} ${semestreSelect2.value} ${intitulé}`;
+        deletedCourseSpan.textContent = `${filièreSelect2.value.toUpperCase()} ${semestreSelect2.value} ${intitulé}`;
         deletedCourseDiv.style.display = 'block';
         courseChanged = true;
         buildCourseList();
