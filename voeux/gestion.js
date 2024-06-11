@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         let multiplier;
         if (format === 'CM') {
             multiplier = 1.5;
-        } else if (format === 'TD') {
+        } else if (format === 'TD' || format === 'TD_OPT') {
             multiplier = 1;
         } else if (format === 'TP') {
             multiplier = 1 / 1.5;
