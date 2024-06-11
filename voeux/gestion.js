@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Get profs and cours files
     async function getFile(url) {
         try {
+            url += '?t=' + new Date().getTime();
             const res = await fetch(url);
             if (res && res.ok) {
                 const data = await res.json();
@@ -146,7 +147,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             profAddInput.focus();
             return;
         }
-        const customService = Number(document.getElementById('custom-service').value);
+        const customService = Number(
+            document.getElementById('custom-service').value
+        );
         let newProf;
         if (customService) {
             newProf = {
@@ -322,17 +325,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } else {
             courseData.push(newCourse);
-            courseData.sort((a, b) => {
-                const intA = a.intitulé.toLowerCase();
-                const intB = b.intitulé.toLowerCase();
-                if (intA < intB) {
-                    return -1;
-                }
-                if (intA > intB) {
-                    return 1;
-                }
-                return 0;
-            });
+            courseData.sort(sortByInt);
+            courseData.sort(sortBySem);
+            courseData.sort(sortByFil);
+            console.log('Courses after sorting: ', courseData);
             const addedCourseDiv = document.getElementById('added-course-div');
             const addedCourseSpan =
                 document.getElementById('added-course-span');
@@ -343,6 +339,41 @@ document.addEventListener('DOMContentLoaded', async () => {
             courseChanged = true;
         }
         buildCourseList();
+    }
+
+    // Course sorting functions
+    function sortByFil(a, b) {
+        const filA = a.filière.toLowerCase();
+        const filB = b.filière.toLowerCase();
+        if (filA < filB) {
+            return -1;
+        }
+        if (filA > filB) {
+            return 1;
+        }
+        return 0;
+    }
+    function sortBySem(a, b) {
+        const semA = a.semestre.toLowerCase();
+        const semB = b.semestre.toLowerCase();
+        if (semA < semB) {
+            return -1;
+        }
+        if (semA > semB) {
+            return 1;
+        }
+        return 0;
+    }
+    function sortByInt(a, b) {
+        const intA = a.intitulé.toLowerCase();
+        const intB = b.intitulé.toLowerCase();
+        if (intA < intB) {
+            return -1;
+        }
+        if (intA > intB) {
+            return 1;
+        }
+        return 0;
     }
 
     // Delete course
@@ -398,6 +429,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.alert('Aucun changement effectué');
             return;
         }
+        const spinner = document.getElementById('spinner');
         if (profChanged) {
             const url =
                 'https://api.github.com/repos/fmoncomble/fmoncomble.github.io/contents/voeux/profs.json';
@@ -407,8 +439,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             const finalFile = btoa(String.fromCharCode.apply(null, utf8Array));
             const msg = 'profs';
             try {
-                await updateFile(url, finalFile, msg);
-                profChanged = false;
+                spinner.style.display = 'inline-block'
+                const success = await updateFile(url, finalFile, msg);
+                if (success) {
+                    spinner.style.display = 'none';
+                    const saveMsg = document.getElementById('save-msg');
+                    saveMsg.textContent = saveMsg.textContent +=
+                        'Fichier "' + msg + '" mis à jour\n';
+                    profChanged = false;
+                }
             } catch (error) {
                 throw new Error(error);
             }
@@ -422,8 +461,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             const finalFile = btoa(String.fromCharCode.apply(null, utf8Array));
             const msg = 'cours';
             try {
-                await updateFile(url, finalFile, msg);
-                courseChanged = false;
+                spinner.style.display = 'inline-block';
+                const success = await updateFile(url, finalFile, msg);
+                if (success) {
+                    spinner.style.display = 'none';
+                    const saveMsg = document.getElementById('save-msg');
+                    saveMsg.textContent = saveMsg.textContent +=
+                        'Fichier "' + msg + '" mis à jour\n';
+                    courseChanged = false;
+                }
             } catch (error) {
                 throw new Error(error);
             }
@@ -464,13 +510,88 @@ document.addEventListener('DOMContentLoaded', async () => {
                     window.alert('Erreur lors de la sauvegarde');
                     throw new Error(error);
                 } else {
-                    const saveMsg = document.getElementById('save-msg');
-                    saveMsg.textContent = saveMsg.textContent +=
-                        'Fichier ' + msg + ' mis à jour\n';
+                    return true;
                 }
             } catch (error) {
                 throw new Error(error);
             }
+        }
+    }
+
+    // Display lists
+    const showProfs = document.getElementById('show-profs');
+    const profsDisplay = document.getElementById('profs-display');
+    showProfs.onclick = () => {
+        displayProfs();
+    };
+    function displayProfs() {
+        if (profsDisplay.style.display === 'none') {
+            for (t of teacherData) {
+                const div = document.createElement('div');
+                div.textContent = `${t.name}, ${t.status}`;
+                profsDisplay.appendChild(div);
+            }
+            showProfs.textContent = 'Masquer la liste des enseignant·es 🔼';
+            profsDisplay.style.display = 'block';
+        } else if (profsDisplay.style.display === 'block') {
+            profsDisplay.innerHTML = null;
+            showProfs.textContent = 'Afficher la liste des enseignant·es 🔽';
+            profsDisplay.style.display = 'none';
+        }
+    }
+
+    const showCourses = document.getElementById('show-courses');
+    const coursesDisplay = document.getElementById('courses-display');
+    showCourses.onclick = () => {
+        displayCourses();
+    };
+    function displayCourses() {
+        if (coursesDisplay.style.display === 'none') {
+            const filières = Array.from(
+                filièreSelect.querySelectorAll('option')
+            );
+            const semestres = Array.from(
+                semestreSelect.querySelectorAll('option')
+            );
+            for (f of filières) {
+                const fDiv = document.createElement('h3');
+                // fDiv.style.fontWeight = 'bold';
+                // fDiv.style.marginLeft = '5px';
+                fDiv.textContent = f.value;
+                // coursesDisplay.appendChild(fDiv);
+                for (s of semestres) {
+                    const sDiv = document.createElement('h4');
+                    // sDiv.style.fontWeight = 'bold';
+                    sDiv.style.marginLeft = '2rem';
+                    sDiv.textContent = s.value;
+                    // fDiv.appendChild(sDiv);
+                    const courses = courseData.filter(
+                        (c) => c.filière === f.value && c.semestre === s.value
+                    );
+                    if (courses.length > 0) {
+                        for (c of courses) {
+                            const div = document.createElement('div');
+                            div.style.fontWeight = 'normal';
+                            div.style.marginLeft = '2rem';
+                            div.textContent = `${c.filière} ${c.semestre} ${c.intitulé} ${c.eqtd}h TD`;
+                            sDiv.appendChild(div);
+                            fDiv.appendChild(sDiv);
+                        }
+                        coursesDisplay.appendChild(fDiv);
+                    }
+                }
+            }
+            // for (c of courseData) {
+            //     const div = document.createElement('div');
+            //     div.textContent = `${c.filière} ${c.semestre} ${c.intitulé} ${c.eqtd}h TD`;
+            //     coursesDisplay.appendChild(div);
+            // }
+            showCourses.textContent = 'Masquer la liste des cours 🔼';
+            coursesDisplay.style.display = 'block';
+        } else if (coursesDisplay.style.display === 'block') {
+            coursesDisplay.innerHTML = null;
+            showCourses.textContent = 'Afficher la liste des cours 🔽';
+            coursesDisplay.style.display = 'none';
         }
     }
 });

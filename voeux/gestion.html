@@ -8,160 +8,208 @@
     </head>
     <body>
         <h1 class="wishes-ui">Gestion des fichiers enseignant·es et cours</h1>
-        <h2>Enseignant·es</h2>
-        <div id="prof-add" class="wishes-ui">
-            <b>Ajouter un·e enseignant·e</b>
-            <div>
-                <input
-                    id="prof-name"
-                    type="text"
-                    class="wishes-ui"
-                    placeholder="Prénom Nom"
-                />
-                <select id="status-select" class="wishes-ui">
-                    <option value="PR" selected>PR</option>
-                    <option value="MCF">MCF</option>
-                    <option value="PRAG">PRAG</option>
-                    <option value="PRCE">PRCE</option>
-                    <option value="ATER">ATER</option>
-                    <option value="LECT">Lecteur·rice</option>
-                    <option value="VAC">Chargé·e de cours</option>
-                    <option value="CONT">Contractuel·le</option>
-                </select>
-                <input
-                    id="custom-service"
-                    class="wishes-ui"
-                    type="number"
-                    placeholder="Serv. pers."
-                />
-                <button id="prof-add-btn" class="wishes-ui">Ajouter</button>
+        <div class="wrapper">
+            <div id="container-1" class="container">
+                <h2>Enseignant·es</h2>
+                <div id="prof-add" class="wishes-ui">
+                    <b>Ajouter un·e enseignant·e</b>
+                    <div>
+                        <input
+                            id="prof-name"
+                            type="text"
+                            class="wishes-ui"
+                            placeholder="Prénom Nom"
+                        />
+                        <select id="status-select" class="wishes-ui">
+                            <option value="PR" selected>PR</option>
+                            <option value="MCF">MCF</option>
+                            <option value="PRAG">PRAG</option>
+                            <option value="PRCE">PRCE</option>
+                            <option value="ATER">ATER</option>
+                            <option value="LECT">Lecteur·rice</option>
+                            <option value="VAC">Chargé·e de cours</option>
+                            <option value="CONT">Contractuel·le</option>
+                        </select>
+                        <input
+                            id="custom-service"
+                            class="wishes-ui"
+                            type="number"
+                            placeholder="Serv. pers."
+                        />
+                        <button id="prof-add-btn" class="wishes-ui">
+                            Ajouter
+                        </button>
+                    </div>
+                    <div id="added-prof-div" style="display: none">
+                        <span id="added-prof" class="wishes-ui"></span> a été
+                        ajouté·e
+                    </div>
+                </div>
+                <div id="prof-delete" class="wishes-ui">
+                    <b>Supprimer un·e enseignant·e</b>
+                    <div>
+                        <input
+                            id="prof-name-2"
+                            type="text"
+                            class="wishes-ui"
+                            placeholder="Prénom Nom"
+                            list="prof-list"
+                        />
+                        <button id="prof-delete-btn" class="wishes-ui">
+                            Supprimer
+                        </button>
+                    </div>
+                    <div id="deleted-prof-div" style="display: none">
+                        <span id="deleted-prof" class="wishes-ui"></span> a été
+                        supprimé·e
+                    </div>
+                </div>
+                <br />
+                <h2>Cours</h2>
+                <div id="course-add" class="wishes-ui">
+                    <b>Ajouter un cours</b>
+                    <div>
+                        <select id="course-filière" class="wishes-ui">
+                            <option value="LLCER" data-level="l" selected>
+                                LLCER
+                            </option>
+                            <option value="LEA" data-level="l">LEA</option>
+                            <option value="MEEF" data-level="m">MEEF</option>
+                            <option value="MLLCER" data-level="m">
+                                Master LLCER
+                            </option>
+                            <option value="LMI" data-level="m">LMI</option>
+                            <option value="agreg" data-level="a">
+                                Agrégation interne
+                            </option>
+                        </select>
+                        <select id="course-semestre" class="wishes-ui">
+                            <option value="S1" selected>S1</option>
+                            <option value="S2">S2</option>
+                            <option value="S3" data-nota="true">S3</option>
+                            <option value="S4" data-nota="true">S4</option>
+                            <option
+                                value="S5"
+                                data-nota="true"
+                                data-notm="true"
+                            >
+                                S5
+                            </option>
+                            <option
+                                value="S6"
+                                data-nota="true"
+                                data-notm="true"
+                            >
+                                S6
+                            </option>
+                        </select>
+                        <select id="format-select" class="wishes-ui">
+                            <option value="CM">CM</option>
+                            <option value="TD">TD</option>
+                            <option value="TP">TP</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input
+                            id="course-name"
+                            type="text"
+                            class="wishes-ui"
+                            placeholder="Intitulé du cours"
+                        />
+                        <input
+                            id="volume-input"
+                            type="number"
+                            step="0.1"
+                            placeholder="volume horaire brut"
+                            class="wishes-ui"
+                        />
+                        <button id="course-add-btn" class="wishes-ui">
+                            Ajouter
+                        </button>
+                    </div>
+                    <div id="added-course-div" style="display: none">
+                        <span id="added-course-span"></span> a été ajouté
+                    </div>
+                </div>
+                <div id="course-delete" class="wishes-ui">
+                    <b>Supprimer un cours</b>
+                    <div>
+                        <select id="course-filière-2" class="wishes-ui">
+                            <option value="LLCER" data-level="l" selected>
+                                LLCER
+                            </option>
+                            <option value="LEA" data-level="l">LEA</option>
+                            <option value="MEEF" data-level="m">MEEF</option>
+                            <option value="MLLCER" data-level="m">
+                                Master LLCER
+                            </option>
+                            <option value="LMI" data-level="m">LMI</option>
+                            <option value="agreg" data-level="a">
+                                Agrégation interne
+                            </option>
+                        </select>
+                        <select id="course-semestre-2" class="wishes-ui">
+                            <option value="S1" selected>S1</option>
+                            <option value="S2">S2</option>
+                            <option value="S3" data-nota="true">S3</option>
+                            <option value="S4" data-nota="true">S4</option>
+                            <option
+                                value="S5"
+                                data-nota="true"
+                                data-notm="true"
+                            >
+                                S5
+                            </option>
+                            <option
+                                value="S6"
+                                data-nota="true"
+                                data-notm="true"
+                            >
+                                S6
+                            </option>
+                        </select>
+                        <select id="course-name-2" class="wishes-ui"></select>
+                        <button id="course-delete-btn" class="wishes-ui">
+                            Supprimer
+                        </button>
+                    </div>
+                    <div id="deleted-course-div" style="display: none">
+                        <span id="deleted-course-span"></span> a été supprimé
+                    </div>
+                </div>
+                <br />
+                <div>
+                    <button id="save-changes-btn" class="wishes-ui">
+                        Enregistrer
+                    </button>
+                    <span class="spinner" id="spinner"></span>
+                </div>
+                <div id="save-msg" class="wishes-ui"></div>
+                <dialog id="auth-dialog">
+                    <div><b>Entrez le jeton d'authentification</b></div>
+                    <input
+                        id="auth-input"
+                        class="wishes-ui"
+                        type="password"
+                        placeholder="Jeton d'authentification"
+                    />
+                    <button id="auth-save-btn" class="wishes-ui">
+                        Enregistrer
+                    </button>
+                </dialog>
+                <datalist id="prof-list"></datalist>
+                <datalist id="course-list"></datalist>
             </div>
-            <div id="added-prof-div" style="display: none">
-                <span id="added-prof" class="wishes-ui"></span> a été ajouté·e
+            <div id="container-2" class="container">
+                <div>
+                    <h2 id="show-profs" class="show-hide">Afficher la liste des enseignant·es 🔽</h2>
+                    <div id="profs-display" style="display: none"></div>
+                </div>
+                <div>
+                    <h2 id="show-courses" class="show-hide">Afficher la liste des cours 🔽</h2>
+                    <div id="courses-display" style="display: none"></div>
+                </div>
             </div>
         </div>
-        <div id="prof-delete" class="wishes-ui">
-            <b>Supprimer un·e enseignant·e</b>
-            <div>
-                <input
-                    id="prof-name-2"
-                    type="text"
-                    class="wishes-ui"
-                    placeholder="Prénom Nom"
-                    list="prof-list"
-                />
-                <button id="prof-delete-btn" class="wishes-ui">
-                    Supprimer
-                </button>
-            </div>
-            <div id="deleted-prof-div" style="display: none">
-                <span id="deleted-prof" class="wishes-ui"></span> a été
-                supprimé·e
-            </div>
-        </div>
-        <br />
-        <h2>Cours</h2>
-        <div id="course-add" class="wishes-ui">
-            <b>Ajouter un cours</b>
-            <div>
-                <select id="course-filière" class="wishes-ui">
-                    <option value="LLCER" data-level="l" selected>LLCER</option>
-                    <option value="LEA" data-level="l">LEA</option>
-                    <option value="MEEF" data-level="m">MEEF</option>
-                    <option value="MLLCER" data-level="m">Master LLCER</option>
-                    <option value="LMI" data-level="m">LMI</option>
-                    <option value="agreg" data-level="a">
-                        Agrégation interne
-                    </option>
-                </select>
-                <select id="course-semestre" class="wishes-ui">
-                    <option value="S1" selected>S1</option>
-                    <option value="S2">S2</option>
-                    <option value="S3" data-nota="true">S3</option>
-                    <option value="S4" data-nota="true">S4</option>
-                    <option value="S5" data-nota="true" data-notm="true">
-                        S5
-                    </option>
-                    <option value="S6" data-nota="true" data-notm="true">
-                        S6
-                    </option>
-                </select>
-                <select id="format-select" class="wishes-ui">
-                    <option value="CM">CM</option>
-                    <option value="TD">TD</option>
-                    <option value="TP">TP</option>
-                </select>
-            </div>
-            <div>
-                <input
-                    id="course-name"
-                    type="text"
-                    class="wishes-ui"
-                    placeholder="Intitulé du cours"
-                />
-                <input
-                    id="volume-input"
-                    type="number"
-                    step="0.1"
-                    placeholder="volume horaire brut"
-                    class="wishes-ui"
-                />
-                <button id="course-add-btn" class="wishes-ui">Ajouter</button>
-            </div>
-            <div id="added-course-div" style="display: none">
-                <span id="added-course-span"></span> a été ajouté
-            </div>
-        </div>
-        <div id="course-delete" class="wishes-ui">
-            <b>Supprimer un cours</b>
-            <div>
-                <select id="course-filière-2" class="wishes-ui">
-                    <option value="LLCER" data-level="l" selected>LLCER</option>
-                    <option value="LEA" data-level="l">LEA</option>
-                    <option value="MEEF" data-level="m">MEEF</option>
-                    <option value="MLLCER" data-level="m">Master LLCER</option>
-                    <option value="LMI" data-level="m">LMI</option>
-                    <option value="agreg" data-level="a">
-                        Agrégation interne
-                    </option>
-                </select>
-                <select id="course-semestre-2" class="wishes-ui">
-                    <option value="S1" selected>S1</option>
-                    <option value="S2">S2</option>
-                    <option value="S3" data-nota="true">S3</option>
-                    <option value="S4" data-nota="true">S4</option>
-                    <option value="S5" data-nota="true" data-notm="true">
-                        S5
-                    </option>
-                    <option value="S6" data-nota="true" data-notm="true">
-                        S6
-                    </option>
-                </select>
-                <select id="course-name-2" class="wishes-ui"></select>
-                <button id="course-delete-btn" class="wishes-ui">
-                    Supprimer
-                </button>
-            </div>
-            <div id="deleted-course-div" style="display: none">
-                <span id="deleted-course-span"></span> a été supprimé
-            </div>
-        </div>
-        <br />
-        <div>
-            <button id="save-changes-btn" class="wishes-ui">Enregistrer</button>
-        </div>
-        <div id="save-msg" class="wishes-ui"></div>
-        <dialog id="auth-dialog">
-            <div><b>Entrez le jeton d'authentification</b></div>
-            <input
-                id="auth-input"
-                class="wishes-ui"
-                type="password"
-                placeholder="Jeton d'authentification"
-            />
-            <button id="auth-save-btn" class="wishes-ui">Enregistrer</button>
-        </dialog>
-        <datalist id="prof-list"></datalist>
-        <datalist id="course-list"></datalist>
     </body>
 </html>
