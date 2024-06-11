@@ -55,12 +55,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     buildCourseList();
 
     goBtn.onclick = () => {
+        const teachers = new Set();
+        for (t of teacherData) {
+            teachers.add(t.name);
+        }
         if (!teacherInput.value) {
             window.alert('Entrez votre nom');
             teacherInput.focus();
             return;
         }
         tName = teacherInput.value;
+        if (!teachers.has(teacherInput.value)) {
+            window.alert('Votre nom ne fait pas partie de la liste.\nContactez Florent Moncomble et Guillaume Winter pour vous ajouter');
+            return;
+        }
         const tStatus = teacherData.find((t) => t.name === tName).status;
         if (tStatus) {
             teacherStatus.textContent = `Statut : ${tStatus}`;
