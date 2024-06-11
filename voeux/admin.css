@@ -2,6 +2,10 @@ body {
     width: auto;
 }
 
+input#token-input {
+    width: 250px;
+}
+
 label#file-input-label {
     height: 32px;
     border: none;

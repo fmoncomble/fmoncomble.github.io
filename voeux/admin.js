@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             tokenInput.removeAttribute('style');
             authSaveBtn.textContent = 'Enregistrer';
             tokenInput.value = null;
+            window.alert('⚠️ Vous devez être authentifié pour utiliser cette page');
+            tokenInput.focus();
         }
     }
     checkToken();
