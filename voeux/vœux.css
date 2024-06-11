@@ -1,0 +1,60 @@
+body {
+    font-family: system-ui, sans-serif;
+}
+
+label.wishes-ui {
+    font-weight: bold;
+}
+
+div {
+    margin: 5px;
+}
+
+input.wishes-ui,
+select.wishes-ui {
+    width: 150px;
+    height: 32px;
+    background-color: white;
+    border: solid 1px gray;
+    border-radius: 4px;
+    padding-left: 5px;
+}
+
+select.wishes-ui {
+    height: 36px;
+}
+
+button.wishes-ui {
+    height: 34px;
+    border: none;
+    background-color: darkblue;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    padding: 0 8px;
+}
+
+button.wishes-ui:hover {
+    background-color: #0000cc;
+}
+
+div#course-info {
+    background-color: #eee;
+    border-radius: 4px;
+    padding: 5px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+div#save {
+    height: 60px;
+}
+
+div#added-courses-list {
+    max-height: 250px;
+    overflow-y: scroll;
+    width: max-content;
+    scrollbar-width: thin;
+    border: solid 1px gray;
+    border-radius: 4px;
+}

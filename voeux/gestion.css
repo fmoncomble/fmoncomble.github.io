@@ -1,0 +1,17 @@
+input.wishes-ui {
+    margin-top: 5px;
+}
+
+input#prof-name,
+input#prof-name-2,
+input#course-name {
+    width: 250px;
+}
+
+input:invalid {
+    outline: solid 2px red;
+}
+
+button.wishes-ui {
+    margin-right: 5px;
+}

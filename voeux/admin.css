@@ -1,0 +1,63 @@
+body {
+    width: auto;
+}
+
+label#file-input-label {
+    height: 32px;
+    border: none;
+    background-color: darkblue;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    font-size: small;
+    font-weight: normal;
+    padding: 8px;
+}
+
+label#file-input-label:hover {
+    background-color: #0000cc;
+}
+
+#file-name {
+    margin-left: 10px;
+    font-size: small;
+}
+
+#course-name {
+    font-weight: bold;
+}
+
+h2 {
+    background-color: #eee;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.wrapper {
+    display: flex;
+}
+
+.container {
+    width: 50%;
+}
+
+.spinner {
+    border: solid 2px #ddd;
+    border-left: solid 2px darkblue;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    animation: spin 1s linear infinite;
+    display: none;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
