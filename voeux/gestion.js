@@ -168,11 +168,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             (t) => t.name === profAddInput.value
         );
         if (checkProf) {
-            if (checkProf.status !== profStatusSelect.value) {
+            if (checkProf.status !== profStatusSelect.value || checkProf.service !== customService) {
                 const dialog = document.createElement('dialog');
                 const div = document.createElement('div');
                 div.textContent =
-                    'Il y a déjà un·e enseignant·e à ce nom : mettre à jour le statut ?';
+                    'Il y a déjà un·e enseignant·e à ce nom : mettre à jour les données ?';
                 dialog.appendChild(div);
                 const yesBtn = document.createElement('button');
                 yesBtn.classList.add('wishes-ui');
@@ -529,6 +529,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             for (t of teacherData) {
                 const div = document.createElement('div');
                 div.textContent = `${t.name}, ${t.status}`;
+                if (t.service) {
+                    div.textContent += `, service de ${t.service}h TD`;
+                }
                 profsDisplay.appendChild(div);
             }
             showProfs.textContent = 'Masquer la liste des enseignant·es 🔼';

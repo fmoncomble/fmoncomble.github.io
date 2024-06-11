@@ -227,6 +227,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     reqNb = 1;
                 }
             }
+            console.log('Course items: ', courseItems);
             if (!courseItems.has(courseId)) {
                 courseItems.add(courseId);
                 newItem = courseItem.cloneNode(true);
@@ -292,6 +293,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
             }
+        }
+        if (logic === 'prof') {
+            const profFromFile = servicesFile.find(p => p.Name === prof);
+            const data = computeServiceVol(profFromFile);
+            const baseService = data[0];
+            const totalService = data[1];
+            const serviceDiv = document.createElement('div');
+            serviceDiv.style.fontWeight = 'bold';
+            serviceDiv.textContent = `Total : ${totalService}h TD / ${baseService}`;
+            if (totalService === baseService) {
+                serviceDiv.style.color = 'green';
+            } else if (totalService > (2 * baseService) || totalService < baseService) {
+                serviceDiv.style.color = 'red';
+            } else {
+                serviceDiv.style.color = 'orange';
+            }
+            courseList.appendChild(serviceDiv);
         }
     }
 
@@ -583,6 +601,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         );
         const index = courses.indexOf(courseToDelete);
         courses.splice(index, 1);
+        buildCourseDeleteSelect();
         const courseDeleteDiv = document.getElementById('course-delete-div');
         const courseDeleteSpan = document.getElementById('course-delete-span');
         const data = computeServiceVol(profEntry);
@@ -594,6 +613,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Calculer service total et service dû
     function computeServiceVol(prof) {
+        console.log('Prof to calculate service for: ', prof);
         const profFromFile = profFile.find((p) => p.name === prof.Name);
         let baseService = profFromFile.service;
         if (!baseService) {
