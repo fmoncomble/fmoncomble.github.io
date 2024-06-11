@@ -223,6 +223,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     reqNb = 3;
                 } else if (c.semestre === 'S5' || c.semestre === 'S6') {
                     reqNb = 2;
+                } else {
+                    reqNb = 1;
                 }
             }
             if (!courseItems.has(courseId)) {
