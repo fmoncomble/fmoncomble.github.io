@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Administration des services v1');
     const tokenInput = document.getElementById('token-input');
     const authSaveBtn = document.getElementById('auth-save');
     const fileInput = document.getElementById('file-input');

@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Saisie des vœux v1');
     const teacherInput = document.getElementById('teacher-name');
     const goBtn = document.getElementById('go-btn');
     const teacherStatus = document.getElementById('teacher-status');
