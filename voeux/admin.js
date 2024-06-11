@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             let newItem;
             let courseTeachers;
             let reqNb;
-            if (c.format === 'CM') {
+            if (c.format === 'CM' || c.format === 'TD_OPT') {
                 reqNb = 1;
             } else if (c.filière === 'LLCER' || c.filière === 'LEA') {
                 if (c.semestre === 'S1') {
@@ -226,6 +226,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 } else {
                     reqNb = 1;
                 }
+            } else {
+                reqNb = 1;
             }
             console.log('Course items: ', courseItems);
             if (!courseItems.has(courseId)) {
