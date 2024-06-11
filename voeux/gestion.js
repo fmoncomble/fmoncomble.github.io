@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Gestion services v1.1');
+    console.log('Gestion services v1.1.1');
     const profAddInput = document.getElementById('prof-name');
     const profStatusSelect = document.getElementById('status-select');
     const profAddBtn = document.getElementById('prof-add-btn');
@@ -164,7 +164,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 status: profStatusSelect.value,
             };
         }
-        console.log('Creating new prof: ', newProf);
         const checkProf = teacherData.find(
             (t) => t.name === profAddInput.value
         );
@@ -327,7 +326,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             courseData.sort(sortByInt);
             courseData.sort(sortBySem);
             courseData.sort(sortByFil);
-            console.log('Courses after sorting: ', courseData);
             const addedCourseDiv = document.getElementById('added-course-div');
             const addedCourseSpan =
                 document.getElementById('added-course-span');
@@ -387,7 +385,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 c.semestre === semestreSelect2.value
         );
         const oldCourse = courses.find((c) => (c.intitulé = intitulé));
-        console.log('Course to delete: ', oldCourse);
         const index = courseData.indexOf(oldCourse);
         const deletedCourse = courseData.splice(index, 1);
         const deletedCourseDiv = document.getElementById('deleted-course-div');
@@ -406,7 +403,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     async function saveChanges() {
         let token = localStorage.getItem('github-token');
-        console.log('Token: ', token);
         if (!token) {
             const authDialog = document.getElementById('auth-dialog');
             authDialog.showModal();

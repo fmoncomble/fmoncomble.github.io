@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Administration des services v1.1');
+    console.log('Administration des services v1.1.1');
     const tokenInput = document.getElementById('token-input');
     const authSaveBtn = document.getElementById('auth-save');
     const fileInput = document.getElementById('file-input');
@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const res = await fetch(url, {
             headers: headers,
         });
-        console.log('Fichier de services ? ', res.ok);
         if (!res) {
             window.alert('Impossible de récupérer le fichier de services');
             return;
@@ -80,7 +79,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             const data = await res.json();
             sha = data.sha;
-            console.log('SHA = ', sha);
             const binaryString = atob(data.content);
             const binaryLen = binaryString.length;
             const bytes = new Uint8Array(binaryLen);
@@ -92,7 +90,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             fileExist.style.display = 'block';
             voeux = decoder.decode(bytes);
             servicesFile = JSON.parse(voeux);
-            console.log('Existing services file: ', servicesFile);
             eraseBtn.style.display = 'inline';
             compileBtn.textContent = 'Ajouter';
             saveBtn.textContent = 'Mettre à jour';
@@ -143,11 +140,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const prof = json.Name;
             const existingProf = servicesFile.find((s) => s.Name === prof);
             if (existingProf) {
-                console.log(
-                    `Prof ${prof} already in file: ${JSON.stringify(
-                        existingProf
-                    )}`
-                );
                 json.Cours.forEach((c) => existingProf.Cours.push(c));
             } else {
                 servicesFile.push(json);
@@ -164,7 +156,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             }
         }
-        console.log('Resulting services file: ', servicesFile);
         compileBtn.style.backgroundColor = 'green';
         setTimeout(() => {
             compileBtn.removeAttribute('style');
@@ -230,7 +221,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else {
                 reqNb = 1;
             }
-            console.log('Course items: ', courseItems);
             if (!courseItems.has(courseId)) {
                 courseItems.add(courseId);
                 newItem = courseItem.cloneNode(true);
@@ -622,13 +612,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Calculer service total et service dû
     function computeServiceVol(prof) {
-        console.log('Prof to calculate service for: ', prof);
         const profFromFile = profFile.find((p) => p.name === prof.Name);
         let baseService = profFromFile.service;
         if (!baseService) {
-            console.log('Base service not found: ', baseService);
             const profStatus = profFromFile.status;
-            console.log(`${prof.Name} est ${profStatus}`);
             if (profStatus === 'PR' || profStatus === 'MCF') {
                 baseService = 192;
             } else if (profStatus === 'PRAG' || profStatus === 'PRCE') {
@@ -641,15 +628,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 baseService = profFromFile.service;
             }
         }
-        console.log('Base service: ', baseService);
         let totalService = 0;
-        console.log('Cours à additionner: ', prof.Cours);
         for (c of prof.Cours) {
-            console.log('Volume de ce cours: ', c.intitulé + ' ' + c.eqtd);
             totalService += Number(c.eqtd);
         }
         totalService = Number(totalService);
-        console.log('Total service: ', totalService);
         return [baseService, totalService];
     }
 
