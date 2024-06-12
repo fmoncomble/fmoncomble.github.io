@@ -395,7 +395,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     courseDeleteBtn.addEventListener('click', () => {
         deleteCourse();
     });
-    console.log('Cours = ', courseData);
     function deleteCourse() {
         const intitulé = courseSelect2.value;
         const courses = courseData.filter(

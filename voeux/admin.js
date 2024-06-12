@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Administration des services v1.1.2');
+    console.log('Administration des services v1.1.3');
     const tokenInput = document.getElementById('token-input');
     const authSaveBtn = document.getElementById('auth-save');
     const fileInput = document.getElementById('file-input');
@@ -240,7 +240,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 courseName.textContent = `${c.filière.toUpperCase()} — ${
                     c.semestre
                 } — ${c.intitulé}`;
-                courseTeachers.textContent = c.teacher;
+                const teacherFirstName = c.teacher.split(' ')[0].split('')[0] + '.';
+                const teacherSurname = c.teacher.split(' ')[1];
+                courseTeachers.textContent = teacherFirstName + ' ' + teacherSurname;
                 const courseNumberSpan =
                     newItem.querySelector('span#course-number');
                 courseNumberSpan.textContent = `${courseNb} / ${reqNb}`;
@@ -277,7 +279,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     courseTeachers = existingItem.querySelector(
                         'span#course-teachers'
                     );
-                    courseTeachers.textContent += `, ${c.teacher}`;
+                    const teacherFirstName = c.teacher.split(' ')[0].split('')[0] + '.';
+                    const teacherSurname = c.teacher.split(' ')[1];
+                    courseTeachers.textContent = courseTeachers.textContent += ', ' + teacherFirstName + ' ' + teacherSurname;
                 }
                 const courseNumberSpan =
                     existingItem.querySelector('span#course-number');
@@ -300,8 +304,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             const baseService = data[0];
             const totalService = data[1];
             const serviceDiv = document.createElement('div');
+            serviceDiv.style.marginTop = '10px';
             serviceDiv.style.fontWeight = 'bold';
             serviceDiv.textContent = `Total : ${totalService}h TD / ${baseService}`;
+            if (totalService > baseService) {
+                const nbHc = totalService - baseService;
+                serviceDiv.textContent += ` (${nbHc} HC)`;
+            }
             if (totalService === baseService) {
                 serviceDiv.style.color = 'green';
             } else if (
@@ -310,7 +319,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ) {
                 serviceDiv.style.color = 'red';
             } else {
-                serviceDiv.style.color = 'orange';
+                serviceDiv.style.color = 'darkblue';
             }
             courseList.appendChild(serviceDiv);
         }
@@ -559,6 +568,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     function addCourse() {
         const prof = profInput2.value;
+        if (!prof) {
+            window.alert('Sélectionner un·e enseignant·e');
+            profInput2.focus();
+            return;
+        }
         const filière = filièreSelect2.value;
         const semestre = semestreSelect2.value;
         const courseName = courseAddSelect.value;
@@ -571,17 +585,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const profEntry = servicesFile.find((p) => p.Name === prof);
         const courses = profEntry.Cours;
         courses.push(courseToAdd);
-        // courses.sort((a, b) => {
-        //     const intA = a.intitulé.toLowerCase();
-        //     const intB = b.intitulé.toLowerCase();
-        //     if (intA < intB) {
-        //         return -1;
-        //     }
-        //     if (intA > intB) {
-        //         return 1;
-        //     }
-        //     return 0;
-        // });
         courses.sort(sortByInt);
         courses.sort(sortBySem);
         courses.sort(sortByFil);
@@ -601,6 +604,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     function deleteCourse() {
         const prof = profInput2.value;
+        if (!prof) {
+            window.alert('Sélectionner un·e enseignant·e');
+            profInput2.focus();
+            return;
+        }
         const filière = filièreSelect3.value;
         const semestre = semestreSelect3.value;
         const courseName = courseDeleteSelect.value;
