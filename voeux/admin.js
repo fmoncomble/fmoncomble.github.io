@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Administration des services v1.1.1');
+    console.log('Administration des services v1.1.2');
     const tokenInput = document.getElementById('token-input');
     const authSaveBtn = document.getElementById('auth-save');
     const fileInput = document.getElementById('file-input');
@@ -23,7 +23,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             tokenInput.removeAttribute('style');
             authSaveBtn.textContent = 'Enregistrer';
             tokenInput.value = null;
-            window.alert('⚠️ Vous devez être authentifié pour utiliser cette page');
+            window.alert(
+                '⚠️ Vous devez être authentifié pour utiliser cette page'
+            );
             tokenInput.focus();
         }
     }
@@ -204,7 +206,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             let newItem;
             let courseTeachers;
             let reqNb;
-            if (c.format === 'CM' || c.format === 'TD_OPT') {
+            const nbgrp = Number(c.nbgrp);
+            if (nbgrp) {
+                reqNb = nbgrp;
+            } else if (c.format === 'CM' || c.format === 'TD_OPT') {
                 reqNb = 1;
             } else if (c.filière === 'LLCER' || c.filière === 'LEA') {
                 if (c.semestre === 'S1') {
@@ -221,18 +226,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else {
                 reqNb = 1;
             }
+            const courseNb = courses.filter(
+                (i) =>
+                    i.filière === c.filière &&
+                    i.semestre === c.semestre &&
+                    i.intitulé === c.intitulé
+            ).length;
             if (!courseItems.has(courseId)) {
                 courseItems.add(courseId);
                 newItem = courseItem.cloneNode(true);
                 const courseName = newItem.querySelector('span#course-name');
                 courseTeachers = newItem.querySelector('span#course-teachers');
-                courseName.textContent = `${c.filière.toUpperCase()} — ${c.semestre} — ${c.intitulé}`;
+                courseName.textContent = `${c.filière.toUpperCase()} — ${
+                    c.semestre
+                } — ${c.intitulé}`;
                 courseTeachers.textContent = c.teacher;
                 const courseNumberSpan =
                     newItem.querySelector('span#course-number');
-                const courseNb = courses.filter(
-                    (i) => i.filière === c.filière && i.semestre === c.semestre && i.intitulé === c.intitulé
-                ).length;
                 courseNumberSpan.textContent = `${courseNb} / ${reqNb}`;
                 if (logic === 'course') {
                     if (courseNb < reqNb) {
@@ -271,9 +281,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 const courseNumberSpan =
                     existingItem.querySelector('span#course-number');
-                const courseNb = courses.filter(
-                    (i) => i.filière === c.filière && i.semestre === c.semestre && i.intitulé === c.intitulé
-                ).length;
                 courseNumberSpan.textContent = `${courseNb} / ${reqNb}`;
                 if (logic === 'course') {
                     if (courseNb < reqNb) {
@@ -288,7 +295,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
         if (logic === 'prof') {
-            const profFromFile = servicesFile.find(p => p.Name === prof);
+            const profFromFile = servicesFile.find((p) => p.Name === prof);
             const data = computeServiceVol(profFromFile);
             const baseService = data[0];
             const totalService = data[1];
@@ -297,7 +304,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             serviceDiv.textContent = `Total : ${totalService}h TD / ${baseService}`;
             if (totalService === baseService) {
                 serviceDiv.style.color = 'green';
-            } else if (totalService > (2 * baseService) || totalService < baseService) {
+            } else if (
+                totalService > 2 * baseService ||
+                totalService < baseService
+            ) {
                 serviceDiv.style.color = 'red';
             } else {
                 serviceDiv.style.color = 'orange';
@@ -352,7 +362,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     );
                     throw new Error(saveRes.message);
                 } else if (saveRes.status === 409) {
-                    window.alert("Erreur : " + saveRes.message);
+                    window.alert('Erreur : ' + saveRes.message);
                     throw new Error(saveRes.message);
                 }
             } else {
@@ -481,6 +491,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profInput2 = document.getElementById('prof-input-2');
     const goProfBtn = document.getElementById('go-prof-btn');
     goProfBtn.addEventListener('click', () => {
+        const ensModDiv = document.getElementById('ens-modify');
+        const ensModSpan = document.getElementById('ens-modify-name');
+        ensModSpan.textContent = profInput2.value;
+        ensModDiv.style.display = 'block';
         buildCourseDeleteSelect();
     });
     const filièreSelect3 = document.getElementById('filière-select-3');

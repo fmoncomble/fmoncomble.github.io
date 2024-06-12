@@ -24,11 +24,13 @@ button.wishes-ui {
     width: 50%;
 }
 
-h2.show-hide {
+h2.show-hide,
+.drawer {
     cursor: pointer;
 }
 
-h2.show-hide:hover {
+h2.show-hide:hover,
+.drawer:hover {
     color: #0000cc;
 }
 
@@ -51,4 +53,10 @@ h2.show-hide:hover {
     100% {
         transform: rotate(360deg);
     }
+}
+
+dialog {
+    border: solid 1px gray;
+    border-radius: 4px;
+    box-shadow: 0 0 10px 5px gray;
 }

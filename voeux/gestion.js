@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Gestion services v1.1.1');
+    console.log('Gestion services v1.1.2');
     const profAddInput = document.getElementById('prof-name');
     const profStatusSelect = document.getElementById('status-select');
     const profAddBtn = document.getElementById('prof-add-btn');
@@ -8,7 +8,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const filièreSelect = document.getElementById('course-filière');
     const semestreSelect = document.getElementById('course-semestre');
     const formatSelect = document.getElementById('format-select');
+    const grpInput = document.getElementById('grp-input');
     const volumeInput = document.getElementById('volume-input');
+    const eqtdInput = document.getElementById('eqtd-input');
     const courseInput = document.getElementById('course-name');
     const courseAddBtn = document.getElementById('course-add-btn');
     const filièreSelect2 = document.getElementById('course-filière-2');
@@ -168,7 +170,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             (t) => t.name === profAddInput.value
         );
         if (checkProf) {
-            if (checkProf.status !== profStatusSelect.value || checkProf.service !== customService) {
+            if (
+                checkProf.status !== profStatusSelect.value ||
+                checkProf.service !== customService
+            ) {
                 const dialog = document.createElement('dialog');
                 const div = document.createElement('div');
                 div.textContent =
@@ -262,6 +267,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             return;
         }
+        const nbgrp = grpInput.value;
         let multiplier;
         if (format === 'CM') {
             multiplier = 1.5;
@@ -270,7 +276,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else if (format === 'TP') {
             multiplier = 1 / 1.5;
         }
-        const eqtd = volume * multiplier;
+        let eqtd;
+        if (!eqtdInput.value) {
+            eqtd = volume * multiplier;
+        } else {
+            eqtd = Number(eqtdInput.value);
+        }
 
         const newCourse = {
             intitulé: courseInput.value,
@@ -279,6 +290,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             semestre: semestreSelect.value,
             volume: volume,
             eqtd: eqtd,
+            nbgrp: nbgrp,
         };
         const checkCourse = courseData.find(
             (c) =>
@@ -329,10 +341,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             const addedCourseDiv = document.getElementById('added-course-div');
             const addedCourseSpan =
                 document.getElementById('added-course-span');
-            addedCourseSpan.textContent = `${filièreSelect.value.toUpperCase()} ${semestreSelect.value} ${courseInput.value}`;
+            addedCourseSpan.textContent = `${filièreSelect.value.toUpperCase()} ${
+                semestreSelect.value
+            } ${courseInput.value} — ${eqtd}h TD`;
+            if (nbgrp) {
+                addedCourseSpan.textContent += ` — ${nbgrp} groupes`;
+            }
             addedCourseDiv.style.display = 'block';
             courseInput.value = null;
             volumeInput.value = null;
+            eqtdInput.value = null;
             courseChanged = true;
         }
         buildCourseList();
@@ -377,6 +395,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     courseDeleteBtn.addEventListener('click', () => {
         deleteCourse();
     });
+    console.log('Cours = ', courseData);
     function deleteCourse() {
         const intitulé = courseSelect2.value;
         const courses = courseData.filter(
@@ -384,14 +403,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 c.filière === filièreSelect2.value &&
                 c.semestre === semestreSelect2.value
         );
-        const oldCourse = courses.find((c) => (c.intitulé = intitulé));
+        const oldCourse = courses.find((c) => (c.intitulé === intitulé));
         const index = courseData.indexOf(oldCourse);
         const deletedCourse = courseData.splice(index, 1);
         const deletedCourseDiv = document.getElementById('deleted-course-div');
         const deletedCourseSpan = document.getElementById(
             'deleted-course-span'
         );
-        deletedCourseSpan.textContent = `${filièreSelect2.value.toUpperCase()} ${semestreSelect2.value} ${intitulé}`;
+        deletedCourseSpan.textContent = `${deletedCourse[0].filière} ${
+            deletedCourse[0].semestre
+        } ${deletedCourse[0].intitulé}`;
         deletedCourseDiv.style.display = 'block';
         courseChanged = true;
         buildCourseList();
@@ -402,6 +423,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         saveChanges();
     });
     async function saveChanges() {
+        const spinner = document.getElementById('spinner');
+        if (!profChanged && !courseChanged) {
+            window.alert('Aucun changement effectué');
+            return;
+        }
         let token = localStorage.getItem('github-token');
         if (!token) {
             const authDialog = document.getElementById('auth-dialog');
@@ -410,19 +436,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             const authSaveBtn = document.getElementById('auth-save-btn');
             authSaveBtn.onclick = () => {
                 if (!authInput.value) {
+                    spinner.style.display = 'none';
                     return;
                 } else {
                     token = authInput.value.trim();
                     localStorage.setItem('github-token', token);
+                    saveChanges();
                 }
                 authDialog.close();
             };
         }
-        if (!profChanged && !courseChanged) {
-            window.alert('Aucun changement effectué');
-            return;
-        }
-        const spinner = document.getElementById('spinner');
         if (profChanged) {
             const url =
                 'https://api.github.com/repos/fmoncomble/fmoncomble.github.io/contents/voeux/profs.json';
@@ -432,7 +455,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const finalFile = btoa(String.fromCharCode.apply(null, utf8Array));
             const msg = 'profs';
             try {
-                spinner.style.display = 'inline-block'
+                spinner.style.display = 'inline-block';
                 const success = await updateFile(url, finalFile, msg);
                 if (success) {
                     spinner.style.display = 'none';
@@ -440,9 +463,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const saveMsg = document.getElementById('save-msg');
                     saveMsg.textContent = saveMsg.textContent +=
                         'Fichier "' + msg + '" mis à jour\n';
-                        setTimeout(() => {
-                            saveChangesBtn.removeAttribute('style');
-                        }, 1000);
+                    setTimeout(() => {
+                        saveChangesBtn.removeAttribute('style');
+                        saveMsg.textContent = null;
+                    }, 1000);
                     profChanged = false;
                 }
             } catch (error) {
@@ -462,9 +486,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const success = await updateFile(url, finalFile, msg);
                 if (success) {
                     spinner.style.display = 'none';
+                    saveChangesBtn.style.backgroundColor = 'green';
                     const saveMsg = document.getElementById('save-msg');
                     saveMsg.textContent = saveMsg.textContent +=
                         'Fichier "' + msg + '" mis à jour\n';
+                    setTimeout(() => {
+                        saveChangesBtn.removeAttribute('style');
+                        saveMsg.textContent = null;
+                    }, 1000);
                     courseChanged = false;
                 }
             } catch (error) {
@@ -554,25 +583,56 @@ document.addEventListener('DOMContentLoaded', async () => {
                 semestreSelect.querySelectorAll('option')
             );
             for (f of filières) {
-                const fDiv = document.createElement('h3');
-                fDiv.textContent = f.value.toUpperCase();
+                const fDiv = document.createElement('div');
+                fDiv.classList.add('f-div');
+                fDiv.style.display = 'none';
+                const fSpan = document.createElement('h3');
+                fSpan.classList.add('drawer');
+                fSpan.classList.add('f-span');
+                fSpan.textContent = f.value.toUpperCase();
+                fSpan.onclick = () => {
+                    if (fDiv.style.display === 'none') {
+                        fDiv.style.display = 'block';
+                    } else {
+                        fDiv.style.display = 'none';
+                    }
+                };
                 for (s of semestres) {
-                    const sDiv = document.createElement('h4');
+                    const sDiv = document.createElement('div');
+                    sDiv.classList.add('s-div');
+                    sDiv.style.display = 'none';
                     sDiv.style.marginLeft = '2rem';
-                    sDiv.textContent = s.value;
+                    const sSpan = document.createElement('h4');
+                    sSpan.style.marginLeft = '2rem';
+                    sSpan.classList.add('drawer');
+                    sSpan.classList.add('s-span');
+                    sSpan.textContent = s.value;
+                    sSpan.onclick = () => {
+                        if (sDiv.style.display === 'none') {
+                            sDiv.style.display = 'block';
+                        } else {
+                            sDiv.style.display = 'none';
+                        }
+                    };
                     const courses = courseData.filter(
                         (c) => c.filière === f.value && c.semestre === s.value
                     );
                     if (courses.length > 0) {
                         for (c of courses) {
                             const div = document.createElement('div');
+                            div.classList.add('course');
                             div.style.fontWeight = 'normal';
                             div.style.marginLeft = '2rem';
                             div.textContent = `${c.filière} ${c.semestre} ${c.intitulé} ${c.eqtd}h TD`;
+                            if (c.nbgrp) {
+                                div.textContent += ` — ${c.nbgrp} groupes`;
+                            }
                             sDiv.appendChild(div);
-                            fDiv.appendChild(sDiv);
                         }
+                        coursesDisplay.appendChild(fSpan);
                         coursesDisplay.appendChild(fDiv);
+                        fDiv.appendChild(sSpan);
+                        fDiv.appendChild(sDiv);
                     }
                 }
             }

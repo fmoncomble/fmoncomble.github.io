@@ -31,6 +31,14 @@ label#file-input-label:hover {
     font-weight: bold;
 }
 
+#course-number {
+    font-weight: bold;
+}
+
+#ens-modify-name {
+    font-weight: bold;
+}
+
 h2 {
     background-color: #eee;
     padding: 5px;
