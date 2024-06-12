@@ -1,3 +1,46 @@
+.section-header,
+.show-hide {
+    background-color: #eee;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.arrow {
+    display: inline-block;
+}
+
+.rotated {
+    transform: rotate(90deg);
+    animation: turn 0.1s ease-in-out;
+}
+
+.plain {
+    animation: unturn 0.1s ease-in-out;
+}
+
+@keyframes turn {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(90deg);
+    }
+}
+
+@keyframes unturn {
+    0% {
+        transform: rotate(90deg);
+    }
+    100% {
+        transform: rotate(-0deg);
+    }
+}
+
+#profs-display,
+#courses-display {
+    padding-left: 2rem;
+}
+
 input.wishes-ui {
     margin-top: 5px;
 }
@@ -14,6 +57,16 @@ input:invalid {
 
 button.wishes-ui {
     margin-right: 5px;
+}
+
+#save-changes-btn {
+    float: right;
+    text-align: left;
+    width: 110px;
+}
+
+#save-msg {
+    float: right;
 }
 
 .wrapper {
@@ -44,6 +97,7 @@ h2.show-hide:hover,
     display: none;
     vertical-align: middle;
     margin-left: 5px;
+    float: right;
 }
 
 @keyframes spin {

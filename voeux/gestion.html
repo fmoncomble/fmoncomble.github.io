@@ -10,7 +10,7 @@
         <h1 class="wishes-ui">Gestion des fichiers enseignant·es et cours</h1>
         <div class="wrapper">
             <div id="container-1" class="container">
-                <h2>Enseignant·es</h2>
+                <h2 class="section-header">Enseignant·es</h2>
                 <div id="prof-add" class="wishes-ui">
                     <b>Ajouter un·e enseignant·e</b>
                     <div>
@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <br />
-                <h2>Cours</h2>
+                <h2 class="section-header">Cours</h2>
                 <div id="course-add" class="wishes-ui">
                     <b>Ajouter un cours</b>
                     <div>
@@ -193,10 +193,13 @@
                 </div>
                 <br />
                 <div>
+                    <h2 class="section-header">
+                        Enregistrer les modifications
+                    </h2>
+                    
                     <button id="save-changes-btn" class="wishes-ui">
-                        Enregistrer
+                        Enregistrer<span class="spinner" id="spinner"></span>
                     </button>
-                    <span class="spinner" id="spinner"></span>
                 </div>
                 <div id="save-msg" class="wishes-ui"></div>
                 <dialog id="auth-dialog">
@@ -215,12 +218,18 @@
                 <datalist id="course-list"></datalist>
             </div>
             <div id="container-2" class="container">
-                <div>
-                    <h2 id="show-profs" class="show-hide">Afficher la liste des enseignant·es 🔽</h2>
+                <div class="display-container">
+                    <h2 id="show-profs" class="show-hide">
+                        Liste des enseignant·es
+                        <div id="profs-arrow" class="arrow">▶️</div>
+                    </h2>
                     <div id="profs-display" style="display: none"></div>
                 </div>
-                <div>
-                    <h2 id="show-courses" class="show-hide">Afficher la liste des cours 🔽</h2>
+                <div class="display-container">
+                    <h2 id="show-courses" class="show-hide">
+                        Liste des cours
+                        <div id="courses-arrow" class="arrow">▶️</div>
+                    </h2>
                     <div id="courses-display" style="display: none"></div>
                 </div>
             </div>
