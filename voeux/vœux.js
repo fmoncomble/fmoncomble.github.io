@@ -93,11 +93,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (tService) {
             teacherService.textContent = `Service statutaire : ${tService} heures éq. TD`;
         }
+        filièreInput.value = 'LLCER';
+        semestreInput.value = 'S1';
         courseChoiceDiv.style.display = 'block';
     };
 
     // Limit available semester options according to filière
     filièreInput.addEventListener('change', () => {
+        semestreInput.value = 'S1';
         filière = filièreInput.value;
         console.log('Filière input changed');
         const options = Array.from(filièreInput.querySelectorAll('option'));
@@ -124,6 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     semestreInput.addEventListener('change', () => {
+        courseInput.value = '';
         semestre = semestreInput.value;
         buildCourseList();
     });
@@ -269,7 +273,62 @@ document.addEventListener('DOMContentLoaded', async () => {
         saveBtn.style.display = 'none';
     }
 
+    const confirmDialog = document.getElementById('confirm-dialog');
     sendBtn.onclick = () => {
+        const summaryDiv = document.getElementById('summary');
+        summaryDiv.innerHTML = null;
+        let volTotal = 0;
+        let eqtdTotal = 0;
+        console.log('Cours assignés : ', jsonFile.Cours);
+        let filières = jsonFile.Cours.map(c => c.filière);
+        filières = [...new Set(filières)];
+        console.log('Filières: ', filières);
+        const filièreList = document.createElement('ul');
+        for (f of filières) {
+            const filièreItem = document.createElement('li');
+            filièreItem.textContent = f;
+            const fCourses = jsonFile.Cours.filter(c => c.filière === f);
+            let semestres = fCourses.map(c => c.semestre);
+            semestres = [...new Set(semestres)];
+            const semestreList = document.createElement('ul');
+            for (s of semestres) {
+                const semestreItem = document.createElement('li');
+                semestreItem.textContent = s;
+                const sCourses = fCourses.filter(c => c.semestre === s);
+                const scList = document.createElement('ul');
+                for (sc of sCourses) {
+                    const scItem = document.createElement('li');
+                    scItem.textContent = `${sc.intitulé} : ${sc.volume}h = ${sc.eqtd}h TD`;
+                    scList.appendChild(scItem);
+                }
+                semestreItem.appendChild(scList);
+                semestreList.appendChild(semestreItem);
+            }
+            filièreItem.appendChild(semestreList);
+            filièreList.appendChild(filièreItem);
+        }
+        summaryDiv.appendChild(filièreList);
+        for (c of jsonFile.Cours) {
+            volTotal += Number(c.volume);
+            eqtdTotal += Number(c.eqtd);
+        }
+        console.log('Volume total: ', eqtdTotal);
+        const profSummary = document.getElementById('prof-summary');
+        profSummary.textContent = `Service total : ${eqtdTotal}h TD`;
+        if (eqtdTotal > tService) {
+            profSummary.textContent += ` (${eqtdTotal - tService}HC)`;
+        }
+        if (eqtdTotal > tService * 2 || eqtdTotal < tService) {
+            profSummary.style.color = 'red';
+            profSummary.textContent += ` ⚠️`;
+        }
+        confirmDialog.showModal();
+    }
+
+    const yesBtn = document.getElementById('yes-btn');
+    const noBtn = document.getElementById('no-btn');
+
+    yesBtn.onclick = () => {
         const myBlob = new Blob([JSON.stringify(jsonFile)], {
             type: 'text/plain',
         });
@@ -279,5 +338,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         a.download = `Vœux ${tName}.json`;
         a.click();
         window.URL.revokeObjectURL(url);
+        confirmDialog.close();
     };
+    noBtn.onclick = () => {
+        confirmDialog.close();
+    }
 });

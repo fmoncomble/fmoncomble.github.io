@@ -89,7 +89,7 @@
                             id="cours"
                             class="wishes-ui wishes-input"
                         >
-                            <option disabled selected>—</option>
+                            <option disabled selected></option>
                         </select>
                     </label>
                 </div>
@@ -109,8 +109,8 @@
                 </div>
                 <div id="added-courses" class="wishes-ui">
                     <b
-                        >Enseignements enregistrés (Total : <span id="hTotal">0 </span>
-                        hTD<span id="hc"></span>)</b
+                        >Enseignements enregistrés (Total :
+                        <span id="hTotal">0 </span> hTD<span id="hc"></span>)</b
                     >
                     <br />
                     <div id="added-courses-list"></div>
@@ -122,6 +122,16 @@
                         Valider
                     </button>
                 </div>
+                <dialog id="confirm-dialog"><b>Récapitulatif :</b><br />
+                    <div id="summary"></div>
+                    <div id="prof-summary"></div>
+                    <br /><br />
+                    <button id="yes-btn" class="wishes-ui confirm">
+                        Confirmer</button
+                    ><button id="no-btn" class="wishes-ui cancel">
+                        Annuler
+                    </button>
+                </dialog>
             </div>
         </div>
     </body>

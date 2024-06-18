@@ -32,6 +32,7 @@ button.wishes-ui {
     color: white;
     cursor: pointer;
     padding: 0 8px;
+    margin-right: 5px;
 }
 
 button.wishes-ui:hover {
@@ -57,4 +58,28 @@ div#added-courses-list {
     scrollbar-width: thin;
     border: solid 1px gray;
     border-radius: 4px;
+}
+
+dialog {
+    border: solid 1px gray;
+    border-radius: 4px;
+    box-shadow: 0 0 10px 5px gray;
+    width: 33%;
+}
+
+div#prof-summary {
+    font-weight: bold;
+}
+
+button.cancel:hover {
+    background-color: red;
+}
+
+button.confirm:hover {
+    background-color: green;
+}
+
+.btn {
+    float: right;
+    margin-left: 2px;
 }
