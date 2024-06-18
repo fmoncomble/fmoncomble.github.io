@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Administration des services v1.1.3');
+    console.log('Administration des services v1.1.4');
     const tokenInput = document.getElementById('token-input');
     const authSaveBtn = document.getElementById('auth-save');
     const fileInput = document.getElementById('file-input');
@@ -92,9 +92,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             fileExist.style.display = 'block';
             voeux = decoder.decode(bytes);
             servicesFile = JSON.parse(voeux);
+            const actionChoiceDiv = document.getElementById('action-choice');
+            actionChoiceDiv.style.display = 'block';
             eraseBtn.style.display = 'inline';
-            compileBtn.textContent = 'Ajouter';
-            saveBtn.textContent = 'Mettre à jour';
+            compileBtn.textContent = 'Mettre à jour';
+            // saveBtn.textContent = 'Mettre à jour';
         }
     }
 
@@ -137,12 +139,38 @@ document.addEventListener('DOMContentLoaded', async () => {
             );
             return;
         }
-        for (let f of files) {
-            await readWishes(f);
+        for (let i = 0; i < files.length; i++) {
+            await readWishes(files[i]);
             const prof = json.Name;
+            const cours = json.Cours;
             const existingProf = servicesFile.find((s) => s.Name === prof);
             if (existingProf) {
-                json.Cours.forEach((c) => existingProf.Cours.push(c));
+                const dialog = document.getElementById('existing-prof-dialog');
+                const thisDialog = dialog.cloneNode(true);
+                const profIdSpan = thisDialog.querySelector('#prof-id');
+                profIdSpan.textContent = prof;
+                const addBtn = thisDialog.querySelector('#add-btn');
+                const replaceBtn = thisDialog.querySelector('#replace-btn');
+                addBtn.onclick = () => {
+                    cours.forEach((c) => existingProf.Cours.push(c));
+                    existingProf.Cours.sort(sortByInt);
+                    existingProf.Cours.sort(sortBySem);
+                    existingProf.Cours.sort(sortByFil);
+                    if (i === files.length - 1) {
+                        saveBtn.style.display = 'block';
+                    }
+                    thisDialog.close();
+                };
+                replaceBtn.onclick = () => {
+                    const index = servicesFile.indexOf(existingProf);
+                    servicesFile.splice(index, 1, json);
+                    if (i === files.length - 1) {
+                        saveBtn.style.display = 'block';
+                    }
+                    thisDialog.close();
+                };
+                document.body.appendChild(thisDialog);
+                thisDialog.showModal();
             } else {
                 servicesFile.push(json);
                 servicesFile.sort((a, b) => {
@@ -156,13 +184,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                     return 0;
                 });
+                saveBtn.style.display = 'block';
             }
         }
         compileBtn.style.backgroundColor = 'green';
         setTimeout(() => {
             compileBtn.removeAttribute('style');
         }, 1000);
-        saveBtn.style.display = 'block';
     }
 
     compileBtn.addEventListener('click', async () => compileWishes());
@@ -240,9 +268,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 courseName.textContent = `${c.filière.toUpperCase()} — ${
                     c.semestre
                 } — ${c.intitulé}`;
-                const teacherFirstName = c.teacher.split(' ')[0].split('')[0] + '.';
+                const teacherFirstName =
+                    c.teacher.split(' ')[0].split('')[0] + '.';
                 const teacherSurname = c.teacher.split(' ')[1];
-                courseTeachers.textContent = teacherFirstName + ' ' + teacherSurname;
+                courseTeachers.textContent =
+                    teacherFirstName + ' ' + teacherSurname;
                 const courseNumberSpan =
                     newItem.querySelector('span#course-number');
                 courseNumberSpan.textContent = `${courseNb} / ${reqNb}`;
@@ -279,9 +309,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     courseTeachers = existingItem.querySelector(
                         'span#course-teachers'
                     );
-                    const teacherFirstName = c.teacher.split(' ')[0].split('')[0] + '.';
+                    const teacherFirstName =
+                        c.teacher.split(' ')[0].split('')[0] + '.';
                     const teacherSurname = c.teacher.split(' ')[1];
-                    courseTeachers.textContent = courseTeachers.textContent += ', ' + teacherFirstName + ' ' + teacherSurname;
+                    courseTeachers.textContent = courseTeachers.textContent +=
+                        ', ' + teacherFirstName + ' ' + teacherSurname;
                 }
                 const courseNumberSpan =
                     existingItem.querySelector('span#course-number');

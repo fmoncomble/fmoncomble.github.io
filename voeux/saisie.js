@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Saisie des vœux v1');
+    console.log('Saisie des vœux v1.1');
     const teacherInput = document.getElementById('teacher-name');
     const goBtn = document.getElementById('go-btn');
     const teacherStatus = document.getElementById('teacher-status');
@@ -33,9 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const courseDBUrl =
         'https://raw.githubusercontent.com/fmoncomble/fmoncomble.github.io/main/voeux/cours.json';
     const teacherData = await getFile(teacherDBUrl);
-    console.log('Profs: ', teacherData);
     const courseData = await getFile(courseDBUrl);
-    console.log('Cours: ', courseData);
 
     function buildTeacherList() {
         const teacherList = document.getElementById('teacher-list');
@@ -55,7 +53,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     let semestre = 'S1';
     buildCourseList();
 
-    goBtn.onclick = () => {
+    let jsonFile;
+
+    goBtn.onclick = start;
+    teacherInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            start();
+        }
+    })
+    
+    function start() {
+        jsonFile = null;
+        const addedCourses = document.getElementById('added-courses');
+        addedCourses.style.display = 'none';
+        saveBtn.style.display = 'none';
+        const addedCoursesList = document.getElementById('added-courses-list');
+        const items = addedCoursesList.querySelectorAll('div');
+        for (let i of items) {
+            i.remove();
+        }
         const teachers = new Set();
         for (t of teacherData) {
             teachers.add(t.name);
@@ -68,7 +84,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         tName = teacherInput.value;
         if (!teachers.has(teacherInput.value)) {
             window.alert(
-                'Votre nom ne fait pas partie de la liste.\nContactez Florent Moncomble et Guillaume Winter pour vous ajouter'
+                'Le nom saisi ne fait pas partie de la liste.\nContactez Florent Moncomble et Guillaume Winter pour vous ajouter'
             );
             return;
         }
@@ -80,7 +96,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (customService) {
             tService = customService;
         } else {
-            if (tStatus === 'MCF' || tStatus === 'PR') {
+            if (tStatus === 'MCF' || tStatus === 'PR' || tStatus === 'ATER') {
                 tService = 192;
             } else if (tStatus === 'PRAG' || tStatus === 'PRCE') {
                 tService = 384;
@@ -107,7 +123,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     filièreInput.addEventListener('change', () => {
         semestreInput.value = 'S1';
         filière = filièreInput.value;
-        console.log('Filière input changed');
         const options = Array.from(filièreInput.querySelectorAll('option'));
         const optionLevel = options.find((o) => o.value === filièreInput.value)
             .dataset.level;
@@ -173,7 +188,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         saveBtn.onclick = () => saveCourse(course);
     });
 
-    let jsonFile;
     let i = 1;
     let volTotal = new Number();
     let volHc = new Number();
@@ -283,10 +297,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         summaryDiv.innerHTML = null;
         let volTotal = 0;
         let eqtdTotal = 0;
-        console.log('Cours assignés : ', jsonFile.Cours);
         let filières = jsonFile.Cours.map((c) => c.filière);
         filières = [...new Set(filières)];
-        console.log('Filières: ', filières);
         const filièreList = document.createElement('ul');
         for (f of filières) {
             const filièreItem = document.createElement('li');
@@ -316,7 +328,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             volTotal += Number(c.volume);
             eqtdTotal += Number(c.eqtd);
         }
-        console.log('Volume total: ', eqtdTotal);
         const profSummary = document.getElementById('prof-summary');
         profSummary.textContent = `Service total : ${eqtdTotal}h TD`;
         if (eqtdTotal > tService) {

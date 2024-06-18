@@ -50,9 +50,16 @@
                             style="display: none"
                         />
                     </label>
+                    <dialog id="existing-prof-dialog" class="wishes-ui">
+                        <div>
+                            Les vœux de <span id="prof-id"></span> sont déjà enregistrés : ajouter ou remplacer ?
+                        </div>
+                        <button id="add-btn" class="wishes-ui">Ajouter</button><button id="replace-btn" class="wishes-ui">Remplacer</button>
+                    </dialog>
                     <span id="file-name" class="wishes-ui"></span>
                 </div>
                 <div>
+                    <div id="action-choice" class="wishes-ui" style="display: none">Écraser ou mettre à jour le fichier existant ?</div>
                     <button
                         id="erase-btn"
                         class="wishes-ui"
