@@ -11,11 +11,11 @@
 
 .rotated {
     transform: rotate(90deg);
-    animation: turn 0.1s ease-in-out;
+    animation: turn 0.2s ease-in-out;
 }
 
 .plain {
-    animation: unturn 0.1s ease-in-out;
+    animation: unturn 0.2s ease-in-out;
 }
 
 @keyframes turn {
@@ -74,17 +74,21 @@ button.wishes-ui {
 }
 
 .container {
-    width: 50%;
+    max-width: 50%;
 }
 
-h2.show-hide,
-.drawer {
+.show-hide {
     cursor: pointer;
 }
 
-h2.show-hide:hover,
-.drawer:hover {
+.show-hide:hover {
     color: #0000cc;
+}
+
+.drawer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
 }
 
 .spinner {

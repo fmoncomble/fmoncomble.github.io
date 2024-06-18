@@ -549,7 +549,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     function displayProfs() {
         const profsArrow = document.getElementById('profs-arrow');
-        if (profsDisplay.style.display === 'none') {
+        if (!profsDisplay.style.maxHeight) {
+            profsDisplay.innerHTML = null;
             for (t of teacherData) {
                 const div = document.createElement('div');
                 div.textContent = `${t.name}, ${t.status}`;
@@ -560,14 +561,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             profsArrow.classList.remove('plain');
             profsArrow.classList.add('rotated');
-            setTimeout(() => {
-                profsDisplay.style.display = 'block';
-            }, 100);
-        } else if (profsDisplay.style.display === 'block') {
-            setTimeout(() => {
-                profsDisplay.style.display = 'none';
-                profsDisplay.innerHTML = null;
-            }, 100);
+                profsDisplay.style.maxHeight = profsDisplay.scrollHeight + 'px';
+        } else if (profsDisplay.style.maxHeight) {
+                profsDisplay.style.maxHeight = null;
             profsArrow.classList.remove('rotated');
             profsArrow.classList.add('plain');
         }
@@ -580,7 +576,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     function displayCourses() {
         const coursesArrow = document.getElementById('courses-arrow');
-        if (coursesDisplay.style.display === 'none') {
+        if (!coursesDisplay.style.maxHeight) {
+            coursesDisplay.innerHTML = null;
             const filières = Array.from(
                 filièreSelect.querySelectorAll('option')
             );
@@ -590,33 +587,36 @@ document.addEventListener('DOMContentLoaded', async () => {
             for (f of filières) {
                 const fDiv = document.createElement('div');
                 fDiv.classList.add('f-div');
-                fDiv.style.display = 'none';
+                fDiv.classList.add('drawer');
                 const fSpan = document.createElement('h3');
-                fSpan.classList.add('drawer');
                 fSpan.classList.add('f-span');
+                fSpan.classList.add('show-hide');
                 fSpan.textContent = f.value.toUpperCase();
                 fSpan.onclick = () => {
-                    if (fDiv.style.display === 'none') {
-                        fDiv.style.display = 'block';
+                    if (!fDiv.style.maxHeight) {
+                        fDiv.style.maxHeight = fDiv.scrollHeight + 'px';
+                        coursesDisplay.style.maxHeight = coursesDisplay.scrollHeight + fDiv.scrollHeight + 'px';
                     } else {
-                        fDiv.style.display = 'none';
+                        fDiv.style.maxHeight = null;
                     }
                 };
                 for (s of semestres) {
                     const sDiv = document.createElement('div');
                     sDiv.classList.add('s-div');
-                    sDiv.style.display = 'none';
+                    sDiv.classList.add('drawer');
                     sDiv.style.marginLeft = '2rem';
                     const sSpan = document.createElement('h4');
                     sSpan.style.marginLeft = '2rem';
-                    sSpan.classList.add('drawer');
                     sSpan.classList.add('s-span');
+                    sSpan.classList.add('show-hide');
                     sSpan.textContent = s.value;
                     sSpan.onclick = () => {
-                        if (sDiv.style.display === 'none') {
-                            sDiv.style.display = 'block';
+                        if (!sDiv.style.maxHeight) {
+                            sDiv.style.maxHeight = sDiv.scrollHeight + 'px';
+                            fDiv.style.maxHeight = fDiv.scrollHeight + sDiv.scrollHeight + 'px';
+                            coursesDisplay.style.maxHeight = coursesDisplay.scrollHeight + fDiv.scrollHeight + sDiv.scrollHeight + 'px';
                         } else {
-                            sDiv.style.display = 'none';
+                            sDiv.style.maxHeight = null;
                         }
                     };
                     const courses = courseData.filter(
@@ -643,16 +643,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             coursesArrow.classList.remove('plain');
             coursesArrow.classList.add('rotated');
-            setTimeout(() => {
-                coursesDisplay.style.display = 'block';
-            }, 100);
-        } else if (coursesDisplay.style.display === 'block') {
+                coursesDisplay.style.maxHeight = coursesDisplay.scrollHeight + 'px';
+        } else if (coursesDisplay.style.maxHeight) {
             coursesArrow.classList.remove('rotated');
             coursesArrow.classList.add('plain');
-            setTimeout(() => {
-                coursesDisplay.innerHTML = null;
-                coursesDisplay.style.display = 'none';
-            }, 100);
+                coursesDisplay.style.maxHeight = null;
         }
     }
 });
