@@ -67,7 +67,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         tName = teacherInput.value;
         if (!teachers.has(teacherInput.value)) {
-            window.alert('Votre nom ne fait pas partie de la liste.\nContactez Florent Moncomble et Guillaume Winter pour vous ajouter');
+            window.alert(
+                'Votre nom ne fait pas partie de la liste.\nContactez Florent Moncomble et Guillaume Winter pour vous ajouter'
+            );
             return;
         }
         const tStatus = teacherData.find((t) => t.name === tName).status;
@@ -94,7 +96,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             teacherService.textContent = `Service statutaire : ${tService} heures éq. TD`;
         }
         filièreInput.value = 'LLCER';
+        filière = 'LLCER';
         semestreInput.value = 'S1';
+        semestre = 'S1';
+        buildCourseList();
         courseChoiceDiv.style.display = 'block';
     };
 
@@ -106,6 +111,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const options = Array.from(filièreInput.querySelectorAll('option'));
         const optionLevel = options.find((o) => o.value === filièreInput.value)
             .dataset.level;
+        semestreInput.querySelectorAll('option').forEach((o) => {
+            o.disabled = false;
+        });
         if (optionLevel === 'm') {
             const sOptions =
                 semestreInput.querySelectorAll('option[data-notm]');
@@ -118,11 +126,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             sOptions.forEach((s) => {
                 s.disabled = true;
             });
-        } else {
-            semestreInput.querySelectorAll('option').forEach((o) => {
-                o.disabled = false;
-            });
-        }
+        } 
         buildCourseList();
     });
 
@@ -280,21 +284,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         let volTotal = 0;
         let eqtdTotal = 0;
         console.log('Cours assignés : ', jsonFile.Cours);
-        let filières = jsonFile.Cours.map(c => c.filière);
+        let filières = jsonFile.Cours.map((c) => c.filière);
         filières = [...new Set(filières)];
         console.log('Filières: ', filières);
         const filièreList = document.createElement('ul');
         for (f of filières) {
             const filièreItem = document.createElement('li');
             filièreItem.textContent = f;
-            const fCourses = jsonFile.Cours.filter(c => c.filière === f);
-            let semestres = fCourses.map(c => c.semestre);
+            const fCourses = jsonFile.Cours.filter((c) => c.filière === f);
+            let semestres = fCourses.map((c) => c.semestre);
             semestres = [...new Set(semestres)];
             const semestreList = document.createElement('ul');
             for (s of semestres) {
                 const semestreItem = document.createElement('li');
                 semestreItem.textContent = s;
-                const sCourses = fCourses.filter(c => c.semestre === s);
+                const sCourses = fCourses.filter((c) => c.semestre === s);
                 const scList = document.createElement('ul');
                 for (sc of sCourses) {
                     const scItem = document.createElement('li');
@@ -323,7 +327,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             profSummary.textContent += ` ⚠️`;
         }
         confirmDialog.showModal();
-    }
+    };
 
     const yesBtn = document.getElementById('yes-btn');
     const noBtn = document.getElementById('no-btn');
@@ -342,5 +346,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     noBtn.onclick = () => {
         confirmDialog.close();
-    }
+    };
 });
