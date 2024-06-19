@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             return;
         }
-        const nbgrp = grpInput.value;
+        const nbgrp = Number(grpInput.value);
         let multiplier;
         if (format === 'CM') {
             multiplier = 1.5;

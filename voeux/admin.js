@@ -118,13 +118,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         fileName.textContent = fileList.join(', ');
     });
 
-    let json;
     function readWishes(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.addEventListener('load', () => {
-                json = JSON.parse(reader.result);
-                resolve();
+                const json = JSON.parse(reader.result);
+                resolve(json);
             });
             reader.addEventListener('error', reject);
             reader.readAsText(file);
@@ -140,9 +139,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
         for (let i = 0; i < files.length; i++) {
-            await readWishes(files[i]);
-            const prof = json.Name;
-            const cours = json.Cours;
+            const newJson = await readWishes(files[i]);
+            const prof = newJson.Name;
+            const cours = newJson.Cours;
             const existingProf = servicesFile.find((s) => s.Name === prof);
             if (existingProf) {
                 const dialog = document.getElementById('existing-prof-dialog');
@@ -151,28 +150,34 @@ document.addEventListener('DOMContentLoaded', async () => {
                 profIdSpan.textContent = prof;
                 const addBtn = thisDialog.querySelector('#add-btn');
                 const replaceBtn = thisDialog.querySelector('#replace-btn');
+                const cancelBtn = thisDialog.querySelector('#cancel-btn');
                 addBtn.onclick = () => {
-                    cours.forEach((c) => existingProf.Cours.push(c));
+                    cours.forEach((c) => {
+                        existingProf.Cours.push(c);
+                    });
                     existingProf.Cours.sort(sortByInt);
                     existingProf.Cours.sort(sortBySem);
                     existingProf.Cours.sort(sortByFil);
                     if (i === files.length - 1) {
                         saveBtn.style.display = 'block';
                     }
-                    thisDialog.close();
+                    thisDialog.remove();
                 };
                 replaceBtn.onclick = () => {
                     const index = servicesFile.indexOf(existingProf);
-                    servicesFile.splice(index, 1, json);
+                    servicesFile.splice(index, 1, newJson);
                     if (i === files.length - 1) {
                         saveBtn.style.display = 'block';
                     }
-                    thisDialog.close();
+                    thisDialog.remove();
+                };
+                cancelBtn.onclick = () => {
+                    thisDialog.remove();
                 };
                 document.body.appendChild(thisDialog);
                 thisDialog.showModal();
             } else {
-                servicesFile.push(json);
+                servicesFile.push(newJson);
                 servicesFile.sort((a, b) => {
                     const intA = a.Name.split(' ')[1].toLowerCase();
                     const intB = b.Name.split(' ')[1].toLowerCase();
@@ -260,6 +265,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                     i.semestre === c.semestre &&
                     i.intitulé === c.intitulé
             ).length;
+            const totalCourseNb = courses.filter(
+                (i) =>
+                    i.filière === c.filière &&
+                    i.semestre === c.semestre &&
+                    i.intitulé.split(' (')[0] === c.intitulé.split(' (')[0]
+            ).length;
             if (!courseItems.has(courseId)) {
                 courseItems.add(courseId);
                 newItem = courseItem.cloneNode(true);
@@ -277,11 +288,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     newItem.querySelector('span#course-number');
                 courseNumberSpan.textContent = `${courseNb} / ${reqNb}`;
                 if (logic === 'course') {
-                    if (courseNb < reqNb) {
+                    if (totalCourseNb < reqNb) {
                         courseNumberSpan.style.color = 'orange';
-                    } else if (courseNb === reqNb) {
+                    } else if (totalCourseNb === reqNb) {
                         courseNumberSpan.style.color = 'green';
-                    } else if (courseNb > reqNb) {
+                    } else if (totalCourseNb > reqNb) {
                         courseNumberSpan.style.color = 'red';
                         courseNumberSpan.textContent += ' ⚠️';
                     }
@@ -319,11 +330,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     existingItem.querySelector('span#course-number');
                 courseNumberSpan.textContent = `${courseNb} / ${reqNb}`;
                 if (logic === 'course') {
-                    if (courseNb < reqNb) {
+                    if (totalCourseNb < reqNb) {
                         courseNumberSpan.style.color = 'orange';
-                    } else if (courseNb === reqNb) {
+                    } else if (totalCourseNb === reqNb) {
                         courseNumberSpan.style.color = 'green';
-                    } else if (courseNb > reqNb) {
+                    } else if (totalCourseNb > reqNb) {
                         courseNumberSpan.style.color = 'red';
                         courseNumberSpan.textContent += ' ⚠️';
                     }
@@ -614,9 +625,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                 c.filière === filière &&
                 c.semestre === semestre
         );
+        const customVolInput = document.getElementById('custom-vol');
+        const customVol = customVolInput.value;
+        let customCourseToAdd;
+        if (customVol) {
+            customCourseToAdd = {};
+            customCourseToAdd.intitulé = courseToAdd.intitulé;
+            customCourseToAdd.filière = courseToAdd.filière;
+            customCourseToAdd.semestre = courseToAdd.semestre;
+            customCourseToAdd.format = courseToAdd.format;
+            customCourseToAdd.volume = Number(customVol);
+            if (customCourseToAdd.format === 'CM') {
+                customCourseToAdd.eqtd = customVol * 1.5;
+            } else if (customCourseToAdd.format === 'TP') {
+                customCourseToAdd.eqtd = customVol / 1.5;
+            } else {
+                customCourseToAdd.eqtd = Number(customVol);
+            }
+            customCourseToAdd.intitulé += ` (${customVol}h)`;
+        }
         const profEntry = servicesFile.find((p) => p.Name === prof);
         const courses = profEntry.Cours;
-        courses.push(courseToAdd);
+        if (customCourseToAdd) {
+            courses.push(customCourseToAdd);
+        } else {
+            courses.push(courseToAdd);
+        }
         courses.sort(sortByInt);
         courses.sort(sortBySem);
         courses.sort(sortByFil);
@@ -626,8 +660,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = computeServiceVol(profEntry);
         const baseService = data[0];
         const totalService = data[1];
-        courseAddSpan.textContent = `${filière.toUpperCase()} ${semestre} ${courseName} a été ajouté au service de ${prof}. Total : ${totalService} sur ${baseService}`;
+        courseAddSpan.textContent = `${filière.toUpperCase()} ${semestre} ${courseName}`;
+        if (customVol) {
+            courseAddSpan.textContent += ` (${customVol}h)`;
+        }
+        courseAddSpan.textContent += ` a été ajouté au service de ${prof}. Total : ${totalService} sur ${baseService}`;
         courseAddDiv.style.display = 'block';
+        customVolInput.value = '';
     }
 
     const courseDeleteBtn = document.getElementById('course-delete-btn');
@@ -670,7 +709,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         let baseService = profFromFile.service;
         if (!baseService) {
             const profStatus = profFromFile.status;
-            if (profStatus === 'PR' || profStatus === 'MCF') {
+            if (
+                profStatus === 'PR' ||
+                profStatus === 'MCF' ||
+                profStatus === 'ATER'
+            ) {
                 baseService = 192;
             } else if (profStatus === 'PRAG' || profStatus === 'PRCE') {
                 baseService = 384;
@@ -739,4 +782,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         return 0;
     }
+
+    // Function to flatten servicesFile
+    function flattenJson() {
+        return new Promise((resolve, reject) => {
+            try {
+                const jsonForXls = [];
+                for (let s of servicesFile) {
+                    const teacherName = s.Name;
+                    const teacherCourses = s.Cours;
+                    for (let c of teacherCourses) {
+                        const course = {};
+                        course.teacher = teacherName;
+                        course.filière = c.filière;
+                        course.semestre = c.semestre;
+                        course.format = c.format;
+                        course.intitulé = c.intitulé;
+                        course.volume = Number(c.volume);
+                        course.eqtd = Number(c.eqtd);
+                        jsonForXls.push(course);
+                    }
+                }
+                resolve(jsonForXls);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    // Function to generate and download XLSX file from flattened file
+    async function makeXlsx() {
+        const json = await flattenJson();
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(json);
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Services');
+        XLSX.writeFile(workbook, 'Services.xlsx');
+    }
+    const exportBtn = document.getElementById('export-btn');
+    exportBtn.onclick = async () => {
+        await makeXlsx();
+    };
 });

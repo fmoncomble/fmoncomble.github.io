@@ -78,3 +78,13 @@ h2 {
         transform: rotate(360deg);
     }
 }
+
+#cancel-btn:hover {
+    background-color: red;
+}
+
+#course-add-select,
+#course-delete-select {
+    min-width: 235px;
+    width: auto;
+}
