@@ -103,6 +103,10 @@ th, td {
     height: 1.5em;
 }
 
+th {
+    background-color: #f2f2f2;
+}
+
 td {
     text-align: center;
 }
