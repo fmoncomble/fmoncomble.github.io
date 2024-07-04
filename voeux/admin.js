@@ -371,26 +371,35 @@ document.addEventListener('DOMContentLoaded', async () => {
             const rows = dispoTable.getElementsByTagName('tr');
             const colHeaders = rows[0].getElementsByTagName('th');
             const profDispos = profFromFile.Dispos;
-            for (let d of profDispos) {
-                let rowIndex, colIndex;
-                for (let i = 0; i < rows.length; i++) {
-                    const rowHeader = rows[i].getElementsByTagName('th')[0];
-                    if (rowHeader && rowHeader.textContent === d.hour) {
-                        rowIndex = i;
-                        break;
-                    }
+            if (profDispos && profDispos.length > 0) {
+                const cells = dispoTable.getElementsByTagName('td');
+                for (let c of cells) {
+                    c.textContent = '';
+                    c.removeAttribute('style');
                 }
-                for (let j = 0; j < colHeaders.length; j++) {
-                    if (colHeaders[j].textContent === d.day) {
-                        colIndex = j;
-                        break;
+                for (let d of profDispos) {
+                    let rowIndex, colIndex;
+                    for (let i = 0; i < rows.length; i++) {
+                        const rowHeader = rows[i].getElementsByTagName('th')[0];
+                        if (rowHeader && rowHeader.textContent === d.hour) {
+                            rowIndex = i;
+                            break;
+                        }
                     }
+                    for (let j = 0; j < colHeaders.length; j++) {
+                        if (colHeaders[j].textContent === d.day) {
+                            colIndex = j;
+                            break;
+                        }
+                    }
+                    const dCell = rows[rowIndex].cells[colIndex];
+                    dCell.style.backgroundColor = 'rgb(214, 245, 214)';
+                    dCell.textContent = '✅';
                 }
-                const dCell = rows[rowIndex].cells[colIndex];
-                dCell.style.backgroundColor = 'rgb(214, 245, 214)';
-                dCell.textContent = '✅';
+                dispoDiv.style.display = 'block';
+            } else {
+                dispoDiv.style.display = 'none';
             }
-            dispoDiv.style.display = 'block';
         }
     }
 
