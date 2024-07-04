@@ -5,133 +5,246 @@
         <script type="text/javascript" src="saisie.js"></script>
         <script type="application/json" src="profs.json"></script>
         <link rel="stylesheet" type="text/css" href="vœux.css" />
+        <link rel="stylesheet" type="text/css" href="saisie.css" />
     </head>
     <body>
         <h1>Saisie des vœux</h1>
-        <div id="wrapper">
-            <div>
-                <label for="teacher-name" class="wishes-ui">
-                    Nom de l'enseignant.e :
-                    <input
-                        name="teacher-name"
-                        id="teacher-name"
-                        class="wishes-ui"
-                        list="teacher-list"
-                        type="text"
-                        placeholder="Prénom Nom"
-                    />
-                    <datalist id="teacher-list"></datalist>
-                </label>
-                <button id="go-btn" class="wishes-ui">Commencer</button>
-                <div id="teacher-status"></div>
-                <div id="teacher-service"></div>
-                <br />
-            </div>
-            <div id="class-choice" class="wishes-ui" style="display: none">
-                <b>Ajouter un enseignement :</b><br /><br />
+        <div id="wrapper" class="wrapper">
+            <div id="container-1" class="container">
                 <div>
-                    <label for="filière" class="wishes-ui">
-                        Filière :
-                        <select
-                            name="filière"
-                            id="filière"
-                            class="wishes-ui wishes-input"
-                        >
-                            <option value="LLCER" data-level="l" selected>
-                                LLCER
-                            </option>
-                            <option value="LEA" data-level="l">LEA</option>
-                            <option value="MEEF" data-level="m">MEEF</option>
-                            <option value="MLLCER" data-level="m">
-                                Master LLCER
-                            </option>
-                            <option value="LMI" data-level="m">LMI</option>
-                            <option value="agreg" data-level="a">
-                                Agrégation interne
-                            </option>
-                        </select>
+                    <label for="teacher-name" class="wishes-ui">
+                        Nom de l'enseignant.e :
+                        <input
+                            name="teacher-name"
+                            id="teacher-name"
+                            class="wishes-ui"
+                            list="teacher-list"
+                            type="text"
+                            placeholder="Prénom Nom"
+                        />
+                        <datalist id="teacher-list"></datalist>
                     </label>
-                </div>
-                <div>
-                    <label for="semestre" class="wishes-ui">
-                        Semestre :
-                        <select
-                            name="semestre"
-                            id="semestre"
-                            class="wishes-ui wishes-input"
-                        >
-                            <option value="S1" selected>S1</option>
-                            <option value="S2">S2</option>
-                            <option value="S3" data-nota="true">S3</option>
-                            <option value="S4" data-nota="true">S4</option>
-                            <option
-                                value="S5"
-                                data-nota="true"
-                                data-notm="true"
-                            >
-                                S5
-                            </option>
-                            <option
-                                value="S6"
-                                data-nota="true"
-                                data-notm="true"
-                            >
-                                S6
-                            </option>
-                        </select>
-                    </label>
-                </div>
-                <div>
-                    <label for="cours" class="wishes-ui">
-                        Cours :
-                        <select
-                            name="cours"
-                            id="cours"
-                            class="wishes-ui wishes-input"
-                        >
-                            <option disabled selected></option>
-                        </select>
-                    </label>
-                </div>
-                <div id="save" class="wishes-ui">
-                    <div
-                        id="course-info"
-                        class="wishes-ui"
-                        style="display: none"
-                    ></div>
-                    <button
-                        id="save-btn"
-                        class="wishes-ui"
-                        style="display: none"
-                    >
-                        Ajouter
-                    </button>
-                </div>
-                <div id="added-courses" class="wishes-ui">
-                    <b
-                        >Enseignements enregistrés (Total :
-                        <span id="hTotal">0 </span> hTD<span id="hc"></span>)</b
-                    >
+                    <button id="go-btn" class="wishes-ui">Commencer</button>
+                    <div id="teacher-status"></div>
+                    <div id="teacher-service"></div>
                     <br />
-                    <div id="added-courses-list"></div>
-                    <button
-                        id="send-btn"
-                        class="wishes-ui"
-                        style="display: none"
-                    >
-                        Valider
-                    </button>
                 </div>
-                <dialog id="confirm-dialog"><b>Récapitulatif :</b><br />
-                    <div id="summary"></div>
-                    <div id="prof-summary"></div>
-                    <br /><br />
-                    <button id="yes-btn" class="wishes-ui confirm">
-                        Confirmer</button
-                    ><button id="no-btn" class="wishes-ui cancel">
-                        Annuler
-                    </button>
-                </dialog>
+                <div id="class-choice" class="wishes-ui" style="display: none">
+                    <b>Ajouter un enseignement :</b><br /><br />
+                    <div>
+                        <label for="filière" class="wishes-ui">
+                            Filière :
+                            <select
+                                name="filière"
+                                id="filière"
+                                class="wishes-ui wishes-input"
+                            >
+                                <option value="LLCER" data-level="l" selected>
+                                    LLCER
+                                </option>
+                                <option value="LEA" data-level="l">LEA</option>
+                                <option value="MEEF" data-level="m">
+                                    MEEF
+                                </option>
+                                <option value="MLLCER" data-level="m">
+                                    Master LLCER
+                                </option>
+                                <option value="LMI" data-level="m">LMI</option>
+                                <option value="agreg" data-level="a">
+                                    Agrégation interne
+                                </option>
+                            </select>
+                        </label>
+                    </div>
+                    <div>
+                        <label for="semestre" class="wishes-ui">
+                            Semestre :
+                            <select
+                                name="semestre"
+                                id="semestre"
+                                class="wishes-ui wishes-input"
+                            >
+                                <option value="S1" selected>S1</option>
+                                <option value="S2">S2</option>
+                                <option value="S3" data-nota="true">S3</option>
+                                <option value="S4" data-nota="true">S4</option>
+                                <option
+                                    value="S5"
+                                    data-nota="true"
+                                    data-notm="true"
+                                >
+                                    S5
+                                </option>
+                                <option
+                                    value="S6"
+                                    data-nota="true"
+                                    data-notm="true"
+                                >
+                                    S6
+                                </option>
+                            </select>
+                        </label>
+                    </div>
+                    <div>
+                        <label for="cours" class="wishes-ui">
+                            Cours :
+                            <select
+                                name="cours"
+                                id="cours"
+                                class="wishes-ui wishes-input"
+                            >
+                                <option disabled selected></option>
+                            </select>
+                        </label>
+                    </div>
+                    <div id="save" class="wishes-ui">
+                        <div
+                            id="course-info"
+                            class="wishes-ui"
+                            style="display: none"
+                        ></div>
+                        <button
+                            id="save-btn"
+                            class="wishes-ui"
+                            style="display: none"
+                        >
+                            Ajouter
+                        </button>
+                    </div>
+                    <div id="added-courses" class="wishes-ui">
+                        <b
+                            >Enseignements enregistrés (Total :
+                            <span id="hTotal">0 </span> hTD<span id="hc"></span
+                            >)</b
+                        >
+                        <br />
+                        <div id="added-courses-list"></div>
+                        <button
+                            id="send-btn"
+                            class="wishes-ui"
+                            style="display: none"
+                        >
+                            Valider
+                        </button>
+                    </div>
+                    <dialog id="confirm-dialog">
+                        <b>Récapitulatif :</b><br />
+                        <div id="summary"></div>
+                        <div id="prof-summary"></div>
+                        <br /><br />
+                        <button id="yes-btn" class="wishes-ui confirm">
+                            Confirmer</button
+                        ><button id="no-btn" class="wishes-ui cancel">
+                            Annuler
+                        </button>
+                    </dialog>
+                </div>
+            </div>
+            <div id="container-2" class="container" style="display: none">
+                <div>
+                    <b>Sélectionner les plages horaires de disponibilité :</b>
+                </div>
+                <br />
+                <div>
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>Lundi</th>
+                            <th>Mardi</th>
+                            <th>Mercredi</th>
+                            <th>Jeudi</th>
+                            <th>Vendredi</th>
+                        </tr>
+                        <tr>
+                            <th>8h - 9h</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>9h - 10h</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>10h - 11h</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>11h - 12h</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>12h - 13h</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>13h - 14h</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>14h - 15h</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>15h - 16h</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>16h - 17h</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>17h - 18h</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>18h - 19h</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </body>

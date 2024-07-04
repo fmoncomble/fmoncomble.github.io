@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Saisie des vœux v1.1');
+    console.log('Saisie des vœux v1.2');
     const teacherInput = document.getElementById('teacher-name');
     const goBtn = document.getElementById('go-btn');
     const teacherStatus = document.getElementById('teacher-status');
@@ -60,9 +60,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (e.key === 'Enter') {
             start();
         }
-    })
-    
+    });
+
     function start() {
+        const dispoContainer = document.getElementById('container-2');
+        dispoContainer.style.display = 'block';
         jsonFile = null;
         const addedCourses = document.getElementById('added-courses');
         addedCourses.style.display = 'none';
@@ -117,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         semestre = 'S1';
         buildCourseList();
         courseChoiceDiv.style.display = 'block';
-    };
+    }
 
     // Limit available semester options according to filière
     filièreInput.addEventListener('change', () => {
@@ -141,7 +143,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             sOptions.forEach((s) => {
                 s.disabled = true;
             });
-        } 
+        }
         buildCourseList();
     });
 
@@ -201,6 +203,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!jsonFile) {
             jsonFile = {};
             jsonFile.Name = tName;
+            jsonFile.Cours = [];
+            jsonFile.Cours.push(course);
+        } else if (jsonFile && !jsonFile.Cours) {
             jsonFile.Cours = [];
             jsonFile.Cours.push(course);
         } else if (jsonFile) {
@@ -293,6 +298,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const confirmDialog = document.getElementById('confirm-dialog');
     sendBtn.onclick = () => {
+        if (!jsonFile.Dispos || jsonFile.Dispos.length === 0) {
+            window.alert('Sélectionnez vos disponibilités');
+            return;
+        }
+        if (!jsonFile.Cours || jsonFile.Cours.length === 0) {
+            window.alert('Ajoutez des cours');
+            return;
+        }
         const summaryDiv = document.getElementById('summary');
         summaryDiv.innerHTML = null;
         let volTotal = 0;
@@ -358,4 +371,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     noBtn.onclick = () => {
         confirmDialog.close();
     };
+
+    // Handle availability table
+    const table = document.querySelector('table');
+    const tableCells = Array.from(document.querySelectorAll('td'));
+    for (let tc of tableCells) {
+        tc.addEventListener('click', () => {
+            const index = tc.cellIndex;
+            const header = table.rows[0].cells[index];
+            const day = header.textContent;
+            const hour = tc.parentNode.firstElementChild.textContent;
+            if (tc.style.backgroundColor !== 'rgb(214, 245, 214)') {
+                tc.textContent = '✅';
+                tc.style.backgroundColor = 'rgb(214, 245, 214)';
+                const dispo = {};
+                dispo.day = day;
+                dispo.hour = hour;
+                saveDispo(dispo);
+            } else if (tc.style.backgroundColor === 'rgb(214, 245, 214)') {
+                tc.textContent = '';
+                tc.style.backgroundColor = 'white';
+                const dispo = jsonFile.Dispos.find(
+                    (d) => d.day === day && d.hour === hour
+                );
+                deleteDispo(dispo);
+            }
+        });
+    }
+    function saveDispo(dispo) {
+        if (!jsonFile) {
+            jsonFile = {};
+            jsonFile.Name = tName;
+            jsonFile.Dispos = [];
+            jsonFile.Dispos.push(dispo);
+        } else if (jsonFile && !jsonFile.Dispos) {
+            jsonFile.Dispos = [];
+            jsonFile.Dispos.push(dispo);
+        } else if (jsonFile && jsonFile.Dispos) {
+            jsonFile.Dispos.push(dispo);
+        }
+    }
+    function deleteDispo(dispo) {
+        const d = jsonFile.Dispos.indexOf(dispo);
+        jsonFile.Dispos.splice(d, 1);
+    }
 });

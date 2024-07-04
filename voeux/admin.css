@@ -88,3 +88,21 @@ h2 {
     min-width: 235px;
     width: auto;
 }
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+table {
+    width: 100%;
+}
+
+th, td {
+    min-width: 16%;
+    height: 1.5em;
+}
+
+td {
+    text-align: center;
+}

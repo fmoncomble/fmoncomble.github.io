@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Administration des services v1.1.4');
+    console.log('Administration des services v1.2');
     const tokenInput = document.getElementById('token-input');
     const authSaveBtn = document.getElementById('auth-save');
     const fileInput = document.getElementById('file-input');
@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const compileBtn = document.getElementById('compile-btn');
     const courseList = document.getElementById('course-list');
     const saveBtn = document.getElementById('save-btn');
+    const dispoDiv = document.getElementById('dispos');
 
     // Manage authentication
     authSaveBtn.addEventListener('click', () => saveToken());
@@ -219,6 +220,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         let logic;
         if (filière && semestre) {
             logic = 'course';
+            dispoDiv.style.display = 'none';
             courses = courses.filter(
                 (c) => c.filière === filière && c.semestre === semestre
             );
@@ -365,6 +367,30 @@ document.addEventListener('DOMContentLoaded', async () => {
                 serviceDiv.style.color = 'darkblue';
             }
             courseList.appendChild(serviceDiv);
+            const dispoTable = dispoDiv.querySelector('table');
+            const rows = dispoTable.getElementsByTagName('tr');
+            const colHeaders = rows[0].getElementsByTagName('th');
+            const profDispos = profFromFile.Dispos;
+            for (let d of profDispos) {
+                let rowIndex, colIndex;
+                for (let i = 0; i < rows.length; i++) {
+                    const rowHeader = rows[i].getElementsByTagName('th')[0];
+                    if (rowHeader && rowHeader.textContent === d.hour) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
+                for (let j = 0; j < colHeaders.length; j++) {
+                    if (colHeaders[j].textContent === d.day) {
+                        colIndex = j;
+                        break;
+                    }
+                }
+                const dCell = rows[rowIndex].cells[colIndex];
+                dCell.style.backgroundColor = 'rgb(214, 245, 214)';
+                dCell.textContent = '✅';
+            }
+            dispoDiv.style.display = 'block';
         }
     }
 
