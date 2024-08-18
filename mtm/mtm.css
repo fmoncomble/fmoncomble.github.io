@@ -3,12 +3,10 @@ body {
     width: 600px;
 }
 
-h1 {
+div#version {
+    font-size: x-small;
     color: #563acc;
-    font-size: xx-large;
-    font-weight: bold;
 }
-
 div#instructions {
     font-size: small;
     width: 500px;
@@ -62,7 +60,8 @@ button:hover {
     margin-top: 10px;
 }
 
-.cw-btn, select  {
+.cw-btn,
+select {
     height: auto;
     width: auto;
     color: black;
@@ -76,7 +75,8 @@ button:hover {
     display: inline;
 }
 
-.cw-btn:hover, select:hover {
+.cw-btn:hover,
+select:hover {
     background-color: #ccc;
 }
 
@@ -248,7 +248,6 @@ div.btn-div {
         transform: rotate(360deg);
     }
 }
-
 
 div#view-thread-btn {
     width: 200px;

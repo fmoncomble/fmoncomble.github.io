@@ -1,17 +1,7 @@
 document.addEventListener('DOMContentLoaded', async function () {
-    const authDiv = document.getElementById('auth-div');
     const instructionsDiv = document.getElementById('instructions');
     const instanceInput = document.getElementById('instance-input');
     const instanceBtn = document.getElementById('instance-btn');
-    const clientDiv = document.getElementById('client-div');
-    const clientIdInput = document.getElementById('client-id-input');
-    const saveIdBtn = document.getElementById('save-id-btn');
-    const secretDiv = document.getElementById('secret-div');
-    const clientSecretInput = document.getElementById('client-secret-input');
-    const saveSecretBtn = document.getElementById('save-secret-btn');
-    const codeDiv = document.getElementById('code-div');
-    const codeInput = document.getElementById('code-input');
-    const saveCodeBtn = document.getElementById('save-code-btn');
     const contentContainer = document.getElementById('content-container');
     const postItem = document.getElementById('post-item');
     const postThreadBtn = document.getElementById('post-thread-btn');
@@ -29,12 +19,24 @@ document.addEventListener('DOMContentLoaded', async function () {
     let token;
     checkToken();
 
-    clientIdInput.value = null;
-    clientSecretInput.value = null;
-    codeInput.value = null;
+    window.onload = async function () {
+        if (!token && instance) {
+            const urlParams = new URLSearchParams(window.location.search);
+            code = urlParams.get('code');
+            if (code) {
+                token = await exchangeCodeForToken(code);
+                if (token) {
+                    localStorage.setItem('mastothreadtoken', token);
+                    checkToken();
+                }
+            }
+        }
+    };
 
     let clientId;
     let clientSecret;
+    clientId = localStorage.getItem('mastothreadid');
+    clientSecret = localStorage.getItem('mastothreadsecret');
     let code;
 
     function checkInstance() {
@@ -53,8 +55,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     async function checkToken() {
         token = localStorage.getItem('mastothreadtoken');
         if (token) {
-            instanceInput.value = instance + ' (jeton enregistré) ✅';
-            authDiv.style.display = 'none';
+            instanceInput.value = instance + ' ✅';
             instructionsDiv.style.display = 'none';
             if (postItems.length === 0) {
                 await getMax();
@@ -63,12 +64,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         } else if (!token) {
             instructionsDiv.style.display = 'block';
-            if (instance) {
-                instanceInput.value =
-                    instance + ' (⚠️ Saisissez vos informations)';
-                authDiv.style.display = 'block';
-                clientIdInput.focus();
-            }
         }
     }
 
@@ -76,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         localStorage.removeItem('mastothreadtoken');
     }
 
-    instanceInput.addEventListener('keydown', (event) => {
+    instanceInput.addEventListener('keydown', async (event) => {
         if (event.key === 'Enter') {
             instance = instanceInput.value;
             if (!instance) {
@@ -85,31 +80,20 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
             localStorage.setItem('mastothreadinstance', instance);
             removeToken();
-            instanceBtn.textContent = 'Changer';
-            const mastoUrl = 'https://' + instance + '/settings/applications';
-            window.open(mastoUrl, '_blank');
-            authDiv.style.display = 'block';
-            clientDiv.style.display = 'block';
-            clientIdInput.focus();
+            await createApp();
+            redirectToAuthServer();
             checkInstance();
             checkToken();
         }
     });
 
-    instanceBtn.addEventListener('click', () => {
+    instanceBtn.addEventListener('click', async () => {
         if (instanceInput.disabled) {
             instanceInput.value = null;
-            clientIdInput.value = null;
-            clientSecretInput.value = null;
-            codeInput.value = null;
-            codeDiv.style.display = 'none';
             instanceInput.disabled = false;
             instanceBtn.textContent = 'Valider';
             localStorage.removeItem('mastothreadinstance');
             removeToken();
-            authDiv.style.display = 'none';
-            clientDiv.style.display = 'none';
-            secretDiv.style.display = 'none';
             checkInstance();
             checkToken();
         } else {
@@ -120,79 +104,48 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
             localStorage.setItem('mastothreadinstance', instance);
             removeToken();
-            instanceBtn.textContent = 'Changer';
-            const mastoUrl = 'https://' + instance + '/settings/applications';
-            window.open(mastoUrl, '_blank');
-            authDiv.style.display = 'block';
-            clientDiv.style.display = 'block';
-            clientIdInput.focus();
+            await createApp();
+            redirectToAuthServer();
             checkInstance();
             checkToken();
         }
     });
 
-    saveIdBtn.addEventListener('click', () => {
-        clientId = clientIdInput.value.trim();
-        secretDiv.style.display = 'block';
-        clientSecretInput.focus();
-    });
-
-    clientIdInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            clientId = clientIdInput.value.trim();
-            secretDiv.style.display = 'block';
-            clientSecretInput.focus();
-        }
-    });
-
-    saveSecretBtn.addEventListener('click', () => {
-        clientSecret = clientSecretInput.value.trim();
-        redirectToAuthServer();
-        clientDiv.style.display = 'none';
-        secretDiv.style.display = 'none';
-        codeDiv.style.display = 'block';
-        codeInput.focus();
-    });
-
-    clientSecretInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            clientSecret = clientSecretInput.value.trim();
-            redirectToAuthServer();
-            clientDiv.style.display = 'none';
-            secretDiv.style.display = 'none';
-            codeDiv.style.display = 'block';
-            codeInput.focus();
-        }
-    });
-
-    saveCodeBtn.addEventListener('click', async () => {
-        code = codeInput.value.trim();
-        token = await exchangeCodeForToken(code);
-        if (token) {
-            localStorage.setItem('mastothreadtoken', token);
-            checkToken();
-        }
-    });
-
-    codeInput.addEventListener('keydown', async (e) => {
-        if (e.key === 'Enter') {
-            code = codeInput.value.trim();
-            token = await exchangeCodeForToken(code);
-            if (token) {
-                localStorage.setItem('mastothreadtoken', token);
-                checkToken();
+    const redirectUri = window.location.href.split('?')[0];
+    async function createApp() {
+        const createAppUrl = `https://${instance}/api/v1/apps`;
+        try {
+            const response = await fetch(createAppUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    client_name: 'MastoThreader',
+                    redirect_uris: redirectUri,
+                    scopes: 'write',
+                }),
+            });
+            if (!response.ok) {
+                console.error('Error creating app: response ', response.status);
+                return;
             }
+            const data = await response.json();
+            clientId = data.client_id;
+            clientSecret = data.client_secret;
+            localStorage.setItem('mastothreadid', clientId);
+            localStorage.setItem('mastothreadsecret', clientSecret);
+        } catch (error) {
+            console.error('Error fetching: ', error);
         }
-    });
+    }
 
-    const redirectUri = 'urn:ietf:wg:oauth:2.0:oob';
     function redirectToAuthServer() {
-        const scope = 'read write follow';
+        const scope = 'write';
         const authUrl = `https://${instance}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(
             redirectUri
         )}&scope=${encodeURIComponent(scope)}`;
-
-        window.open(authUrl, '_blank');
+        window.location.href = authUrl;
     }
 
     async function exchangeCodeForToken(authCode) {

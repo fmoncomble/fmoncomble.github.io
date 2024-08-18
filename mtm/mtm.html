@@ -8,23 +8,15 @@
 
     <body>
         <div id="page-title">
-            <h1>Mastodon Thread Maker</h1>
+            <img
+                src="icons/mastothreader.svg"
+                width="300"
+                fill="currentColor"
+            />
+            <div id="version">v0.2</div>
         </div>
         <div id="instance-div">
             <div id="instructions">
-                <p>
-                    Lors de la première utilisation, vous devez créer une
-                    application dans votre compte dotée au minimum des étendues
-                    "read" et "write", puis copier-coller son ID et son secret
-                    ci-dessous. Cette application pourra être réutilisée par la
-                    suite. <br />
-                    <b>Attention, son nom apparaitra sous vos pouets !</b>
-                </p>
-                <p>
-                    Après avoir autorisé l'application à se connecter à votre
-                    compte, vous obtiendrez un code à copier ci-dessous pour
-                    vous authentifier.
-                </p>
                 <p style="color: #563acc">
                     <b
                         >Entrez votre instance Mastodon ci-dessous <br />
@@ -40,28 +32,6 @@
                     placeholder="Instance Mastodon"
                 />
                 <button id="instance-btn">Valider</button>
-            </div>
-            <div id="auth-div" style="display: none">
-                <div id="client-div">
-                    <input
-                        id="client-id-input"
-                        type="text"
-                        placeholder="ID de l'application"
-                    />
-                    <button id="save-id-btn">Valider</button>
-                </div>
-                <div id="secret-div" style="display: none">
-                    <input
-                        id="client-secret-input"
-                        type="text"
-                        placeholder="Secret"
-                    />
-                    <button id="save-secret-btn">Valider</button>
-                </div>
-                <div id="code-div" style="display: none">
-                    <input id="code-input" type="text" placeholder="Code" />
-                    <button id="save-code-btn">Valider</button>
-                </div>
             </div>
         </div>
         <div id="content-container">
