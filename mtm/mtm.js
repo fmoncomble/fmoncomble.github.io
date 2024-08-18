@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             const mastoUrl = 'https://' + instance + '/settings/applications';
             window.open(mastoUrl, '_blank');
             authDiv.style.display = 'block';
+            clientDiv.style.display = 'block';
             clientIdInput.focus();
             checkInstance();
             checkToken();
@@ -101,11 +102,14 @@ document.addEventListener('DOMContentLoaded', async function () {
             clientIdInput.value = null;
             clientSecretInput.value = null;
             codeInput.value = null;
+            codeDiv.style.display = 'none';
             instanceInput.disabled = false;
             instanceBtn.textContent = 'Valider';
             localStorage.removeItem('mastothreadinstance');
             removeToken();
             authDiv.style.display = 'none';
+            clientDiv.style.display = 'none';
+            secretDiv.style.display = 'none';
             checkInstance();
             checkToken();
         } else {
@@ -120,6 +124,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             const mastoUrl = 'https://' + instance + '/settings/applications';
             window.open(mastoUrl, '_blank');
             authDiv.style.display = 'block';
+            clientDiv.style.display = 'block';
             clientIdInput.focus();
             checkInstance();
             checkToken();
@@ -128,7 +133,16 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     saveIdBtn.addEventListener('click', () => {
         clientId = clientIdInput.value.trim();
+        secretDiv.style.display = 'block';
         clientSecretInput.focus();
+    });
+
+    clientIdInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            clientId = clientIdInput.value.trim();
+            secretDiv.style.display = 'block';
+            clientSecretInput.focus();
+        }
     });
 
     saveSecretBtn.addEventListener('click', () => {
@@ -140,12 +154,34 @@ document.addEventListener('DOMContentLoaded', async function () {
         codeInput.focus();
     });
 
+    clientSecretInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            clientSecret = clientSecretInput.value.trim();
+            redirectToAuthServer();
+            clientDiv.style.display = 'none';
+            secretDiv.style.display = 'none';
+            codeDiv.style.display = 'block';
+            codeInput.focus();
+        }
+    });
+
     saveCodeBtn.addEventListener('click', async () => {
         code = codeInput.value.trim();
         token = await exchangeCodeForToken(code);
         if (token) {
             localStorage.setItem('mastothreadtoken', token);
             checkToken();
+        }
+    });
+
+    codeInput.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter') {
+            code = codeInput.value.trim();
+            token = await exchangeCodeForToken(code);
+            if (token) {
+                localStorage.setItem('mastothreadtoken', token);
+                checkToken();
+            }
         }
     });
 
