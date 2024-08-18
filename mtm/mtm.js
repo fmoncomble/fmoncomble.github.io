@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', async function () {
     const authDiv = document.getElementById('auth-div');
+    const instructionsDiv = document.getElementById('instructions');
     const instanceInput = document.getElementById('instance-input');
     const instanceBtn = document.getElementById('instance-btn');
     const clientIdInput = document.getElementById('client-id-input');
@@ -50,12 +51,14 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (token) {
             instanceInput.value = instance + ' (jeton enregistré) ✅';
             authDiv.style.display = 'none';
+            instructionsDiv.style.display = 'none';
             if (postItems.length === 0) {
                 await getMax();
                 createNewPost();
                 postThreadBtn.style.display = 'flex';
             }
         } else if (!token) {
+            instructionsDiv.style.display = 'block';
             if (instance) {
                 instanceInput.value = instance + ' (⚠️ Saisissez vos informations)';
                 authDiv.style.display = 'block';

@@ -9,6 +9,12 @@ h1 {
     font-weight: bold;
 }
 
+div#instructions {
+    font-size: small;
+    width: 500px;
+    margin-left: 50px;
+}
+
 #instance-div {
     display: block;
     text-align: center;
