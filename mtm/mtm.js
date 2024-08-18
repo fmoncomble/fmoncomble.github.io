@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     checkInstance();
     let token;
     checkToken();
-
+    
     clientIdInput.value = null;
     clientSecretInput.value = null;
     codeInput.value = null;
