@@ -3,15 +3,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     const instructionsDiv = document.getElementById('instructions');
     const instanceInput = document.getElementById('instance-input');
     const instanceBtn = document.getElementById('instance-btn');
+    const clientDiv = document.getElementById('client-div');
     const clientIdInput = document.getElementById('client-id-input');
     const saveIdBtn = document.getElementById('save-id-btn');
+    const secretDiv = document.getElementById('secret-div');
     const clientSecretInput = document.getElementById('client-secret-input');
     const saveSecretBtn = document.getElementById('save-secret-btn');
+    const codeDiv = document.getElementById('code-div');
     const codeInput = document.getElementById('code-input');
     const saveCodeBtn = document.getElementById('save-code-btn');
     const contentContainer = document.getElementById('content-container');
     const postItem = document.getElementById('post-item');
     const postThreadBtn = document.getElementById('post-thread-btn');
+    const spinner = document.getElementById('spinner');
     const viewThreadBtn = document.getElementById('view-thread-btn');
     const viewThreadLink = viewThreadBtn.querySelector('a');
 
@@ -24,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     checkInstance();
     let token;
     checkToken();
-    
+
     clientIdInput.value = null;
     clientSecretInput.value = null;
     codeInput.value = null;
@@ -60,7 +64,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         } else if (!token) {
             instructionsDiv.style.display = 'block';
             if (instance) {
-                instanceInput.value = instance + ' (⚠️ Saisissez vos informations)';
+                instanceInput.value =
+                    instance + ' (⚠️ Saisissez vos informations)';
                 authDiv.style.display = 'block';
                 clientIdInput.focus();
             }
@@ -129,13 +134,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     saveSecretBtn.addEventListener('click', () => {
         clientSecret = clientSecretInput.value.trim();
         redirectToAuthServer();
+        clientDiv.style.display = 'none';
+        secretDiv.style.display = 'none';
+        codeDiv.style.display = 'block';
         codeInput.focus();
     });
 
     saveCodeBtn.addEventListener('click', async () => {
         code = codeInput.value.trim();
         token = await exchangeCodeForToken(code);
-        console.log('New token: ', token);
         if (token) {
             localStorage.setItem('mastothreadtoken', token);
             checkToken();
@@ -184,9 +191,30 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     let i = 0;
+    let defaultViz = 'public';
+    let currentPost;
     function createNewPost() {
         const newPost = postItem.cloneNode(true);
-        postItems.push(newPost);
+        const addPostBtn = newPost.querySelector('.add-post-btn');
+        if (postItems.length === 0) {
+            contentContainer.appendChild(newPost);
+            postItems.push(newPost);
+        } else {
+            currentPost.after(newPost);
+            const currentIndex = postItems.indexOf(currentPost);
+            const newIndex = currentIndex + 1;
+            postItems.splice(newIndex, 0, newPost);
+        }
+        const vizSelect = newPost.querySelector('.viz-select');
+        const index = postItems.indexOf(newPost);
+        if (index === 0) {
+            vizSelect.value = 'public';
+            vizSelect.addEventListener('change', () => {
+                defaultViz = vizSelect.value;
+            });
+        } else {
+            vizSelect.value = 'unlisted';
+        }
         i++;
         newPost.id = 'post-' + i;
         files[`files${i}`] = [];
@@ -197,11 +225,16 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         }
         newPost.style.display = 'block';
-        contentContainer.appendChild(newPost);
+        addPostBtn.addEventListener('click', () => {
+            if (postItems.length > 0) {
+                currentPost = addPostBtn.parentElement;
+            }
+            createNewPost();
+        });
 
         updatePostCount();
 
-        const textarea = newPost.querySelector('textarea');
+        const textarea = newPost.querySelector('.post-text');
         textarea.value = null;
         const charCount = newPost.querySelector('.char-count');
         charCount.textContent = `0/${maxChars}`;
@@ -214,6 +247,24 @@ document.addEventListener('DOMContentLoaded', async function () {
                 charCount.style.fontWeight = 'bold';
             } else {
                 charCount.removeAttribute('style');
+            }
+        });
+
+        const cwDiv = newPost.querySelector('.cw-div');
+        const cwText = newPost.querySelector('.cw-text');
+        const cwBtn = newPost.querySelector('.cw-btn');
+        cwBtn.addEventListener('click', () => {
+            if (cwDiv.style.display === 'none') {
+                cwDiv.style.display = 'inline-flex';
+                cwBtn.style.color = '#cc0000';
+                cwBtn.style.borderColor = '#cc0000';
+                cwBtn.style.textDecorationLine = 'line-through';
+                cwBtn.title = "Supprimer l'avertissement";
+            } else {
+                cwText.value = null;
+                cwDiv.style.display = 'none';
+                cwBtn.removeAttribute('style');
+                cwBtn.title = 'Ajouter un avertissement';
             }
         });
 
@@ -239,8 +290,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             dropzone.classList.remove('dz-active');
             dzInst.style.display = 'none';
             const newFiles = e.dataTransfer.files;
-            console.log('Current number of files: ', files[`files${i}`].length);
-            console.log('Number of new files: ', newFiles.length);
             if (files[`files${i}`].length >= maxMedia) {
                 window.alert("Le nombre maximum d'images est atteint.");
                 return;
@@ -258,11 +307,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                     }
                 }
             }
-            console.log(
-                files[`files${i}`].length + ' files dropped: ',
-                files[`files${i}`]
-            );
-            console.log('Total files: ', files);
         });
 
         function displayThumbnail(file, imgPreview, imgCount, dzInst) {
@@ -271,12 +315,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const div = document.createElement('div');
                 const img = document.createElement('img');
                 const removeBtn = document.createElement('button');
-                const overlay = document.createElement('div');
 
                 img.src = e.target.result;
-                removeBtn.textContent = 'x';
+                removeBtn.textContent = 'X';
                 removeBtn.classList.add('remove-btn');
-                overlay.classList.add('overlay');
 
                 removeBtn.addEventListener('click', () => {
                     const index = files[`files${i}`].indexOf(file);
@@ -284,27 +326,20 @@ document.addEventListener('DOMContentLoaded', async function () {
                         files[`files${i}`].splice(index, 1);
                     }
                     div.remove();
-                    imgCount.textContent = `${files.length}/${maxMedia}`;
+                    imgCount.textContent = `${
+                        files[`files${i}`].length
+                    }/${maxMedia}`;
                     if (files[`files${i}`].length === 0) {
                         dzInst.style.display = 'block';
                     }
-                    console.log('File removed: ', file);
-                    console.log('Files remaining: ', files[`files${i}`]);
-                    console.log('Total files: ', files);
                 });
 
                 div.appendChild(img);
-                div.appendChild(overlay);
                 div.appendChild(removeBtn);
                 imgPreview.appendChild(div);
             };
             reader.readAsDataURL(file);
         }
-
-        const addPostBtn = newPost.querySelector('.add-post-btn');
-        addPostBtn.addEventListener('click', () => {
-            createNewPost();
-        });
 
         const deletePostBtn = newPost.querySelector('.delete-post-btn');
         deletePostBtn.addEventListener('click', () => {
@@ -312,10 +347,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             if (postItems.length > 1) {
                 const id = newPost.id.split('-')[1];
                 postItems.splice(index, 1);
-                console.log('Post deleted, remaining posts: ', postItems);
                 newPost.remove();
                 delete files[`files${id}`];
-                console.log('Files remaining: ', files);
                 updatePostCount();
                 if (postItems.length === 1) {
                     const post = postItems[0];
@@ -323,6 +356,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                     delBtn.style.display = 'none';
                 }
             }
+            const firstPost = postItems[0];
+            const firstVizSelect = firstPost.querySelector('.viz-select');
+            firstVizSelect.value = defaultViz;
         });
     }
 
@@ -338,38 +374,38 @@ document.addEventListener('DOMContentLoaded', async function () {
     let threadUrl;
     postThreadBtn.addEventListener('click', async () => {
         await postThread();
+        spinner.style.display = 'none';
         postThreadBtn.style.display = 'none';
         viewThreadLink.setAttribute('href', threadUrl);
+        viewThreadBtn.addEventListener('click', () => {
+            window.open(threadUrl, '_blank');
+        });
         viewThreadBtn.style.display = 'flex';
     });
 
-
     async function postThread() {
-        let visibility;
+        spinner.style.display = 'inline-flex';
         let replyToId;
         for (let post of postItems) {
-            console.log('Access token: ', token);
             const i = postItems.indexOf(post);
-            if (i === 0) {
-                visibility = 'public';
-            } else {
-                visibility = 'unlisted';
-            }
 
-            const textarea = post.querySelector('textarea');
+            const vizSelect = post.querySelector('.viz-select');
+            const visibility = vizSelect.value;
+            const cwTextArea = post.querySelector('.cw-text');
+            let cwText;
+            if (cwTextArea.value) {
+                cwText = cwTextArea.value;
+            }
+            const textarea = post.querySelector('.post-text');
             const postText = textarea.value;
-            console.log('Post text: ', postText);
 
             const id = post.id.split('-')[1];
             const media = files[`files${id}`];
             let mediaIds = [];
             if (media) {
-                console.log('Files to upload: ', media);
                 for (let m of media) {
-                    console.log('Media to upload: ', m);
                     const formData = new FormData();
                     formData.append('file', m);
-                    console.log('FormData: ', formData);
 
                     try {
                         const response = await fetch(
@@ -387,12 +423,14 @@ document.addEventListener('DOMContentLoaded', async function () {
                         if (!response.ok) {
                             const errorData = await response.json();
                             console.error('Error uploading media: ', errorData);
-                            continue;
+                            window.alert(
+                                `Un fichier attaché au pouet n°${id} n'a pas pu être envoyé`
+                            );
+                            return;
                         }
 
                         const data = await response.json();
                         mediaIds.push(data.id);
-                        console.log('Media ids: ', mediaIds);
                     } catch (error) {
                         console.error('Fetch error: ', error);
                     }
@@ -412,8 +450,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                         body: JSON.stringify({
                             status: postText,
                             media_ids: mediaIds,
+                            spoiler_text: cwText,
                             visibility: visibility,
-                            in_reply_to_id: replyToId
+                            in_reply_to_id: replyToId,
                         }),
                     }
                 );
@@ -421,10 +460,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('Error posting status: ', errorData);
-                    continue;
+                    window.alert(`Le pouet n°${id} n'a pas pu être envoyé.`);
+                    return;
                 }
                 const data = await response.json();
-                console.log('Post data: ', data);
                 replyToId = data.id;
                 if (i === 0) {
                     threadUrl = data.url;

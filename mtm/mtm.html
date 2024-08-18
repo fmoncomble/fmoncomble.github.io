@@ -12,9 +12,25 @@
         </div>
         <div id="instance-div">
             <div id="instructions">
-                <p>Lors de la première utilisation, vous devez créer une application dans votre compte dotée au minimum des étendues "read" et "write", puis copier son ID et son secret ci-dessous. Cette application pourra être réutilisée par la suite.</p>
-                <p>Après avoir autorisé l'application à se connecter à votre compte, vous obtiendrez un code à copier ci-dessous pour vous authentifier.</p>
-                <p>Entrez votre instance Mastodon et cliquez sur "Valider" pour commencer.</p>
+                <p>
+                    Lors de la première utilisation, vous devez créer une
+                    application dans votre compte dotée au minimum des étendues
+                    "read" et "write", puis copier-coller son ID et son secret
+                    ci-dessous. Cette application pourra être réutilisée par la
+                    suite. <br />
+                    <b>Attention, son nom apparaitra sous vos pouets !</b>
+                </p>
+                <p>
+                    Après avoir autorisé l'application à se connecter à votre
+                    compte, vous obtiendrez un code à copier ci-dessous pour
+                    vous authentifier.
+                </p>
+                <p style="color: #563acc">
+                    <b
+                        >Entrez votre instance Mastodon ci-dessous <br />
+                        et cliquez sur "Valider" pour commencer.</b
+                    >
+                </p>
             </div>
             <div id="instance-input-div">
                 <span>https:// </span>
@@ -26,7 +42,7 @@
                 <button id="instance-btn">Valider</button>
             </div>
             <div id="auth-div" style="display: none">
-                <div>
+                <div id="client-div">
                     <input
                         id="client-id-input"
                         type="text"
@@ -34,7 +50,7 @@
                     />
                     <button id="save-id-btn">Valider</button>
                 </div>
-                <div>
+                <div id="secret-div">
                     <input
                         id="client-secret-input"
                         type="text"
@@ -42,7 +58,7 @@
                     />
                     <button id="save-secret-btn">Valider</button>
                 </div>
-                <div>
+                <div id="code-div" style="display: none">
                     <input id="code-input" type="text" placeholder="Code" />
                     <button id="save-code-btn">Valider</button>
                 </div>
@@ -50,9 +66,26 @@
         </div>
         <div id="content-container">
             <div id="post-item" class="post-item" style="display: none">
-                <div class="post-count"></div>
+                <span class="post-count"></span>
+                <select class="viz-select" title="Régler la visibilité">
+                    <option value="public">Public</option>
+                    <option value="unlisted">Non listé</option>
+                    <option value="private">Privé</option>
+                </select>
+                <button class="cw-btn" title="Ajouter un avertissement">
+                    CW
+                </button>
+                <div class="cw-div" style="display: none">
+                    <textarea
+                        class="cw-text"
+                        placeholder="Avertissement"
+                    ></textarea>
+                </div>
                 <div class="textarea">
-                    <textarea placeholder="Tapez votre texte ici"></textarea>
+                    <textarea
+                        class="post-text"
+                        placeholder="Tapez votre texte ici"
+                    ></textarea>
                 </div>
                 <div class="char-count"></div>
                 <div class="dropzone">
@@ -66,11 +99,14 @@
                 </button>
             </div>
         </div>
-        <button id="post-thread-btn" style="display: none">
-            Poster le fil
-        </button>
-        <div id="view-thread-btn" style="display: none">
-            <a target="_blank">Voir le fil</a>
+        <div class="btn-div">
+            <button id="post-thread-btn" style="display: none">
+                Poster le fil
+            </button>
+            <div id="view-thread-btn" style="display: none">
+                <a target="_blank">Voir le fil</a>
+            </div>
+            <span id="spinner" class="spinner" style="display: none"></span>
         </div>
     </body>
 </html>

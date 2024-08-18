@@ -53,6 +53,35 @@ button:hover {
     width: 550px;
     border: solid 1px gray;
     border-radius: 4px;
+    display: flex;
+}
+
+.post-count {
+    display: inline-flex;
+    color: gray;
+    margin-top: 10px;
+}
+
+.cw-btn, select  {
+    height: auto;
+    width: auto;
+    color: black;
+    display: inline-flex;
+    margin-top: 10px;
+    margin-right: 15px;
+    float: right;
+    border: solid 1px #563acc;
+    border-radius: 4px;
+    background-color: #f2f2f2;
+    display: inline;
+}
+
+.cw-btn:hover, select:hover {
+    background-color: #ccc;
+}
+
+.cw-div {
+    margin-top: 10px;
 }
 
 textarea {
@@ -62,6 +91,11 @@ textarea {
     height: 200px;
     padding: 10px;
     font-family: Arial, Helvetica, sans-serif;
+    resize: none;
+}
+
+.cw-text {
+    height: 50px;
 }
 
 .textarea,
@@ -82,11 +116,6 @@ textarea {
 .post-item {
     margin-bottom: 20px;
     background-color: #f2f2f2;
-}
-
-.post-count {
-    color: gray;
-    margin-top: 10px;
 }
 
 .add-post-btn,
@@ -183,7 +212,7 @@ textarea {
 }
 
 .remove-btn:hover {
-    background: black;
+    background: #cc0000;
 }
 
 button#post-thread-btn {
@@ -191,6 +220,35 @@ button#post-thread-btn {
     height: 50px;
     font-size: large;
 }
+
+div.btn-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner {
+    border: solid 10px #f2f2f2;
+    border-left: solid 10px #563acc;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    display: none;
+    vertical-align: baseline;
+    margin-left: 10px;
+    margin-right: 20px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 
 div#view-thread-btn {
     width: 200px;
@@ -214,7 +272,3 @@ div#view-thread-btn a {
     color: white;
     text-decoration: none;
 }
-
-/* div#view-thread-btn a:hover {
-    color:#6364ff;
-} */
