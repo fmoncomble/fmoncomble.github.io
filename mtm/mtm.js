@@ -124,6 +124,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     client_name: 'MastoThreader',
                     redirect_uris: redirectUri,
                     scopes: 'write',
+                    website: redirectUri
                 }),
             });
             if (!response.ok) {
@@ -363,16 +364,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     let threadUrl;
     postThreadBtn.addEventListener('click', async () => {
         await postThread();
-        spinner.style.display = 'none';
+        spinner.remove();
         postThreadBtn.style.display = 'none';
-        viewThreadLink.setAttribute('href', threadUrl);
         viewThreadBtn.addEventListener('click', () => {
-            window.open(threadUrl, '_blank');
+            window.location.href = threadUrl;
         });
         viewThreadBtn.style.display = 'flex';
     });
 
     async function postThread() {
+        postThreadBtn.textContent = null;
         spinner.style.display = 'inline-flex';
         let replyToId;
         for (let post of postItems) {
