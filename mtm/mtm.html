@@ -8,7 +8,7 @@
 
     <body>
         <div id="page-title">
-            <h1>Mastodon thread maker</h1>
+            <h1>Mastodon Thread Maker</h1>
         </div>
         <div id="instance-div">
             <div id="instance-input-div">
@@ -20,13 +20,27 @@
                 />
                 <button id="instance-btn">Valider</button>
             </div>
-            <div id="token-input-div" style="display: none">
-                <input
-                    id="token-input"
-                    type="password"
-                    placeholder="Jeton d'authentification"
-                />
-                <button id="token-btn">Valider</button>
+            <div id="auth-div" style="display: none">
+                <div>
+                    <input
+                        id="client-id-input"
+                        type="text"
+                        placeholder="ID de l'application"
+                    />
+                    <button id="save-id-btn">Valider</button>
+                </div>
+                <div>
+                    <input
+                        id="client-secret-input"
+                        type="text"
+                        placeholder="Secret"
+                    />
+                    <button id="save-secret-btn">Valider</button>
+                </div>
+                <div>
+                    <input id="code-input" type="text" placeholder="Code" />
+                    <button id="save-code-btn">Valider</button>
+                </div>
             </div>
         </div>
         <div id="content-container">
@@ -50,5 +64,8 @@
         <button id="post-thread-btn" style="display: none">
             Poster le fil
         </button>
+        <div id="view-thread-btn" style="display: none">
+            <a target="_blank">Voir le fil</a>
+        </div>
     </body>
 </html>

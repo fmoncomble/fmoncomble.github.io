@@ -1,12 +1,18 @@
 document.addEventListener('DOMContentLoaded', async function () {
-    const tokenInputDiv = document.getElementById('token-input-div');
+    const authDiv = document.getElementById('auth-div');
     const instanceInput = document.getElementById('instance-input');
     const instanceBtn = document.getElementById('instance-btn');
-    const tokenInput = document.getElementById('token-input');
-    const tokenBtn = document.getElementById('token-btn');
+    const clientIdInput = document.getElementById('client-id-input');
+    const saveIdBtn = document.getElementById('save-id-btn');
+    const clientSecretInput = document.getElementById('client-secret-input');
+    const saveSecretBtn = document.getElementById('save-secret-btn');
+    const codeInput = document.getElementById('code-input');
+    const saveCodeBtn = document.getElementById('save-code-btn');
     const contentContainer = document.getElementById('content-container');
     const postItem = document.getElementById('post-item');
     const postThreadBtn = document.getElementById('post-thread-btn');
+    const viewThreadBtn = document.getElementById('view-thread-btn');
+    const viewThreadLink = viewThreadBtn.querySelector('a');
 
     let maxChars;
     let maxMedia;
@@ -17,6 +23,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     checkInstance();
     let token;
     checkToken();
+
+    clientIdInput.value = null;
+    clientSecretInput.value = null;
+    codeInput.value = null;
+
+    let clientId;
+    let clientSecret;
+    let code;
 
     function checkInstance() {
         instance = localStorage.getItem('mastothreadinstance');
@@ -35,21 +49,23 @@ document.addEventListener('DOMContentLoaded', async function () {
         token = localStorage.getItem('mastothreadtoken');
         if (token) {
             instanceInput.value = instance + ' (jeton enregistré) ✅';
+            authDiv.style.display = 'none';
             if (postItems.length === 0) {
                 await getMax();
                 createNewPost();
                 postThreadBtn.style.display = 'flex';
             }
         } else if (!token) {
-            if (instance)
-                instanceInput.value = instance + ' (⚠️ Saisissez votre jeton)';
-            tokenInputDiv.style.display = 'block';
+            if (instance) {
+                instanceInput.value = instance + ' (⚠️ Saisissez vos informations)';
+                authDiv.style.display = 'block';
+                clientIdInput.focus();
+            }
         }
     }
 
     function removeToken() {
         localStorage.removeItem('mastothreadtoken');
-        tokenInput.value = null;
     }
 
     instanceInput.addEventListener('keydown', (event) => {
@@ -64,8 +80,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             instanceBtn.textContent = 'Changer';
             const mastoUrl = 'https://' + instance + '/settings/applications';
             window.open(mastoUrl, '_blank');
-            tokenInputDiv.style.display = 'block';
-            tokenInput.focus();
+            authDiv.style.display = 'block';
+            clientIdInput.focus();
             checkInstance();
             checkToken();
         }
@@ -74,12 +90,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     instanceBtn.addEventListener('click', () => {
         if (instanceInput.disabled) {
             instanceInput.value = null;
+            clientIdInput.value = null;
+            clientSecretInput.value = null;
+            codeInput.value = null;
             instanceInput.disabled = false;
             instanceBtn.textContent = 'Valider';
             localStorage.removeItem('mastothreadinstance');
             removeToken();
-            tokenInputDiv.style.display = 'none';
-            tokenInput.disabled = false;
+            authDiv.style.display = 'none';
             checkInstance();
             checkToken();
         } else {
@@ -93,60 +111,63 @@ document.addEventListener('DOMContentLoaded', async function () {
             instanceBtn.textContent = 'Changer';
             const mastoUrl = 'https://' + instance + '/settings/applications';
             window.open(mastoUrl, '_blank');
-            tokenInputDiv.style.display = 'block';
-            tokenInput.focus();
+            authDiv.style.display = 'block';
+            clientIdInput.focus();
             checkInstance();
             checkToken();
         }
     });
 
-    tokenInput.addEventListener('keydown', async (event) => {
-        if (event.key === 'Enter') {
-            token = tokenInput.value;
-            if (!token) {
-                window.alert("Veuillez entrer votre jeton d'authentification");
-                return;
-            }
+    saveIdBtn.addEventListener('click', () => {
+        clientId = clientIdInput.value.trim();
+        clientSecretInput.focus();
+    });
+
+    saveSecretBtn.addEventListener('click', () => {
+        clientSecret = clientSecretInput.value.trim();
+        redirectToAuthServer();
+        codeInput.focus();
+    });
+
+    saveCodeBtn.addEventListener('click', async () => {
+        code = codeInput.value.trim();
+        token = await exchangeCodeForToken(code);
+        console.log('New token: ', token);
+        if (token) {
             localStorage.setItem('mastothreadtoken', token);
-            tokenBtn.style.backgroundColor = 'green';
-            tokenInput.style.backgroundColor = '#e6ffe6';
-            setTimeout(() => {
-                tokenBtn.removeAttribute('style');
-                tokenInput.removeAttribute('style');
-                tokenInputDiv.style.display = 'none';
-            }, 1000);
-            tokenInput.disabled = true;
-            checkInstance();
             checkToken();
-            if (postItems.length === 0) {
-                createNewPost();
-            }
-            postThreadBtn.style.display = 'flex';
         }
     });
 
-    tokenBtn.addEventListener('click', async () => {
-        token = tokenInput.value;
-        if (!token) {
-            window.alert("Veuillez entrer votre jeton d'authentification");
-            return;
-        }
-        localStorage.setItem('mastothreadtoken', token);
-        tokenBtn.style.backgroundColor = 'green';
-        tokenInput.style.backgroundColor = '#e6ffe6';
-        setTimeout(() => {
-            tokenBtn.removeAttribute('style');
-            tokenInput.removeAttribute('style');
-            tokenInputDiv.style.display = 'none';
-        }, 1000);
-        tokenInput.disabled = true;
-        checkInstance();
-        checkToken();
-        if (postItems.length === 0) {
-            createNewPost();
-        }
-        postThreadBtn.style.display = 'flex';
-    });
+    const redirectUri = 'urn:ietf:wg:oauth:2.0:oob';
+    function redirectToAuthServer() {
+        const scope = 'read write follow';
+        const authUrl = `https://${instance}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(
+            redirectUri
+        )}&scope=${encodeURIComponent(scope)}`;
+
+        window.open(authUrl, '_blank');
+    }
+
+    async function exchangeCodeForToken(authCode) {
+        const tokenUrl = `https://${instance}/oauth/token`;
+
+        const response = await fetch(tokenUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                code: authCode,
+                client_id: clientId,
+                client_secret: clientSecret,
+                redirect_uri: redirectUri,
+                grant_type: 'authorization_code',
+            }),
+        });
+        const data = await response.json();
+        return data.access_token;
+    }
 
     async function getMax() {
         const response = await fetch(`https://${instance}/api/v1/instance`);
@@ -302,41 +323,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
-    // function displayThumbnail(file, imgPreview, imgCount, dzInst) {
-    //     const reader = new FileReader();
-    //     reader.onload = (e) => {
-    //         const div = document.createElement('div');
-    //         const img = document.createElement('img');
-    //         const removeBtn = document.createElement('button');
-    //         const overlay = document.createElement('div');
-
-    //         img.src = e.target.result;
-    //         removeBtn.textContent = 'x';
-    //         removeBtn.classList.add('remove-btn');
-    //         overlay.classList.add('overlay');
-
-    //         removeBtn.addEventListener('click', () => {
-    //             const index = files.indexOf(file);
-    //             if (index > -1) {
-    //                 files.splice(index, 1);
-    //             }
-    //             div.remove();
-    //             imgCount.textContent = `${files.length}/${maxMedia}`;
-    //             if (files.length === 0) {
-    //                 dzInst.style.display = 'block';
-    //             }
-    //             console.log('File removed: ', file);
-    //             console.log('Files remaining: ', files);
-    //         });
-
-    //         div.appendChild(img);
-    //         div.appendChild(overlay);
-    //         div.appendChild(removeBtn);
-    //         imgPreview.appendChild(div);
-    //     };
-    //     reader.readAsDataURL(file);
-    // }
-
     function updatePostCount() {
         for (let p of postItems) {
             const i = postItems.indexOf(p);
@@ -346,14 +332,26 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    postThreadBtn.addEventListener('click', () => {
-        postThread();
+    let threadUrl;
+    postThreadBtn.addEventListener('click', async () => {
+        await postThread();
+        postThreadBtn.style.display = 'none';
+        viewThreadLink.setAttribute('href', threadUrl);
+        viewThreadBtn.style.display = 'flex';
     });
 
+
     async function postThread() {
+        let visibility;
+        let replyToId;
         for (let post of postItems) {
             console.log('Access token: ', token);
             const i = postItems.indexOf(post);
+            if (i === 0) {
+                visibility = 'public';
+            } else {
+                visibility = 'unlisted';
+            }
 
             const textarea = post.querySelector('textarea');
             const postText = textarea.value;
@@ -377,7 +375,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                 method: 'POST',
                                 headers: {
                                     Authorization: `Bearer ${token}`,
-                                    scope: 'write'
+                                    scope: 'write',
                                 },
                                 body: formData,
                             }
@@ -406,12 +404,13 @@ document.addEventListener('DOMContentLoaded', async function () {
                         headers: {
                             Authorization: `Bearer ${token}`,
                             'Content-Type': 'application/json',
-                            scope: 'write'
+                            scope: 'write',
                         },
                         body: JSON.stringify({
                             status: postText,
                             media_ids: mediaIds,
-                            visibility: 'private',
+                            visibility: visibility,
+                            in_reply_to_id: replyToId
                         }),
                     }
                 );
@@ -423,6 +422,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 }
                 const data = await response.json();
                 console.log('Post data: ', data);
+                replyToId = data.id;
+                if (i === 0) {
+                    threadUrl = data.url;
+                }
             } catch (error) {
                 console.error('Fetch error: ', error);
             }

@@ -1,17 +1,17 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
+    width: 600px;
 }
 
 h1 {
     color: #563acc;
-    font-size: large;
+    font-size: xx-large;
     font-weight: bold;
 }
 
 #instance-div {
     display: block;
     text-align: center;
-
 }
 
 input {
@@ -55,10 +55,13 @@ textarea {
     width: 500px;
     height: 200px;
     padding: 10px;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.textarea, #content-container, #page-title, #post-thread-btn {
+.textarea,
+#content-container,
+#page-title,
+#post-thread-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -80,7 +83,8 @@ textarea {
     margin-top: 10px;
 }
 
-.add-post-btn, .delete-post-btn {
+.add-post-btn,
+.delete-post-btn {
     margin-bottom: 20px;
 }
 
@@ -128,7 +132,8 @@ textarea {
     object-fit: cover;
 }
 
-.char-count, .img-count {
+.char-count,
+.img-count {
     text-align: right;
     color: gray;
     margin-right: 20px;
@@ -181,3 +186,29 @@ button#post-thread-btn {
     font-size: large;
 }
 
+div#view-thread-btn {
+    width: 200px;
+    height: 50px;
+    margin-left: 200px;
+    border-radius: 4px;
+    font-size: large;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    background-color: #563acc;
+    color: white;
+    cursor: pointer;
+}
+
+div#view-thread-btn:hover {
+    background-color: #6364ff;
+}
+
+div#view-thread-btn a {
+    color: white;
+    text-decoration: none;
+}
+
+/* div#view-thread-btn a:hover {
+    color:#6364ff;
+} */
