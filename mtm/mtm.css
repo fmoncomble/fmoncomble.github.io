@@ -10,8 +10,6 @@ div#version {
 }
 div#instructions {
     font-size: small;
-    width: 500px;
-    margin-left: 50px;
 }
 
 #instance-div {
