@@ -226,6 +226,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const textarea = newPost.querySelector('.post-text');
         textarea.value = null;
+        textarea.focus();
         const charCount = newPost.querySelector('.char-count');
         charCount.textContent = `0/${maxChars}`;
 
