@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         checkToken();
     });
 
-
     authSaveBtn.onclick = () => {
         if (!authInput.value) {
             spinner.style.display = 'none';
@@ -226,6 +225,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 newItem.textContent = `Aucun enseignement trouvé pour ${prof}`;
                 courseList.appendChild(newItem);
                 newItem.style.display = 'block';
+                dispoDiv.style.display = 'none';
             }
         }
 
@@ -339,6 +339,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (logic === 'prof') {
             const profFromFile = servicesFile.find((p) => p.Name === prof);
+            if (!profFromFile) {
+                return;
+            }
             const data = computeServiceVol(profFromFile);
             const baseService = data[0];
             const totalService = data[1];
@@ -500,13 +503,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function getProfFile() {
         try {
             const url =
-                'https://raw.githubusercontent.com/fmoncomble/fmoncomble.github.io/main/voeux/profs.json';
-            const res = await fetch(url);
-            if (!res || !res.ok) {
-                console.error('Could not retrieve teacher file');
-            } else {
+                'https://api.github.com/repos/fmoncomble/voeux/contents/profs.json?ref=main';
+            const ghToken = localStorage.getItem('github-token');
+            const headers = new Headers({
+                Authorization: `Bearer ${ghToken}`,
+                Accept: 'application/vnd.github+json',
+                'Content-Type': 'application/json',
+            });
+            const res = await fetch(url, {
+                headers: headers,
+            });
+            if (!res) {
+                console.error('Could not retrieve course file');
+                window.alert('Le serveur ne répond pas');
+                return;
+            } else if (res.status === 401) {
+                window.alert("Vérifiez votre jeton d'authentification");
+                authDialog.showModal();
+            } else if (res && res.ok) {
                 const data = await res.json();
-                return data;
+                const binaryString = atob(data.content);
+                const binaryLen = binaryString.length;
+                const bytes = new Uint8Array(binaryLen);
+                for (let i = 0; i < binaryLen; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                const decoder = new TextDecoder('utf-8');
+                let contents = decoder.decode(bytes);
+                let file = JSON.parse(contents);
+                return file;
             }
         } catch (error) {
             throw new Error(error);
@@ -528,13 +553,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function getCourseFile() {
         try {
             const url =
-                'https://raw.githubusercontent.com/fmoncomble/fmoncomble.github.io/main/voeux/cours.json';
-            const res = await fetch(url);
-            if (!res || !res.ok) {
+                'https://api.github.com/repos/fmoncomble/voeux/contents/cours.json?ref=main';
+            const ghToken = localStorage.getItem('github-token');
+            const headers = new Headers({
+                Authorization: `Bearer ${ghToken}`,
+                Accept: 'application/vnd.github+json',
+                'Content-Type': 'application/json',
+            });
+            const res = await fetch(url, {
+                headers: headers,
+            });
+            if (!res) {
                 console.error('Could not retrieve course file');
-            } else {
+                window.alert('Le serveur ne répond pas');
+                return;
+            } else if (res.status === 401) {
+                window.alert("Vérifiez votre jeton d'authentification");
+                authDialog.showModal();
+            } else if (res && res.ok) {
                 const data = await res.json();
-                return data;
+                const binaryString = atob(data.content);
+                const binaryLen = binaryString.length;
+                const bytes = new Uint8Array(binaryLen);
+                for (let i = 0; i < binaryLen; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                const decoder = new TextDecoder('utf-8');
+                let contents = decoder.decode(bytes);
+                let file = JSON.parse(contents);
+                return file;
             }
         } catch (error) {
             throw new Error(error);
@@ -734,6 +781,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Calculer service total et service dû
     function computeServiceVol(prof) {
+        if (!prof) {
+            return;
+        }
         const profFromFile = profFile.find((p) => p.name === prof.Name);
         let baseService = profFromFile.service;
         if (!baseService) {

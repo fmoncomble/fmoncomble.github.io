@@ -16,7 +16,7 @@ table {
 }
 
 th, td {
-    min-width: 16%;
+    width: 16%;
     height: 1.5em;
 }
 
