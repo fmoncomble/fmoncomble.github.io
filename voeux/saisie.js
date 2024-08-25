@@ -85,6 +85,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             authSaveBtn.textContent = 'Enregistrer';
             authSaveBtn.classList.remove('reset-btn');
             tokenInput.placeholder = "Jeton d'authentification";
+            teacherInput.value = null;
+            teacherStatus.textContent = null;
+            teacherService.textContent = null;
+            const container1 = document.getElementById('container-1');
+            const divs = Array.from(container1.children);
+            for (let div of divs) {
+                if (divs.indexOf(div) > 0) {
+                    div.style.display = 'none';
+                }
+            }
+            const container2 = document.getElementById('container-2');
+            container2.style.display = 'none';
             teacherInputDiv.style.display = 'none';
         }
     }
