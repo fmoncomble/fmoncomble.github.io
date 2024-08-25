@@ -42,8 +42,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!teacherData && !courseData) {
                 teacherData = await getFile(teacherDBUrl);
                 courseData = await getFile(courseDBUrl);
-                buildTeacherList();
-                buildCourseList();
+                if (teacherData && courseData) {
+                    buildTeacherList();
+                    buildCourseList();
+                }
             }
         } else {
             tokenInput.placeholder = "Jeton d'authentification";
@@ -128,7 +130,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     let tService;
     let filière = 'LLCER';
     let semestre = 'S1';
-    // buildCourseList();
 
     let jsonFile;
 
