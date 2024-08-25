@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const eraseBtn = document.getElementById('erase-btn');
     const compileBtn = document.getElementById('compile-btn');
     const courseList = document.getElementById('course-list');
+    const courseAddSelect = document.getElementById('course-add-select');
+    const filièreSelect2 = document.getElementById('filière-select-2');
+    const semestreSelect2 = document.getElementById('semestre-select-2');
     const saveBtn = document.getElementById('save-btn');
     const dispoDiv = document.getElementById('dispos');
     const authDialog = document.getElementById('auth-dialog');
@@ -12,10 +15,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Manage authentication
     let token;
+    let profFile;
+    let courseFile;
     async function checkToken() {
         token = localStorage.getItem('github-token');
         if (token) {
             checkVoeuxFile();
+            profFile = await getProfFile();
+            courseFile = await getCourseFile();
+            buildProfList();
+            buildCourseAddSelect();
         } else {
             authDiv.style.display = 'none';
             authDialog.showModal();
@@ -499,7 +508,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Handle teacher selection
     const profInput = document.getElementById('prof-input');
     const profList = document.getElementById('prof-list');
-    const profFile = await getProfFile();
     async function getProfFile() {
         try {
             const url =
@@ -546,10 +554,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             profList.appendChild(option);
         }
     }
-    buildProfList();
 
     // Handle course selection for modifying teacher service
-    const courseFile = await getCourseFile();
     async function getCourseFile() {
         try {
             const url =
@@ -588,9 +594,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    const filièreSelect2 = document.getElementById('filière-select-2');
-    const semestreSelect2 = document.getElementById('semestre-select-2');
-    const courseAddSelect = document.getElementById('course-add-select');
     function buildCourseAddSelect() {
         const options = Array.from(courseAddSelect.querySelectorAll('option'));
         for (o of options) {
@@ -608,7 +611,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             courseAddSelect.appendChild(option);
         }
     }
-    buildCourseAddSelect();
     semestreSelect2.addEventListener('change', () => {
         buildCourseAddSelect();
     });
