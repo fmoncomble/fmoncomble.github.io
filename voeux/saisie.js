@@ -37,7 +37,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (token) {
             tokenInput.placeholder = 'Jeton enregistré';
             tokenInput.style.outline = 'solid 1px green';
-            authSaveBtn.textContent = 'Réinitialiser';
+            authSaveBtn.textContent = 'Déconnecter';
+            authSaveBtn.classList.add('reset-btn');
             teacherInputDiv.style.display = 'block';
             if (!teacherData && !courseData) {
                 teacherData = await getFile(teacherDBUrl);
@@ -51,6 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             tokenInput.placeholder = "Jeton d'authentification";
             tokenInput.removeAttribute('style');
             authSaveBtn.textContent = 'Enregistrer';
+            authSaveBtn.classList.remove('reset-btn');
             tokenInput.value = null;
             teacherInputDiv.style.display = 'none';
             window.alert(
@@ -71,19 +73,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             tokenInput.style.outline = 'solid 1px green';
             authSaveBtn.textContent = 'Réinitialiser';
             teacherInputDiv.style.display = 'block';
+            authSaveBtn.style.backgroundColor = 'green';
+            setTimeout(() => {
+                authSaveBtn.removeAttribute('style');
+            }, 1000);
             checkToken();
         } else if (token) {
             localStorage.removeItem('saisie-github-token');
             tokenInput.removeAttribute('style');
             tokenInput.value = null;
             authSaveBtn.textContent = 'Enregistrer';
+            authSaveBtn.classList.remove('reset-btn');
             tokenInput.placeholder = "Jeton d'authentification";
             teacherInputDiv.style.display = 'none';
         }
-        authSaveBtn.style.backgroundColor = 'green';
-        setTimeout(() => {
-            authSaveBtn.removeAttribute('style');
-        }, 1000);
     }
 
     // Get profs and cours files

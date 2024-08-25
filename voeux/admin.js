@@ -52,7 +52,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         authDialog.close();
     };
-
+    authInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            if (!authInput.value) {
+                spinner.style.display = 'none';
+                return;
+            } else {
+                token = authInput.value.trim();
+                authInput.value = null;
+                localStorage.setItem('github-token', token);
+                checkToken();
+            }
+            authDialog.close();
+        }
+    });
     // Retrieve existing services file
     let voeux;
     let sha;

@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const authDialog = document.getElementById('auth-dialog');
             authDialog.showModal();
             const authInput = document.getElementById('auth-input');
+            authInput.focus();
             const authSaveBtn = document.getElementById('auth-save-btn');
             authSaveBtn.onclick = () => {
                 if (!authInput.value) {
@@ -53,11 +54,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                     return;
                 } else {
                     token = authInput.value.trim();
+                    authInput.value = null;
                     localStorage.setItem('github-token', token);
                     checkToken();
                 }
                 authDialog.close();
             };
+            authInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    if (!authInput.value) {
+                        spinner.style.display = 'none';
+                        return;
+                    } else {
+                        token = authInput.value.trim();
+                        authInput.value = null;
+                        localStorage.setItem('github-token', token);
+                        checkToken();
+                    }
+                    authDialog.close();
+                }
+            });
         }
     }
     checkToken();

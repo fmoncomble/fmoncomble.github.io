@@ -119,9 +119,3 @@ button.wishes-ui {
         transform: rotate(360deg);
     }
 }
-
-dialog {
-    border: solid 1px gray;
-    border-radius: 4px;
-    box-shadow: 0 0 10px 5px gray;
-}

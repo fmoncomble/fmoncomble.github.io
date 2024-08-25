@@ -20,6 +20,11 @@ select.wishes-ui {
     padding-left: 5px;
 }
 
+input#auth-input,
+input#token-input {
+    width: 50%;
+}
+
 select.wishes-ui {
     height: 36px;
 }
@@ -76,6 +81,7 @@ dialog {
     border-radius: 4px;
     box-shadow: 0 0 10px 5px gray;
     width: 33%;
+    text-align: center;
 }
 
 div#prof-summary {
