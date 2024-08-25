@@ -11,7 +11,22 @@
         <h1>Saisie des vœux</h1>
         <div id="wrapper" class="wrapper">
             <div id="container-1" class="container">
-                <div>
+                <div id="auth-div" class="wishes-ui">
+                    <label for="token-input" class="wishes-ui">
+                        <h2>Authentification</h2>
+                        <input
+                            name="token-input"
+                            id="token-input"
+                            type="password"
+                            class="wishes-ui"
+                            placeholder="Jeton d'authentification"
+                        />
+                    </label>
+                    <button id="auth-save" class="wishes-ui">
+                        Enregistrer
+                    </button>
+                </div>
+                <div id="teacher-input-div" style="display: none">
                     <label for="teacher-name" class="wishes-ui">
                         Nom de l'enseignant.e :
                         <input

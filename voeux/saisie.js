@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Saisie des vœux v1.2');
+    const tokenInput = document.getElementById('token-input');
+    const authSaveBtn = document.getElementById('auth-save');
+    const teacherInputDiv = document.getElementById('teacher-input-div');
     const teacherInput = document.getElementById('teacher-name');
     const goBtn = document.getElementById('go-btn');
     const teacherStatus = document.getElementById('teacher-status');
@@ -15,25 +17,102 @@ document.addEventListener('DOMContentLoaded', async () => {
     const hTotal = document.getElementById('hTotal');
     const hc = document.getElementById('hc');
 
+    // Manage authentication & get data
+    authSaveBtn.addEventListener('click', () => saveToken());
+    tokenInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            saveToken();
+        }
+    });
+    let token;
+    let teacherData;
+    let courseData;
+    const teacherDBUrl =
+        'https://api.github.com/repos/fmoncomble/voeux/contents/profs.json?ref=main';
+    const courseDBUrl =
+        'https://api.github.com/repos/fmoncomble/voeux/contents/cours.json?ref=main';
+
+    async function checkToken() {
+        token = localStorage.getItem('saisie-github-token');
+        if (token) {
+            tokenInput.placeholder = 'Jeton enregistré';
+            tokenInput.style.outline = 'solid 1px green';
+            authSaveBtn.textContent = 'Réinitialiser';
+            teacherInputDiv.style.display = 'block';
+            if (!teacherData && !courseData) {
+                teacherData = await getFile(teacherDBUrl);
+                courseData = await getFile(courseDBUrl);
+                buildTeacherList();
+                buildCourseList();
+            }
+        } else {
+            tokenInput.placeholder = "Jeton d'authentification";
+            tokenInput.removeAttribute('style');
+            authSaveBtn.textContent = 'Enregistrer';
+            tokenInput.value = null;
+            teacherInputDiv.style.display = 'none';
+            window.alert(
+                '⚠️ Vous devez être authentifié pour utiliser cette page'
+            );
+            tokenInput.focus();
+        }
+    }
+    checkToken();
+    async function saveToken() {
+        if ((token && tokenInput.value) || !token) {
+            localStorage.setItem(
+                'saisie-github-token',
+                tokenInput.value.trim()
+            );
+            tokenInput.placeholder = 'Jeton enregistré';
+            tokenInput.value = null;
+            tokenInput.style.outline = 'solid 1px green';
+            authSaveBtn.textContent = 'Réinitialiser';
+            teacherInputDiv.style.display = 'block';
+            checkToken();
+        } else if (token) {
+            localStorage.removeItem('saisie-github-token');
+            tokenInput.removeAttribute('style');
+            tokenInput.value = null;
+            authSaveBtn.textContent = 'Enregistrer';
+            tokenInput.placeholder = "Jeton d'authentification";
+            teacherInputDiv.style.display = 'none';
+        }
+        authSaveBtn.style.backgroundColor = 'green';
+        setTimeout(() => {
+            authSaveBtn.removeAttribute('style');
+        }, 1000);
+    }
+
     // Get profs and cours files
     async function getFile(url) {
         try {
-            const res = await fetch(url);
+            const token = localStorage.getItem('saisie-github-token');
+            const headers = new Headers({
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/vnd.github+json',
+                'Content-Type': 'application/json',
+            });
+            const res = await fetch(url, {
+                headers: headers,
+            });
             if (res && res.ok) {
                 const data = await res.json();
-                return data;
+                const binaryString = atob(data.content);
+                const binaryLen = binaryString.length;
+                const bytes = new Uint8Array(binaryLen);
+                for (let i = 0; i < binaryLen; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                const decoder = new TextDecoder('utf-8');
+                let contents = decoder.decode(bytes);
+                let file = JSON.parse(contents);
+                return file;
             }
         } catch (error) {
             console.error(error);
         }
     }
-
-    const teacherDBUrl =
-        'https://raw.githubusercontent.com/fmoncomble/fmoncomble.github.io/main/voeux/profs.json';
-    const courseDBUrl =
-        'https://raw.githubusercontent.com/fmoncomble/fmoncomble.github.io/main/voeux/cours.json';
-    const teacherData = await getFile(teacherDBUrl);
-    const courseData = await getFile(courseDBUrl);
 
     function buildTeacherList() {
         const teacherList = document.getElementById('teacher-list');
@@ -45,13 +124,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    buildTeacherList();
-
     let tName;
     let tService;
     let filière = 'LLCER';
     let semestre = 'S1';
-    buildCourseList();
+    // buildCourseList();
 
     let jsonFile;
 
@@ -218,7 +295,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         addedCoursesList.style.display = 'block';
         const entry = document.createElement('div');
         entry.id = `entry${i}`;
+        entry.classList.add('course-entry');
         const addedCourse = document.createElement('span');
+        addedCourse.style.verticalAlign = 'sub';
         const deleteBtn = document.createElement('span');
         addedCourse.textContent = `${course.filière} — ${course.semestre} — ${course.intitulé} : ${course.volume} = ${course.eqtd}hTD`;
         deleteBtn.textContent = ' ❌';

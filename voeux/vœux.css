@@ -39,6 +39,15 @@ button.wishes-ui:hover {
     background-color: #0000cc;
 }
 
+.reset-btn {
+    background-color: #cc0000 !important;
+    display: inline-block;
+}
+
+.reset-btn:hover {
+    background-color: red !important;
+}
+
 div#course-info {
     background-color: #eee;
     border-radius: 4px;
@@ -58,6 +67,8 @@ div#added-courses-list {
     scrollbar-width: thin;
     border: solid 1px gray;
     border-radius: 4px;
+    display: flex;
+    flex-direction: column;
 }
 
 dialog {

@@ -18,6 +18,13 @@
     animation: unturn 0.2s ease-in-out;
 }
 
+div#auth-div {
+    font-weight: bold;
+    color: green;
+    display: none;
+    margin-bottom: 20px;
+}
+
 @keyframes turn {
     0% {
         transform: rotate(0deg);
@@ -56,7 +63,7 @@ input:invalid {
 }
 
 button.wishes-ui {
-    margin-right: 5px;
+    margin: 0 5px;
 }
 
 #save-changes-btn {

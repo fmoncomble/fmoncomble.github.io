@@ -1,56 +1,49 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Administration des services v1.2');
-    const tokenInput = document.getElementById('token-input');
-    const authSaveBtn = document.getElementById('auth-save');
+    const authDiv = document.getElementById('auth-div');
     const fileInput = document.getElementById('file-input');
     const eraseBtn = document.getElementById('erase-btn');
     const compileBtn = document.getElementById('compile-btn');
     const courseList = document.getElementById('course-list');
     const saveBtn = document.getElementById('save-btn');
     const dispoDiv = document.getElementById('dispos');
+    const authDialog = document.getElementById('auth-dialog');
+    const authInput = document.getElementById('auth-input');
+    const authSaveBtn = document.getElementById('auth-save-btn');
 
     // Manage authentication
-    authSaveBtn.addEventListener('click', () => saveToken());
     let token;
-    function checkToken() {
+    async function checkToken() {
         token = localStorage.getItem('github-token');
         if (token) {
-            tokenInput.placeholder = 'Jeton enregistré';
-            tokenInput.style.outline = 'solid 1px green';
-            authSaveBtn.textContent = 'Réinitialiser';
             checkVoeuxFile();
         } else {
-            tokenInput.placeholder = "Jeton d'authentification";
-            tokenInput.removeAttribute('style');
-            authSaveBtn.textContent = 'Enregistrer';
-            tokenInput.value = null;
-            window.alert(
-                '⚠️ Vous devez être authentifié pour utiliser cette page'
-            );
-            tokenInput.focus();
+            authDiv.style.display = 'none';
+            authDialog.showModal();
         }
     }
     checkToken();
-    async function saveToken() {
-        if ((token && tokenInput.value) || !token) {
-            localStorage.setItem('github-token', tokenInput.value);
-            tokenInput.placeholder = 'Jeton enregistré';
-            tokenInput.value = null;
-            tokenInput.style.outline = 'solid 1px green';
-            authSaveBtn.textContent = 'Réinitialiser';
-            checkVoeuxFile();
-        } else if (token) {
-            localStorage.removeItem('github-token');
-            tokenInput.removeAttribute('style');
-            tokenInput.value = null;
-            authSaveBtn.textContent = 'Enregistrer';
-            tokenInput.placeholder = "Jeton d'authentification";
+
+    const resetBtn = document.getElementById('reset-btn');
+    resetBtn.addEventListener('click', () => {
+        localStorage.removeItem('github-token');
+        const fileExist = document.getElementById('file-exist');
+        fileExist.style.display = 'none';
+        checkToken();
+    });
+
+
+    authSaveBtn.onclick = () => {
+        if (!authInput.value) {
+            spinner.style.display = 'none';
+            return;
+        } else {
+            token = authInput.value.trim();
+            authInput.value = null;
+            localStorage.setItem('github-token', token);
+            checkToken();
         }
-        authSaveBtn.style.backgroundColor = 'green';
-        setTimeout(() => {
-            authSaveBtn.removeAttribute('style');
-        }, 1000);
-    }
+        authDialog.close();
+    };
 
     // Retrieve existing services file
     let voeux;
@@ -73,13 +66,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         } else if (res.status === 401) {
             window.alert("Vérifiez votre jeton d'authentification");
+            authDialog.showModal();
             return;
         } else if (res.status === 404) {
             const fileExist = document.getElementById('file-exist');
             fileExist.textContent =
                 "Aucun fichier de services n'a encore été créé";
             fileExist.style.display = 'block';
-        } else {
+        } else if (res && res.ok) {
+            authDiv.style.display = 'block';
             const data = await res.json();
             sha = data.sha;
             const binaryString = atob(data.content);
@@ -97,7 +92,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             actionChoiceDiv.style.display = 'block';
             eraseBtn.style.display = 'inline';
             compileBtn.textContent = 'Mettre à jour';
-            // saveBtn.textContent = 'Mettre à jour';
         }
     }
 

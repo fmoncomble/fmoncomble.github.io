@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Gestion services v1.1.3');
+    const authDiv = document.getElementById('auth-div');
     const profAddInput = document.getElementById('prof-name');
     const profStatusSelect = document.getElementById('status-select');
     const profAddBtn = document.getElementById('prof-add-btn');
@@ -20,29 +20,99 @@ document.addEventListener('DOMContentLoaded', async () => {
     const saveChangesBtn = document.getElementById('save-changes-btn');
     const profList = document.getElementById('prof-list');
 
+    // Manage authentication & get data
+    let token;
+    let teacherData;
+    let courseData;
+    const teacherDBUrl =
+        'https://api.github.com/repos/fmoncomble/voeux/contents/profs.json?ref=main';
+    const courseDBUrl =
+        'https://api.github.com/repos/fmoncomble/voeux/contents/cours.json?ref=main';
+
+    async function checkToken() {
+        token = localStorage.getItem('github-token');
+        if (token) {
+            authDiv.style.display = 'block';
+            if (!teacherData && !courseData) {
+                teacherData = await getFile(teacherDBUrl);
+                courseData = await getFile(courseDBUrl);
+                if (teacherData && courseData) {
+                    buildProfList();
+                    buildCourseList();
+                }
+            }
+        } else {
+            authDiv.style.display = 'none';
+            const authDialog = document.getElementById('auth-dialog');
+            authDialog.showModal();
+            const authInput = document.getElementById('auth-input');
+            const authSaveBtn = document.getElementById('auth-save-btn');
+            authSaveBtn.onclick = () => {
+                if (!authInput.value) {
+                    spinner.style.display = 'none';
+                    return;
+                } else {
+                    token = authInput.value.trim();
+                    localStorage.setItem('github-token', token);
+                    checkToken();
+                }
+                authDialog.close();
+            };
+        }
+    }
+    checkToken();
+
+    const resetBtn = document.getElementById('reset-btn');
+    resetBtn.addEventListener('click', () => {
+        localStorage.removeItem('github-token');
+        checkToken();
+    });
+
     // Get profs and cours files
     async function getFile(url) {
         try {
-            url += '?t=' + new Date().getTime();
-            const res = await fetch(url);
+            const ghToken = localStorage.getItem('github-token');
+            const headers = new Headers({
+                Authorization: `Bearer ${ghToken}`,
+                Accept: 'application/vnd.github+json',
+                'Content-Type': 'application/json',
+            });
+            const res = await fetch(url, {
+                headers: headers,
+            });
             if (res && res.ok) {
                 const data = await res.json();
-                return data;
+                const binaryString = atob(data.content);
+                const binaryLen = binaryString.length;
+                const bytes = new Uint8Array(binaryLen);
+                for (let i = 0; i < binaryLen; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                const decoder = new TextDecoder('utf-8');
+                let contents = decoder.decode(bytes);
+                let file = JSON.parse(contents);
+                return file;
             } else {
-                window.alert('Could not retrieve file at ' + url);
-                return null;
+                const authDialog = document.getElementById('auth-dialog');
+                authDialog.showModal();
+                const authInput = document.getElementById('auth-input');
+                const authSaveBtn = document.getElementById('auth-save-btn');
+                authSaveBtn.onclick = () => {
+                    if (!authInput.value) {
+                        spinner.style.display = 'none';
+                        return;
+                    } else {
+                        token = authInput.value.trim();
+                        localStorage.setItem('github-token', token);
+                        checkToken();
+                    }
+                    authDialog.close();
+                };
             }
         } catch (error) {
             console.error(error);
         }
     }
-
-    const teacherDBUrl =
-        'https://raw.githubusercontent.com/fmoncomble/fmoncomble.github.io/main/voeux/profs.json';
-    const courseDBUrl =
-        'https://raw.githubusercontent.com/fmoncomble/fmoncomble.github.io/main/voeux/cours.json';
-    const teacherData = await getFile(teacherDBUrl);
-    const courseData = await getFile(courseDBUrl);
 
     // Build prof list
     function buildProfList() {
@@ -56,7 +126,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             profList.appendChild(option);
         }
     }
-    buildProfList();
 
     // Limit available semester options according to filière
     let filière = 'LLCER';
@@ -137,7 +206,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             courseSelect2.appendChild(option);
         }
     }
-    buildCourseList();
 
     // Add prof
     let profChanged = false;
@@ -445,7 +513,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (profChanged) {
             const url =
-                'https://api.github.com/repos/fmoncomble/fmoncomble.github.io/contents/voeux/profs.json';
+                'https://api.github.com/repos/fmoncomble/voeux/contents/profs.json';
             const fileString = JSON.stringify(teacherData);
             const encoder = new TextEncoder();
             const utf8Array = encoder.encode(fileString);
@@ -472,7 +540,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (courseChanged) {
             const url =
-                'https://api.github.com/repos/fmoncomble/fmoncomble.github.io/contents/voeux/cours.json';
+                'https://api.github.com/repos/fmoncomble/voeux/contents/profs.json';
             const fileString = JSON.stringify(courseData);
             const encoder = new TextEncoder();
             const utf8Array = encoder.encode(fileString);
@@ -561,9 +629,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             profsArrow.classList.remove('plain');
             profsArrow.classList.add('rotated');
-                profsDisplay.style.maxHeight = profsDisplay.scrollHeight + 'px';
+            profsDisplay.style.maxHeight = profsDisplay.scrollHeight + 'px';
         } else if (profsDisplay.style.maxHeight) {
-                profsDisplay.style.maxHeight = null;
+            profsDisplay.style.maxHeight = null;
             profsArrow.classList.remove('rotated');
             profsArrow.classList.add('plain');
         }
@@ -595,7 +663,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 fSpan.onclick = () => {
                     if (!fDiv.style.maxHeight) {
                         fDiv.style.maxHeight = fDiv.scrollHeight + 'px';
-                        coursesDisplay.style.maxHeight = coursesDisplay.scrollHeight + fDiv.scrollHeight + 'px';
+                        coursesDisplay.style.maxHeight =
+                            coursesDisplay.scrollHeight +
+                            fDiv.scrollHeight +
+                            'px';
                     } else {
                         fDiv.style.maxHeight = null;
                     }
@@ -613,8 +684,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     sSpan.onclick = () => {
                         if (!sDiv.style.maxHeight) {
                             sDiv.style.maxHeight = sDiv.scrollHeight + 'px';
-                            fDiv.style.maxHeight = fDiv.scrollHeight + sDiv.scrollHeight + 'px';
-                            coursesDisplay.style.maxHeight = coursesDisplay.scrollHeight + fDiv.scrollHeight + sDiv.scrollHeight + 'px';
+                            fDiv.style.maxHeight =
+                                fDiv.scrollHeight + sDiv.scrollHeight + 'px';
+                            coursesDisplay.style.maxHeight =
+                                coursesDisplay.scrollHeight +
+                                fDiv.scrollHeight +
+                                sDiv.scrollHeight +
+                                'px';
                         } else {
                             sDiv.style.maxHeight = null;
                         }
@@ -643,11 +719,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             coursesArrow.classList.remove('plain');
             coursesArrow.classList.add('rotated');
-                coursesDisplay.style.maxHeight = coursesDisplay.scrollHeight + 'px';
+            coursesDisplay.style.maxHeight = coursesDisplay.scrollHeight + 'px';
         } else if (coursesDisplay.style.maxHeight) {
             coursesArrow.classList.remove('rotated');
             coursesArrow.classList.add('plain');
-                coursesDisplay.style.maxHeight = null;
+            coursesDisplay.style.maxHeight = null;
         }
     }
 });
