@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profStatusSelect = document.getElementById('status-select');
     const profAddBtn = document.getElementById('prof-add-btn');
     const profDeleteInput = document.getElementById('prof-name-2');
+    const profModifyBtn = document.getElementById('prof-modify-btn');
     const profDeleteBtn = document.getElementById('prof-delete-btn');
     const filièreSelect = document.getElementById('course-filière');
     const semestreSelect = document.getElementById('course-semestre');
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const filièreSelect2 = document.getElementById('course-filière-2');
     const semestreSelect2 = document.getElementById('course-semestre-2');
     const courseSelect2 = document.getElementById('course-name-2');
+    const courseModifyBtn = document.getElementById('course-modify-btn');
     const courseDeleteBtn = document.getElementById('course-delete-btn');
     const saveChangesBtn = document.getElementById('save-changes-btn');
     const profList = document.getElementById('prof-list');
@@ -39,6 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (teacherData && courseData) {
                     buildProfList();
                     buildCourseList();
+                    getCourseIds();
                 }
             }
         } else {
@@ -206,6 +209,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         buildCourseList();
     });
 
+    // Collect course IDs
+    let courseIds = new Set();
+    function getCourseIds() {
+        for (let c of courseData) {
+            if (c.id) {
+                courseIds.add(c.id);
+            }
+        }
+    }
+
     /// Build available course list according to filière and semestre
     function buildCourseList() {
         const options = Array.from(courseSelect2.querySelectorAll('option'));
@@ -225,6 +238,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Add prof
     let profChanged = false;
+    let profModify = false;
     profAddBtn.addEventListener('click', () => {
         addProf();
     });
@@ -276,6 +290,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const index = teacherData.indexOf(checkProf);
                     teacherData.splice(index, 1, newProf);
                     dialog.close();
+                    const addedProfDiv = document.getElementById('added-prof-div');
+                    addedProfDiv.textContent = `${newProf.name} a été modifié·e.`;
+                    addedProfDiv.style.display = 'block';
                     profChanged = true;
                 };
                 noBtn.onclick = () => {
@@ -302,18 +319,83 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return 0;
             });
             const addedProfDiv = document.getElementById('added-prof-div');
-            const addedProf = document.getElementById('added-prof');
-            addedProf.textContent = `${profAddInput.value}, ${profStatusSelect.value}`;
+            addedProfDiv.textContent = `${profAddInput.value}, ${profStatusSelect.value} a été ajouté·e`;
             addedProfDiv.style.display = 'block';
             profAddInput.value = null;
             profChanged = true;
         }
+        profModify = false;
+
         buildProfList();
+        if (profAddBtn.textContent === 'Modifier') {
+            profAddBtn.textContent = 'Ajouter';
+        }
+    }
+
+    const profCancelBtn = document.getElementById('prof-add-cancel');
+    profCancelBtn.addEventListener('click', () => {
+        const elts = document.getElementById('prof-add').querySelectorAll('select, input');
+        for (let elt of elts) {
+            if (elt.tagName === 'SELECT') {
+                elt.value = elt.querySelectorAll('option')[0].value;
+            } else if (elt.tagName === 'INPUT') {
+                elt.value = null;
+            }
+            elt.removeAttribute('style');
+        }
+        profAddBtn.textContent = 'Ajouter';
+        profModify = false;
+    });
+
+    // Modify prof
+    profModifyBtn.addEventListener('click', () => {
+        modifyProf();
+    });
+    function modifyProf() {
+        const oldProfName = profDeleteInput.value;
+        if (!oldProfName) {
+            window.alert("Entrez le nom de l'enseignant·e à modifier");
+            profDeleteInput.focus();
+            return;
+        }
+        const oldProf = teacherData.find((t) => t.name === oldProfName);
+        profAddInput.value = oldProf.name;
+        profStatusSelect.value = oldProf.status;
+        if (oldProf.service) {
+            document.getElementById('custom-service').value = oldProf.service;
+        }
+        profAddBtn.textContent = 'Modifier';
+        const elts = document.getElementById('prof-add').querySelectorAll('select, input');
+        for (let elt of elts) {
+            elt.style.backgroundColor = '#e9fce9';
+        }
+        profModify = true;
+        profAddInput.focus();
     }
 
     // Delete prof
     profDeleteBtn.addEventListener('click', () => {
-        deleteProf();
+        const dialog = document.createElement('dialog');
+        const div = document.createElement('div');
+        div.textContent = `Voulez-vous vraiment supprimer ${profDeleteInput.value} ?`;
+        const yesBtn = document.createElement('button');
+        yesBtn.classList.add('wishes-ui', 'reset-btn');
+        yesBtn.textContent = 'Oui';
+        yesBtn.addEventListener('click', () => {
+            dialog.close();
+            deleteProf();
+        });
+        const noBtn = document.createElement('button');
+        noBtn.classList.add('wishes-ui');
+        noBtn.textContent = 'Non';
+        noBtn.addEventListener('click', () => {
+            dialog.close();
+        });
+        document.body.appendChild(dialog);
+        dialog.appendChild(div);
+        dialog.appendChild(yesBtn);
+        dialog.appendChild(noBtn);
+        dialog.showModal();
     });
     function deleteProf() {
         const oldProfName = profDeleteInput.value;
@@ -339,6 +421,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     courseAddBtn.addEventListener('click', () => {
         addCourse();
     });
+    volumeInput.addEventListener('input', () => {
+        let multiplier;
+        if (formatSelect.value === 'CM') {
+            multiplier = 1.5;
+        } else if (
+            formatSelect.value === 'TD' ||
+            formatSelect.value === 'TD_OPT'
+        ) {
+            multiplier = 1;
+        } else if (formatSelect.value === 'TP') {
+            multiplier = 1 / 1.5;
+        }
+        let result = (volumeInput.value * multiplier).toFixed(2);
+        eqtdInput.value = Number(parseFloat(result).toString());
+    });
+    formatSelect.addEventListener('change', () => {
+        let multiplier;
+        if (formatSelect.value === 'CM') {
+            multiplier = 1.5;
+        } else if (
+            formatSelect.value === 'TD' ||
+            formatSelect.value === 'TD_OPT'
+        ) {
+            multiplier = 1;
+        } else if (formatSelect.value === 'TP') {
+            multiplier = 1 / 1.5;
+        }
+        let result = (volumeInput.value * multiplier).toFixed(2);
+        eqtdInput.value = Number(parseFloat(result).toString());
+    });
+    let id;
+    let courseModify = false;
     function addCourse() {
         const format = formatSelect.value;
         const volume = Number(volumeInput.value.replace(',', '.'));
@@ -366,6 +480,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             eqtd = Number(eqtdInput.value).toFixed(2);
         }
+        // let id = makeCourseId(1, 9999);
+        function makeCourseId(min, max) {
+            const minCeiled = Math.ceil(min);
+            const maxFloored = Math.floor(max);
+            const courseId = Math.floor(
+                Math.random() * (maxFloored - minCeiled + 1) + minCeiled
+            );
+            while (courseIds.has(courseId)) {
+                makeCourseId();
+            }
+            return courseId;
+        }
 
         const newCourse = {
             intitulé: courseInput.value,
@@ -375,13 +501,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             volume: volume,
             eqtd: eqtd,
             nbgrp: nbgrp,
+            // id: id,
         };
-        const checkCourse = courseData.find(
-            (c) =>
-                c.intitulé === courseInput.value &&
-                c.filière === filièreSelect.value &&
-                c.semestre === semestreSelect.value
-        );
+        let checkCourse;
+        if (!courseModify) {
+            checkCourse = courseData.find(
+                (c) =>
+                    c.intitulé === courseInput.value &&
+                    c.filière === filièreSelect.value &&
+                    c.semestre === semestreSelect.value
+            );
+        } else if (courseModify) {
+            checkCourse = courseData.find((c) => c.id === id);
+        }
         if (checkCourse) {
             if (
                 checkCourse.format !== format ||
@@ -405,6 +537,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const index = courseData.indexOf(checkCourse);
                     courseData.splice(index, 1, newCourse);
                     dialog.close();
+                    const addedCourseDiv = document.getElementById('added-course-div');
+                    addedCourseDiv.textContent = `${filièreSelect.value.toUpperCase()} ${
+                        semestreSelect.value
+                    } ${courseInput.value} — ${eqtd}h TD a été mis à jour.`;
+                    addedCourseDiv.style.display = 'block';
+                    courseAddBtn.textContent = 'Ajouter';
+                    const elts = Array.from(
+                        document
+                            .getElementById('course-add')
+                            .querySelectorAll('select, input')
+                    );
+                    for (let elt of elts) {
+                        if (elt.tagName === 'SELECT') {
+                            elt.value = elt.querySelectorAll('option')[0].value;
+                        } else {
+                            elt.value = null;
+                        }
+                        elt.removeAttribute('style');
+                    }
                     courseChanged = true;
                 };
                 noBtn.onclick = () => {
@@ -418,27 +569,51 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
         } else {
+            newCourse.id = makeCourseId(1, 9999);
             courseData.push(newCourse);
             courseData.sort(sortByInt);
             courseData.sort(sortBySem);
             courseData.sort(sortByFil);
             const addedCourseDiv = document.getElementById('added-course-div');
-            const addedCourseSpan =
-                document.getElementById('added-course-span');
-            addedCourseSpan.textContent = `${filièreSelect.value.toUpperCase()} ${
+            addedCourseDiv.textContent = `${filièreSelect.value.toUpperCase()} ${
                 semestreSelect.value
-            } ${courseInput.value} — ${eqtd}h TD`;
-            if (nbgrp) {
-                addedCourseSpan.textContent += ` — ${nbgrp} groupes`;
-            }
+            } ${courseInput.value} — ${eqtd}h TD a été ajouté`;
             addedCourseDiv.style.display = 'block';
             courseInput.value = null;
             volumeInput.value = null;
             eqtdInput.value = null;
             courseChanged = true;
+            courseAddBtn.textContent = 'Ajouter';
+            const elts = Array.from(
+                document
+                    .getElementById('course-add')
+                    .querySelectorAll('select, input')
+            );
+            for (let elt of elts) {
+                elt.removeAttribute('style');
+            }
+            getCourseIds();
         }
+        courseModify = false;
         buildCourseList();
     }
+
+    const courseCancelBtn = document.getElementById('course-add-cancel');
+    courseCancelBtn.addEventListener('click', () => {
+        const elts = document
+            .getElementById('course-add')
+            .querySelectorAll('select, input');
+        for (let elt of elts) {
+            if (elt.tagName === 'SELECT') {
+                elt.value = elt.querySelectorAll('option')[0].value;
+            } else if (elt.tagName === 'INPUT') {
+                elt.value = null;
+            }
+            elt.removeAttribute('style');
+        }
+        courseAddBtn.textContent = 'Ajouter';
+        courseModify = false;
+    });
 
     // Course sorting functions
     function sortByFil(a, b) {
@@ -475,9 +650,64 @@ document.addEventListener('DOMContentLoaded', async () => {
         return 0;
     }
 
+    // Modify course
+    courseModifyBtn.addEventListener('click', () => {
+        modifyCourse();
+    });
+    function modifyCourse() {
+        const intitulé = courseSelect2.value;
+        const courses = courseData.filter(
+            (c) =>
+                c.filière === filièreSelect2.value &&
+                c.semestre === semestreSelect2.value
+        );
+        const oldCourse = courses.find((c) => c.intitulé === intitulé);
+        filièreSelect.value = oldCourse.filière;
+        semestreSelect.value = oldCourse.semestre;
+        formatSelect.value = oldCourse.format;
+        courseInput.value = oldCourse.intitulé;
+        volumeInput.value = oldCourse.volume;
+        id = oldCourse.id;
+        if (oldCourse.nbgrp) {
+            grpInput.value = oldCourse.nbgrp;
+        }
+        eqtdInput.value = oldCourse.eqtd;
+        courseAddBtn.textContent = 'Modifier';
+        const elts = Array.from(
+            document
+                .getElementById('course-add')
+                .querySelectorAll('select, input')
+        );
+        for (let elt of elts) {
+            elt.style.backgroundColor = '#e9fce9';
+        }
+        courseModify = true;
+        courseInput.focus();
+    }
+
     // Delete course
     courseDeleteBtn.addEventListener('click', () => {
-        deleteCourse();
+        const dialog = document.createElement('dialog');
+        const div = document.createElement('div');
+        div.textContent = `Voulez-vous vraiment supprimer ${courseSelect2.value} ?`;
+        const yesBtn = document.createElement('button');
+        yesBtn.classList.add('wishes-ui', 'reset-btn');
+        yesBtn.textContent = 'Oui';
+        yesBtn.addEventListener('click', () => {
+            dialog.close();
+            deleteCourse();
+        });
+        const noBtn = document.createElement('button');
+        noBtn.classList.add('wishes-ui');
+        noBtn.textContent = 'Non';
+        noBtn.addEventListener('click', () => {
+            dialog.close();
+        });
+        document.body.appendChild(dialog);
+        dialog.appendChild(div);
+        dialog.appendChild(yesBtn);
+        dialog.appendChild(noBtn);
+        dialog.showModal();
     });
     function deleteCourse() {
         const intitulé = courseSelect2.value;
@@ -496,6 +726,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         deletedCourseSpan.textContent = `${deletedCourse[0].filière} ${deletedCourse[0].semestre} ${deletedCourse[0].intitulé}`;
         deletedCourseDiv.style.display = 'block';
         courseChanged = true;
+        getCourseIds();
         buildCourseList();
     }
 
@@ -556,7 +787,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (courseChanged) {
             const url =
-                'https://api.github.com/repos/fmoncomble/voeux/contents/profs.json';
+                'https://api.github.com/repos/fmoncomble/voeux/contents/cours.json';
             const fileString = JSON.stringify(courseData);
             const encoder = new TextEncoder();
             const utf8Array = encoder.encode(fileString);

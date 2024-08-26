@@ -12,7 +12,9 @@
             <div id="container-1" class="container">
                 <div id="auth-div">
                     <span>Authentification OK ✅</span>
-                    <button class="wishes-ui reset-btn" id="reset-btn">Déconnecter</button>
+                    <button class="wishes-ui reset-btn" id="reset-btn">
+                        Déconnecter
+                    </button>
                 </div>
                 <h2 class="section-header">Enseignant·es</h2>
                 <div id="prof-add" class="wishes-ui">
@@ -43,14 +45,17 @@
                         <button id="prof-add-btn" class="wishes-ui">
                             Ajouter
                         </button>
+                        <button
+                            id="prof-add-cancel"
+                            class="wishes-ui reset-btn"
+                        >
+                            Annuler
+                        </button>
                     </div>
-                    <div id="added-prof-div" style="display: none">
-                        <span id="added-prof" class="wishes-ui"></span> a été
-                        ajouté·e
-                    </div>
+                    <div id="added-prof-div" style="display: none"></div>
                 </div>
                 <div id="prof-delete" class="wishes-ui">
-                    <b>Supprimer un·e enseignant·e</b>
+                    <b>Modifier ou supprimer un·e enseignant·e</b>
                     <div>
                         <input
                             id="prof-name-2"
@@ -59,7 +64,13 @@
                             placeholder="Prénom Nom"
                             list="prof-list"
                         />
-                        <button id="prof-delete-btn" class="wishes-ui">
+                        <button id="prof-modify-btn" class="wishes-ui">
+                            Modifier
+                        </button>
+                        <button
+                            id="prof-delete-btn"
+                            class="wishes-ui reset-btn"
+                        >
                             Supprimer
                         </button>
                     </div>
@@ -144,13 +155,17 @@
                         <button id="course-add-btn" class="wishes-ui">
                             Ajouter
                         </button>
+                        <button
+                            id="course-add-cancel"
+                            class="wishes-ui reset-btn"
+                        >
+                            Annuler
+                        </button>
                     </div>
-                    <div id="added-course-div" style="display: none">
-                        <span id="added-course-span"></span> a été ajouté
-                    </div>
+                    <div id="added-course-div" style="display: none"></div>
                 </div>
                 <div id="course-delete" class="wishes-ui">
-                    <b>Supprimer un cours</b>
+                    <b>Modifier ou supprimer un cours</b>
                     <div>
                         <select id="course-filière-2" class="wishes-ui">
                             <option value="LLCER" data-level="l" selected>
@@ -187,7 +202,13 @@
                             </option>
                         </select>
                         <select id="course-name-2" class="wishes-ui"></select>
-                        <button id="course-delete-btn" class="wishes-ui">
+                        <button id="course-modify-btn" class="wishes-ui">
+                            Modifier
+                        </button>
+                        <button
+                            id="course-delete-btn"
+                            class="wishes-ui reset-btn"
+                        >
                             Supprimer
                         </button>
                     </div>
@@ -200,7 +221,7 @@
                     <h2 class="section-header">
                         Enregistrer les modifications
                     </h2>
-                    
+
                     <button id="save-changes-btn" class="wishes-ui">
                         Enregistrer<span class="spinner" id="spinner"></span>
                     </button>
