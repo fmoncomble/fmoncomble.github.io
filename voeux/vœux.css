@@ -80,7 +80,7 @@ dialog {
     border: solid 1px gray;
     border-radius: 4px;
     box-shadow: 0 0 10px 5px gray;
-    width: 33%;
+    width: fit-content;
     text-align: center;
 }
 

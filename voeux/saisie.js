@@ -17,6 +17,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     const hTotal = document.getElementById('hTotal');
     const hc = document.getElementById('hc');
 
+    const instrDiv = document.getElementById('instructions');
+    const firstTimeDialog = document.getElementById('first-time');
+    const okBtn = firstTimeDialog.querySelector('button#ok-btn');
+    okBtn.addEventListener('click', () => {
+        firstTimeDialog.close();
+    })
+    const instrDialog = document.getElementById('instructions-dialog');
+    instrDiv.addEventListener('click', () => {
+        instrDialog.showModal();
+    });
+
+    // Function to handle instructions
+    let understand = sessionStorage.getItem('understand');
+    const comprisBtn = instrDialog.querySelector('#compris');
+    comprisBtn.addEventListener('click', () => {
+        if (!understand) {
+            understand = true;
+        }
+        sessionStorage.setItem('understand', understand);
+        instrDialog.close();
+    });
+
     // Manage authentication & get data
     authSaveBtn.addEventListener('click', () => saveToken());
     tokenInput.addEventListener('keydown', (e) => {
@@ -47,6 +69,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     buildTeacherList();
                     buildCourseList();
                 }
+            }
+            if (!understand) {
+                firstTimeDialog.showModal();
             }
         } else {
             tokenInput.placeholder = "Jeton d'authentification";
@@ -156,6 +181,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     function start() {
+        if (!understand) {
+            instrDialog.showModal();
+        }
         const dispoContainer = document.getElementById('container-2');
         dispoContainer.style.display = 'block';
         jsonFile = null;
@@ -314,6 +342,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         entry.classList.add('course-entry');
         const addedCourse = document.createElement('span');
         addedCourse.style.verticalAlign = 'sub';
+        entry.setAttribute('course-id', course.id);
         const deleteBtn = document.createElement('span');
         addedCourse.textContent = `${course.filière} — ${course.semestre} — ${course.intitulé} : ${course.volume} = ${course.eqtd}hTD`;
         deleteBtn.textContent = ' ❌';
@@ -363,6 +392,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         const deletedCourse = jsonFile.Cours.splice(c, 1);
         updateVol();
         entry.remove();
+        const courseId = course.id;
+        const entries = Array.from(
+            document
+                .getElementById('added-courses-list')
+                .querySelectorAll(`div[course-id="${courseId}"]`)
+        );
+        if (entries.length > 0) {
+            const firstEntry = entries[0];
+            const btns = Array.from(firstEntry.querySelectorAll('span.btn'));
+            if (btns.length < 2) {
+                const duplicateBtn = document.createElement('span');
+                duplicateBtn.textContent = ' ➕';
+                duplicateBtn.style.cursor = 'pointer';
+                duplicateBtn.classList.add('btn');
+                duplicateBtn.addEventListener('click', () =>
+                    duplicateEntry(course, firstEntry)
+                );
+                firstEntry.appendChild(duplicateBtn);
+            }
+        }
     }
 
     function duplicateEntry(course, entry, addedCourses) {
@@ -387,6 +436,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function resetForm() {
         courseInfo.textContent = null;
         courseInfo.style.display = 'none';
+        courseInput.value = courseInput.querySelector('option[disabled]').value;
         saveBtn.removeAttribute('style');
         saveBtn.style.display = 'none';
     }
@@ -471,21 +521,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     const table = document.querySelector('table');
     const tableCells = Array.from(document.querySelectorAll('td'));
     for (let tc of tableCells) {
+        function showRed() {
+            tc.style.backgroundColor = '#ffe6e6';
+            tc.textContent = '❌';
+        }
+        function showGreen() {
+            tc.textContent = '✅';
+            tc.style.backgroundColor = 'rgb(214, 245, 214)';
+        }
         tc.addEventListener('click', () => {
             const index = tc.cellIndex;
             const header = table.rows[0].cells[index];
             const day = header.textContent;
             const hour = tc.parentNode.firstElementChild.textContent;
-            if (tc.style.backgroundColor !== 'rgb(214, 245, 214)') {
+            if (!tc.classList.contains('selected')) {
+                tc.classList.toggle('selected');
                 tc.textContent = '✅';
                 tc.style.backgroundColor = 'rgb(214, 245, 214)';
                 const dispo = {};
                 dispo.day = day;
                 dispo.hour = hour;
+                tc.addEventListener('mouseover', showRed);
+                tc.addEventListener('mouseout', showGreen);
                 saveDispo(dispo);
-            } else if (tc.style.backgroundColor === 'rgb(214, 245, 214)') {
+            } else {
+                tc.classList.toggle('selected');
+                tc.removeEventListener('mouseover', showRed);
+                tc.removeEventListener('mouseout', showGreen);
                 tc.textContent = '';
-                tc.style.backgroundColor = 'white';
+                tc.removeAttribute('style');
                 const dispo = jsonFile.Dispos.find(
                     (d) => d.day === day && d.hour === hour
                 );

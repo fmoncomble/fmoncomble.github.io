@@ -32,3 +32,16 @@ td {
 td:hover {
     background-color: #ebfaeb;
 }
+
+div#instructions {
+    font-weight: bold;
+    text-decoration: underline;
+    color: darkblue;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+dialog#confirm-dialog,
+dialog#instructions-dialog {
+    text-align: left !important;
+}

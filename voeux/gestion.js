@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 yesBtn.textContent = 'Oui';
                 dialog.appendChild(yesBtn);
                 const noBtn = document.createElement('button');
-                noBtn.classList.add('wishes-ui');
+                noBtn.classList.add('wishes-ui', 'reset-btn');
                 noBtn.textContent = 'Non';
                 noBtn.style.display = 'inline-block';
                 dialog.appendChild(noBtn);
@@ -400,13 +400,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         profModify = true;
         profAddInput.focus();
+        profCancelBtn.disabled = false;
     }
 
     // Delete prof
     profDeleteBtn.addEventListener('click', () => {
         const dialog = document.createElement('dialog');
         const div = document.createElement('div');
-        div.textContent = `Voulez-vous vraiment supprimer ${profDeleteInput.value} ?`;
+        div.textContent = `Voulez-vous vraiment supprimer`;
+        const div2 = document.createElement('div');
+        div2.style.fontWeight = 'bold';
+        div2.textContent = `${profDeleteInput.value} ?`;
         const yesBtn = document.createElement('button');
         yesBtn.classList.add('wishes-ui', 'reset-btn');
         yesBtn.textContent = 'Oui';
@@ -422,6 +426,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         document.body.appendChild(dialog);
         dialog.appendChild(div);
+        dialog.appendChild(div2);
         dialog.appendChild(yesBtn);
         dialog.appendChild(noBtn);
         dialog.showModal();
@@ -509,11 +514,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         let eqtd;
         if (!eqtdInput.value) {
-            eqtd = (volume * multiplier).toFixed(2);
+            let result = (volume * multiplier).toFixed(2);
+            eqtd = Number(parseFloat(result).toString());
         } else {
-            eqtd = Number(eqtdInput.value).toFixed(2);
+            eqtd = Number(eqtdInput.value);
         }
-        // let id = makeCourseId(1, 9999);
         function makeCourseId(min, max) {
             const minCeiled = Math.ceil(min);
             const maxFloored = Math.floor(max);
@@ -534,7 +539,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             volume: volume,
             eqtd: eqtd,
             nbgrp: nbgrp,
-            // id: id,
         };
         let checkCourse;
         if (!courseModify) {
@@ -562,7 +566,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 yesBtn.textContent = 'Oui';
                 dialog.appendChild(yesBtn);
                 const noBtn = document.createElement('button');
-                noBtn.classList.add('wishes-ui');
+                noBtn.classList.add('wishes-ui', 'reset-btn');
                 noBtn.textContent = 'Non';
                 noBtn.style.display = 'inline-block';
                 dialog.appendChild(noBtn);
@@ -588,7 +592,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     );
                     for (let elt of elts) {
                         if (elt.tagName === 'SELECT') {
-                            elt.value = elt.querySelectorAll('option')[0].value;
+                            elt.value = elt.querySelector('option[selected]').value;
                         } else {
                             elt.value = null;
                         }
@@ -603,7 +607,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.body.appendChild(dialog);
                 dialog.showModal();
             } else {
-                window.alert('Ce cours existe déjà');
+                window.alert('Un cours identique existe déjà');
                 return;
             }
         } else {
@@ -647,7 +651,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             .querySelectorAll('select, input');
         for (let elt of elts) {
             if (elt.tagName === 'SELECT') {
-                elt.value = elt.querySelectorAll('option')[0].value;
+                elt.value = elt.querySelector('option[selected]').value;
             } else if (elt.tagName === 'INPUT') {
                 elt.value = null;
             }
@@ -726,13 +730,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         courseModify = true;
         courseInput.focus();
+        courseCancelBtn.disabled = false;
     }
 
     // Delete course
     courseDeleteBtn.addEventListener('click', () => {
         const dialog = document.createElement('dialog');
         const div = document.createElement('div');
-        div.textContent = `Voulez-vous vraiment supprimer ${courseSelect2.value} ?`;
+        div.textContent = `Voulez-vous vraiment supprimer`;
+        const div2 = document.createElement('div');
+        div2.textContent = `${filièreSelect2.value} ${semestreSelect2.value} ${courseSelect2.value} ?`;
+        div2.style.fontWeight = 'bold';
         const yesBtn = document.createElement('button');
         yesBtn.classList.add('wishes-ui', 'reset-btn');
         yesBtn.textContent = 'Oui';
@@ -748,6 +756,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         document.body.appendChild(dialog);
         dialog.appendChild(div);
+        dialog.appendChild(div2);
         dialog.appendChild(yesBtn);
         dialog.appendChild(noBtn);
         dialog.showModal();

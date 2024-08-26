@@ -27,6 +27,7 @@
                     </button>
                 </div>
                 <div id="teacher-input-div" style="display: none">
+                    <div id="instructions">Afficher les instructions</div>
                     <label for="teacher-name" class="wishes-ui">
                         Nom de l'enseignant.e :
                         <input
@@ -108,7 +109,7 @@
                                 id="cours"
                                 class="wishes-ui wishes-input"
                             >
-                                <option disabled selected></option>
+                                <option value="" disabled selected></option>
                             </select>
                         </label>
                     </div>
@@ -147,14 +148,123 @@
                         <div id="summary"></div>
                         <div id="prof-summary"></div>
                         <br /><br />
-                        <button id="yes-btn" class="wishes-ui confirm">
-                            Confirmer</button
-                        ><button id="no-btn" class="wishes-ui cancel">
-                            Annuler
-                        </button>
+                        <div style="text-align: center">
+                            <button id="yes-btn" class="wishes-ui">
+                                Confirmer</button
+                            ><button id="no-btn" class="wishes-ui reset-btn">
+                                Annuler
+                            </button>
+                        </div>
                     </dialog>
                 </div>
             </div>
+            <dialog id="first-time">
+                <div><p>
+                    <b
+                        >Entrez vos prénom et nom et cliquez sur
+                        <span
+                            style="
+                                color: white;
+                                background-color: darkblue;
+                                border-radius: 2px;
+                                padding: 2px 4px;
+                                font-size: small;
+                            "
+                            >Commencer</span
+                        >.</b
+                    >
+                </p></div>
+                <button id="ok-btn" class="wishes-ui">OK</button>
+            </dialog>
+            <dialog id="instructions-dialog">
+                <div style="text-align: center;"><p><b>Mode d'emploi</b></p></div>
+                <ol>
+                    <li>
+                        <p>
+                            <b>Enseignements (à gauche) : </b>
+                        </p>
+                        <p>
+                            Pour ajouter un enseignement à vos vœux,
+                            sélectionnez-le à l'aide des menus déroulants, puis
+                            cliquez sur
+                            <span
+                                style="
+                                    color: white;
+                                    background-color: darkblue;
+                                    border-radius: 2px;
+                                    padding: 2px 4px;
+                                    font-size: small;
+                                "
+                                >Ajouter</span
+                            >
+                            à côté de sa description.
+                        </p>
+                        <ul>
+                            <li>
+                                <p>
+                                    Pour dupliquer un enseignement, cliquez sur
+                                    le ➕.
+                                </p>
+                            </li>
+                            <li>
+                                <p>Pour le supprimer, cliquez sur le ❌.</p>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p><b>Disponibilités (à droite) : </b></p>
+                        <ul>
+                            <li>
+                                <p>
+                                    Dans le tableau, cliquez sur vos plages
+                                    horaires de disponibilité pour les
+                                    sélectionner ✅.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Cliquez à nouveau sur une case pour la
+                                    désélectionner ❌.
+                                </p>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p><b>Valider :</b></p>
+                        <ul>
+                            <li>
+                                <p>
+                                    Quand vous avez terminé, cliquez sur
+                                    valider, vérifiez le récapitulatif et
+                                    cliquez sur
+                                    <span
+                                        style="
+                                            color: white;
+                                            background-color: darkblue;
+                                            border-radius: 2px;
+                                            padding: 2px 4px;
+                                            font-size: small;
+                                        "
+                                        >Confirmer</span
+                                    >
+                                    pour créer votre fichier de vœux.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Un fichier JSON est téléchargé : envoyez-le
+                                    conjointement à Florent Moncomble et
+                                    Guillaume Winter.
+                                </p>
+                            </li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <div style="text-align: center">
+                    <button id="compris" class="wishes-ui">Compris !</button>
+                </div>
+            </dialog>
             <div id="container-2" class="container" style="display: none">
                 <div>
                     <b>Sélectionner les plages horaires de disponibilité :</b>
