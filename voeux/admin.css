@@ -89,6 +89,16 @@ h2 {
     width: auto;
 }
 
+#course-add-div {
+    color: green;
+    font-weight: bold;
+}
+
+#course-delete-div {
+    color: #cc0000;
+    font-weight: bold;
+}
+
 table, th, td {
     border: 1px solid black;
     border-collapse: collapse;

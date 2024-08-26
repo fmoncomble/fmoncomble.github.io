@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 yesBtn.onclick = () => {
                     const index = teacherData.indexOf(checkProf);
                     teacherData.splice(index, 1, newProf);
-                    dialog.close();
+                    dialog.remove();
                     const addedProfDiv =
                         document.getElementById('added-prof-div');
                     addedProfDiv.textContent = `${newProf.name} a été modifié·e.`;
@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     profChanged = true;
                 };
                 noBtn.onclick = () => {
-                    dialog.close();
+                    dialog.remove();
                     return;
                 };
                 document.body.appendChild(dialog);
@@ -411,14 +411,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         yesBtn.classList.add('wishes-ui', 'reset-btn');
         yesBtn.textContent = 'Oui';
         yesBtn.addEventListener('click', () => {
-            dialog.close();
+            dialog.remove();
             deleteProf();
         });
         const noBtn = document.createElement('button');
         noBtn.classList.add('wishes-ui');
         noBtn.textContent = 'Non';
         noBtn.addEventListener('click', () => {
-            dialog.close();
+            dialog.remove();
         });
         document.body.appendChild(dialog);
         dialog.appendChild(div);
@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 yesBtn.onclick = () => {
                     const index = courseData.indexOf(checkCourse);
                     courseData.splice(index, 1, newCourse);
-                    dialog.close();
+                    dialog.remove();
                     const addedCourseDiv =
                         document.getElementById('added-course-div');
                     addedCourseDiv.textContent = `${filièreSelect.value.toUpperCase()} ${
@@ -597,7 +597,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     courseChanged = true;
                 };
                 noBtn.onclick = () => {
-                    dialog.close();
+                    dialog.remove();
                     return;
                 };
                 document.body.appendChild(dialog);
@@ -737,14 +737,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         yesBtn.classList.add('wishes-ui', 'reset-btn');
         yesBtn.textContent = 'Oui';
         yesBtn.addEventListener('click', () => {
-            dialog.close();
+            dialog.remove();
             deleteCourse();
         });
         const noBtn = document.createElement('button');
         noBtn.classList.add('wishes-ui');
         noBtn.textContent = 'Non';
         noBtn.addEventListener('click', () => {
-            dialog.close();
+            dialog.remove();
         });
         document.body.appendChild(dialog);
         dialog.appendChild(div);

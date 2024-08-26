@@ -118,8 +118,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Listen to erase button ('Écraser')
     eraseBtn.addEventListener('click', () => {
-        servicesFile = [];
-        compileWishes();
+        const eraseDialog = document.createElement('dialog');
+        const div = document.createElement('div');
+        div.textContent = 'Voulez-vous vraiment écraser le fichier existant ?';
+        const yesBtn = document.createElement('button');
+        yesBtn.classList.add('wishes-ui', 'reset-btn');
+        yesBtn.textContent = 'Oui';
+        const noBtn = document.createElement('button');
+        noBtn.classList.add('wishes-ui');
+        noBtn.textContent = 'Non';
+        yesBtn.addEventListener('click', () => {
+            servicesFile = [];
+            compileWishes();
+            eraseDialog.remove();
+        });
+        noBtn.addEventListener('click', () => {
+            eraseDialog.remove();
+        });
+        eraseDialog.appendChild(div);
+        eraseDialog.appendChild(yesBtn);
+        eraseDialog.appendChild(noBtn);
+        document.body.appendChild(eraseDialog);
+        eraseDialog.showModal();
     });
 
     // Load individual wish files
