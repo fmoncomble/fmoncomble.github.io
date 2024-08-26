@@ -80,9 +80,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             authSaveBtn.classList.remove('reset-btn');
             tokenInput.value = null;
             teacherInputDiv.style.display = 'none';
-            window.alert(
-                '⚠️ Vous devez être authentifié pour utiliser cette page'
-            );
             tokenInput.focus();
         }
     }

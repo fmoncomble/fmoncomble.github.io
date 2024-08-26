@@ -20,9 +20,9 @@ select.wishes-ui {
     padding-left: 5px;
 }
 
-input#auth-input,
-input#token-input {
+input.token-input {
     width: 50%;
+    min-width: 60ch;
 }
 
 select.wishes-ui {
