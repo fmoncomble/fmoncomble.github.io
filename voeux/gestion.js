@@ -22,6 +22,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const saveChangesBtn = document.getElementById('save-changes-btn');
     const profList = document.getElementById('prof-list');
 
+    profAddInput.addEventListener('input', () => {
+        if (profAddInput.value) {
+            profCancelBtn.disabled = false;
+        } else {
+            profCancelBtn.disabled = true;
+        }
+    });
+
+    courseInput.addEventListener('input', () => {
+        if (courseInput.value) {
+            courseCancelBtn.disabled = false;
+        } else {
+            courseCancelBtn.disabled = true;
+        }
+    });
     // Manage authentication & get data
     let token;
     let teacherData;
@@ -290,9 +305,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const index = teacherData.indexOf(checkProf);
                     teacherData.splice(index, 1, newProf);
                     dialog.close();
-                    const addedProfDiv = document.getElementById('added-prof-div');
+                    const addedProfDiv =
+                        document.getElementById('added-prof-div');
                     addedProfDiv.textContent = `${newProf.name} a été modifié·e.`;
                     addedProfDiv.style.display = 'block';
+                    setTimeout(() => {
+                        addedProfDiv.style.display = 'none';
+                        addedProfDiv.textContent = null;
+                    }, 1000);
                     profChanged = true;
                 };
                 noBtn.onclick = () => {
@@ -321,6 +341,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const addedProfDiv = document.getElementById('added-prof-div');
             addedProfDiv.textContent = `${profAddInput.value}, ${profStatusSelect.value} a été ajouté·e`;
             addedProfDiv.style.display = 'block';
+            setTimeout(() => {
+                addedProfDiv.style.display = 'none';
+                addedProfDiv.textContent = null;
+            }, 1000);
             profAddInput.value = null;
             profChanged = true;
         }
@@ -334,7 +358,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const profCancelBtn = document.getElementById('prof-add-cancel');
     profCancelBtn.addEventListener('click', () => {
-        const elts = document.getElementById('prof-add').querySelectorAll('select, input');
+        const elts = document
+            .getElementById('prof-add')
+            .querySelectorAll('select, input');
         for (let elt of elts) {
             if (elt.tagName === 'SELECT') {
                 elt.value = elt.querySelectorAll('option')[0].value;
@@ -343,6 +369,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             elt.removeAttribute('style');
         }
+        profCancelBtn.disabled = true;
         profAddBtn.textContent = 'Ajouter';
         profModify = false;
     });
@@ -365,7 +392,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('custom-service').value = oldProf.service;
         }
         profAddBtn.textContent = 'Modifier';
-        const elts = document.getElementById('prof-add').querySelectorAll('select, input');
+        const elts = document
+            .getElementById('prof-add')
+            .querySelectorAll('select, input');
         for (let elt of elts) {
             elt.style.backgroundColor = '#e9fce9';
         }
@@ -411,6 +440,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const deletedProfSpan = document.getElementById('deleted-prof');
         deletedProfSpan.textContent = `${oldProfName}`;
         deletedProfDiv.style.display = 'block';
+        setTimeout(() => {
+            deletedProfDiv.style.display = 'none';
+            deletedProfSpan.textContent = null;
+        }, 1000);
         profDeleteInput.value = null;
         profChanged = true;
         buildProfList();
@@ -537,11 +570,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const index = courseData.indexOf(checkCourse);
                     courseData.splice(index, 1, newCourse);
                     dialog.close();
-                    const addedCourseDiv = document.getElementById('added-course-div');
+                    const addedCourseDiv =
+                        document.getElementById('added-course-div');
                     addedCourseDiv.textContent = `${filièreSelect.value.toUpperCase()} ${
                         semestreSelect.value
                     } ${courseInput.value} — ${eqtd}h TD a été mis à jour.`;
                     addedCourseDiv.style.display = 'block';
+                    setTimeout(() => {
+                        addedCourseDiv.style.display = 'none';
+                        addedCourseDiv.textContent = null;
+                    }, 1000);
                     courseAddBtn.textContent = 'Ajouter';
                     const elts = Array.from(
                         document
@@ -579,6 +617,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 semestreSelect.value
             } ${courseInput.value} — ${eqtd}h TD a été ajouté`;
             addedCourseDiv.style.display = 'block';
+            setTimeout(() => {
+                addedCourseDiv.style.display = 'none';
+                addedCourseDiv.textContent = null;
+            }, 1000);
             courseInput.value = null;
             volumeInput.value = null;
             eqtdInput.value = null;
@@ -612,6 +654,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             elt.removeAttribute('style');
         }
         courseAddBtn.textContent = 'Ajouter';
+        courseCancelBtn.disabled = true;
         courseModify = false;
     });
 
@@ -725,6 +768,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         );
         deletedCourseSpan.textContent = `${deletedCourse[0].filière} ${deletedCourse[0].semestre} ${deletedCourse[0].intitulé}`;
         deletedCourseDiv.style.display = 'block';
+        setTimeout(() => {
+            deletedCourseDiv.style.display = 'none';
+            deletedCourseSpan.textContent = null;
+        }, 1000);
         courseChanged = true;
         getCourseIds();
         buildCourseList();

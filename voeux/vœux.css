@@ -100,3 +100,15 @@ button.confirm:hover {
     float: right;
     margin-left: 2px;
 }
+
+*:disabled {
+    background-color: lightgray !important;
+    color: gray !important;
+    opacity: 0.8;
+}
+
+*:disabled:hover {
+    background-color: lightgray !important;
+    color: gray !important;
+    opacity: 0.8;
+}

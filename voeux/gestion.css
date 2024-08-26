@@ -119,3 +119,15 @@ button.wishes-ui {
         transform: rotate(360deg);
     }
 }
+
+div#added-prof-div,
+div#added-course-div {
+    color: green;
+    font-weight: bold;
+}
+
+div#deleted-prof-div,
+div#deleted-course-div {
+    color: #cc0000;
+    font-weight: bold;
+}
