@@ -20,11 +20,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function checkToken() {
         token = localStorage.getItem('github-token');
         if (token) {
-            checkVoeuxFile();
-            profFile = await getProfFile();
-            courseFile = await getCourseFile();
-            buildProfList();
-            buildCourseAddSelect();
+            const res = await fetch(
+                'https://api.github.com/repos/fmoncomble/voeux/contents?ref=main',
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/vnd.github+json',
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            if (!res.ok) {
+                window.alert(
+                    "L'authentification a échoué : vérifiez le jeton d'authentification"
+                );
+                token = null;
+                authDiv.style.display = 'none';
+                authDialog.showModal();
+                return;
+            } else {
+                checkVoeuxFile();
+                profFile = await getProfFile();
+                courseFile = await getCourseFile();
+                buildProfList();
+                buildCourseAddSelect();
+            }
         } else {
             authDiv.style.display = 'none';
             authDialog.showModal();

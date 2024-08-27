@@ -1,8 +1,17 @@
+body {
+    background-color: #c4d0e6;
+}
+
+h1 {
+    text-align: center;
+}
+
 .section-header,
 .show-hide {
     background-color: #eee;
     padding: 5px 10px;
     border-radius: 4px;
+    background-color: #a6b8d9;
 }
 
 .arrow {
@@ -81,7 +90,7 @@ button.wishes-ui {
 }
 
 .container {
-    max-width: 50%;
+    width: 50%;
 }
 
 .show-hide {

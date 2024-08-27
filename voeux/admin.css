@@ -1,5 +1,10 @@
 body {
     width: auto;
+    background-color: #c4d0e6;
+}
+
+h1 {
+    text-align: center;
 }
 
 input#token-input {
@@ -45,7 +50,7 @@ label#file-input-label:hover {
 }
 
 h2 {
-    background-color: #eee;
+    background-color: #a6b8d9;
     padding: 5px;
     border-radius: 4px;
 }

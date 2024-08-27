@@ -47,20 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         'https://api.github.com/repos/fmoncomble/voeux/contents/cours.json?ref=main';
 
     async function checkToken() {
-        token = localStorage.getItem('github-token');
-        if (token) {
-            authDiv.style.display = 'block';
-            if (!teacherData && !courseData) {
-                teacherData = await getFile(teacherDBUrl);
-                courseData = await getFile(courseDBUrl);
-                if (teacherData && courseData) {
-                    buildProfList();
-                    buildCourseList();
-                    getCourseIds();
-                }
-            }
-        } else {
-            authDiv.style.display = 'none';
+        function showAuthDialog() {
             const authDialog = document.getElementById('auth-dialog');
             authDialog.showModal();
             const authInput = document.getElementById('auth-input');
@@ -93,12 +80,49 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             });
         }
+        token = localStorage.getItem('github-token');
+        if (token) {
+            const res = await fetch(
+                'https://api.github.com/repos/fmoncomble/voeux/contents?ref=main',
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/vnd.github+json',
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            if (!res.ok) {
+                window.alert(
+                    "L'authentification a échoué : vérifiez le jeton d'authentification"
+                );
+                token = null;
+                authDiv.style.display = 'none';
+                showAuthDialog();
+                return;
+            } else {
+                authDiv.style.display = 'block';
+                if (!teacherData && !courseData) {
+                    teacherData = await getFile(teacherDBUrl);
+                    courseData = await getFile(courseDBUrl);
+                    if (teacherData && courseData) {
+                        buildProfList();
+                        buildCourseList();
+                        getCourseIds();
+                    }
+                }
+            }
+        } else {
+            authDiv.style.display = 'none';
+            showAuthDialog();
+        }
     }
     checkToken();
 
     const resetBtn = document.getElementById('reset-btn');
     resetBtn.addEventListener('click', () => {
         localStorage.removeItem('github-token');
+        token = null;
         checkToken();
     });
 
@@ -592,7 +616,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     );
                     for (let elt of elts) {
                         if (elt.tagName === 'SELECT') {
-                            elt.value = elt.querySelector('option[selected]').value;
+                            elt.value =
+                                elt.querySelector('option[selected]').value;
                         } else {
                             elt.value = null;
                         }

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const okBtn = firstTimeDialog.querySelector('button#ok-btn');
     okBtn.addEventListener('click', () => {
         firstTimeDialog.close();
-    })
+    });
     const instrDialog = document.getElementById('instructions-dialog');
     instrDiv.addEventListener('click', () => {
         instrDialog.showModal();
@@ -57,17 +57,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function checkToken() {
         token = localStorage.getItem('saisie-github-token');
         if (token) {
-            tokenInput.placeholder = 'Jeton enregistré';
-            tokenInput.style.outline = 'solid 1px green';
-            authSaveBtn.textContent = 'Déconnecter';
-            authSaveBtn.classList.add('reset-btn');
-            teacherInputDiv.style.display = 'block';
-            if (!teacherData && !courseData) {
-                teacherData = await getFile(teacherDBUrl);
-                courseData = await getFile(courseDBUrl);
-                if (teacherData && courseData) {
-                    buildTeacherList();
-                    buildCourseList();
+            const res = await fetch(
+                'https://api.github.com/repos/fmoncomble/voeux/contents?ref=main',
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/vnd.github+json',
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            if (!res.ok) {
+                window.alert(
+                    "L'authentification a échoué : vérifiez le jeton d'authentification"
+                );
+                token = null;
+                return;
+            } else {
+                tokenInput.disabled = true;
+                tokenInput.type = 'text';
+                tokenInput.value = 'Authentification OK ✅';
+                tokenInput.style.fontWeight = 'bold';
+                tokenInput.style.outline = 'solid 1px green';
+                authSaveBtn.textContent = 'Déconnecter';
+                authSaveBtn.classList.add('reset-btn');
+                teacherInputDiv.style.display = 'block';
+                if (!teacherData && !courseData) {
+                    teacherData = await getFile(teacherDBUrl);
+                    courseData = await getFile(courseDBUrl);
+                    if (teacherData && courseData) {
+                        buildTeacherList();
+                        buildCourseList();
+                    }
                 }
             }
             if (!understand) {
@@ -76,6 +97,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             tokenInput.placeholder = "Jeton d'authentification";
             tokenInput.removeAttribute('style');
+            tokenInput.type = 'password';
+            tokenInput.disabled = false;
             authSaveBtn.textContent = 'Enregistrer';
             authSaveBtn.classList.remove('reset-btn');
             tokenInput.value = null;
@@ -85,24 +108,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     checkToken();
     async function saveToken() {
-        if ((token && tokenInput.value) || !token) {
+        if (tokenInput.value && !token) {
             localStorage.setItem(
                 'saisie-github-token',
                 tokenInput.value.trim()
             );
-            tokenInput.placeholder = 'Jeton enregistré';
-            tokenInput.value = null;
-            tokenInput.style.outline = 'solid 1px green';
-            authSaveBtn.textContent = 'Réinitialiser';
-            teacherInputDiv.style.display = 'block';
-            authSaveBtn.style.backgroundColor = 'green';
-            setTimeout(() => {
-                authSaveBtn.removeAttribute('style');
-            }, 1000);
             checkToken();
         } else if (token) {
             localStorage.removeItem('saisie-github-token');
+            token = null;
             tokenInput.removeAttribute('style');
+            tokenInput.type = 'password';
+            tokenInput.disabled = false;
             tokenInput.value = null;
             authSaveBtn.textContent = 'Enregistrer';
             authSaveBtn.classList.remove('reset-btn');
@@ -439,8 +456,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const confirmDialog = document.getElementById('confirm-dialog');
     sendBtn.onclick = () => {
-        if (!jsonFile || !jsonFile.Dispos || !jsonFile.Cours || jsonFile.Dispos.length === 0 || jsonFile.Cours.length === 0) {
-            const missingInfoDialog = document.getElementById('missing-info')
+        if (
+            !jsonFile ||
+            !jsonFile.Dispos ||
+            !jsonFile.Cours ||
+            jsonFile.Dispos.length === 0 ||
+            jsonFile.Cours.length === 0
+        ) {
+            const missingInfoDialog = document.getElementById('missing-info');
             const missingOkBtn = missingInfoDialog.querySelector('button');
             missingOkBtn.addEventListener('click', () => {
                 missingInfoDialog.close();
