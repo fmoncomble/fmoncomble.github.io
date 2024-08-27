@@ -11,6 +11,11 @@ input#token-input {
     width: 250px;
 }
 
+div#auth-div {
+    color: green;
+    font-weight: bold;
+}
+
 label#file-input-label {
     height: 32px;
     border: none;
@@ -34,6 +39,10 @@ label#file-input-label:hover {
 
 #course-name {
     font-weight: bold;
+}
+
+.course-name {
+    color: darkblue;
 }
 
 #course-teachers-span,

@@ -349,9 +349,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (totalCourseNb < reqNb) {
                         courseNumberSpan.style.color = 'orange';
                     } else if (totalCourseNb === reqNb) {
-                        courseNumberSpan.style.color = 'green';
+                        courseNumberSpan.style.color = 'darkgreen';
                     } else if (totalCourseNb > reqNb) {
-                        courseNumberSpan.style.color = 'red';
+                        courseNumberSpan.style.color = '#cc0000';
                         courseNumberSpan.textContent += ' ⚠️';
                     }
                 }
@@ -391,9 +391,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (totalCourseNb < reqNb) {
                         courseNumberSpan.style.color = 'orange';
                     } else if (totalCourseNb === reqNb) {
-                        courseNumberSpan.style.color = 'green';
+                        courseNumberSpan.style.color = 'darkgreen';
                     } else if (totalCourseNb > reqNb) {
-                        courseNumberSpan.style.color = 'red';
+                        courseNumberSpan.style.color = '#cc0000';
                         courseNumberSpan.textContent += ' ⚠️';
                     }
                 }
@@ -416,14 +416,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 serviceDiv.textContent += ` (${nbHc} HC)`;
             }
             if (totalService === baseService) {
-                serviceDiv.style.color = 'green';
+                serviceDiv.style.color = 'darkgreen';
             } else if (
                 totalService > 2 * baseService ||
                 totalService < baseService
             ) {
-                serviceDiv.style.color = 'red';
+                serviceDiv.style.color = '#cc0000';
             } else {
-                serviceDiv.style.color = 'darkblue';
+                serviceDiv.style.color = 'darkgreen';
             }
             courseList.appendChild(serviceDiv);
             const dispoTable = dispoDiv.querySelector('table');
