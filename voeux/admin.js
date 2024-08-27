@@ -348,11 +348,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (logic === 'course') {
                     if (totalCourseNb < reqNb) {
                         courseNumberSpan.style.color = 'orange';
+                        courseNumberSpan.textContent += ' ⚠️';
                     } else if (totalCourseNb === reqNb) {
-                        courseNumberSpan.style.color = 'darkgreen';
+                        courseNumberSpan.style.color = 'green';
+                        courseNumberSpan.textContent += ' ✅';
                     } else if (totalCourseNb > reqNb) {
                         courseNumberSpan.style.color = '#cc0000';
-                        courseNumberSpan.textContent += ' ⚠️';
+                        courseNumberSpan.textContent += ' 🚨';
                     }
                 }
                 if (logic === 'prof') {
@@ -390,11 +392,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (logic === 'course') {
                     if (totalCourseNb < reqNb) {
                         courseNumberSpan.style.color = 'orange';
+                        courseNumberSpan.textContent += ' ⚠️';
                     } else if (totalCourseNb === reqNb) {
-                        courseNumberSpan.style.color = 'darkgreen';
+                        courseNumberSpan.style.color = 'green';
+                        courseNumberSpan.textContent += ' ✅';
                     } else if (totalCourseNb > reqNb) {
                         courseNumberSpan.style.color = '#cc0000';
-                        courseNumberSpan.textContent += ' ⚠️';
+                        courseNumberSpan.textContent += ' 🚨';
                     }
                 }
             }
@@ -416,14 +420,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 serviceDiv.textContent += ` (${nbHc} HC)`;
             }
             if (totalService === baseService) {
-                serviceDiv.style.color = 'darkgreen';
+                serviceDiv.style.color = 'green';
             } else if (
                 totalService > 2 * baseService ||
                 totalService < baseService
             ) {
                 serviceDiv.style.color = '#cc0000';
             } else {
-                serviceDiv.style.color = 'darkgreen';
+                serviceDiv.style.color = 'green';
             }
             courseList.appendChild(serviceDiv);
             const dispoTable = dispoDiv.querySelector('table');
@@ -678,6 +682,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const ensModSpan = document.getElementById('ens-modify-name');
         ensModSpan.textContent = profInput2.value;
         ensModDiv.style.display = 'block';
+        const servModDiv = document.getElementById('service-modify');
+        servModDiv.style.display = 'block';
         buildCourseDeleteSelect();
     });
     const filièreSelect3 = document.getElementById('filière-select-3');
@@ -797,6 +803,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         courseAddSpan.textContent += ` a été ajouté au service de ${prof}. Total : ${totalService} sur ${baseService}`;
         courseAddDiv.style.display = 'block';
+        setTimeout(() => {
+            courseAddDiv.style.display = 'none';
+        }, 1000);
         customVolInput.value = '';
     }
 
@@ -832,6 +841,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const totalService = data[1];
         courseDeleteSpan.textContent = `${filière.toUpperCase()} ${semestre} ${courseName} a été supprimé du service de ${prof}. Total : ${totalService} sur ${baseService}`;
         courseDeleteDiv.style.display = 'block';
+        setTimeout(() => {
+            courseDeleteDiv.style.display = 'none';
+        }, 1000);
     }
 
     // Calculer service total et service dû
@@ -880,6 +892,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             saveChangesBtn.removeAttribute('style');
         }, 1000);
         saveChgSpinner.style.display = 'none';
+        const servModDiv = document.getElementById('service-modify');
+        servModDiv.style.display = 'none';
+        profInput2.value = null;
+    });
+
+    const cancelChangesBtn = document.getElementById('cancel-changes-btn');
+    cancelChangesBtn.addEventListener('click', () => {
+        const servModDiv = document.getElementById('service-modify');
+        servModDiv.style.display = 'none';
+        profInput2.value = null;
     });
 
     // Course sorting functions

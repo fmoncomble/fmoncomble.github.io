@@ -16,7 +16,9 @@
             <div id="container-1" class="container">
                 <div id="auth-div">
                     <span>Authentification OK ✅</span>
-                    <button class="wishes-ui reset-btn" id="reset-btn">Déconnecter</button>
+                    <button class="wishes-ui reset-btn" id="reset-btn">
+                        Déconnecter
+                    </button>
                 </div>
                 <div id="file-exist" class="wishes-ui" style="display: none">
                     Le fichier de services a été importé.
@@ -106,6 +108,7 @@
                             Valider
                         </button>
                     </div>
+                    <div id="service-modify" style="display: none">
                     <div
                         id="ens-modify"
                         class="wishes-ui"
@@ -114,128 +117,163 @@
                         ▶️ Modifier le service de
                         <span id="ens-modify-name"></span> :
                     </div>
-                    <div>
-                        <b>Ajouter un enseignement</b>
                         <div>
-                            <select id="filière-select-2" class="wishes-ui">
-                                <option value="LLCER" selected data-level="l">
-                                    LLCER
-                                </option>
-                                <option value="LEA" data-level="l">LEA</option>
-                                <option value="MEEF" data-level="m">
-                                    MEEF
-                                </option>
-                                <option value="MLLCER" data-level="m">
-                                    Master LLCER
-                                </option>
-                                <option value="LMI" data-level="m">LMI</option>
-                                <option value="AGREG" data-level="a">
-                                    Agrégation interne
-                                </option>
-                            </select>
-                            <select id="semestre-select-2" class="wishes-ui">
-                                <option value="S1" selected>S1</option>
-                                <option value="S2">S2</option>
-                                <option value="S3" data-nota="true">S3</option>
-                                <option value="S4" data-nota="true">S4</option>
-                                <option
-                                    value="S5"
-                                    data-nota="true"
-                                    data-notm="true"
+                            <b>Ajouter un enseignement</b>
+                            <div>
+                                <select id="filière-select-2" class="wishes-ui">
+                                    <option
+                                        value="LLCER"
+                                        selected
+                                        data-level="l"
+                                    >
+                                        LLCER
+                                    </option>
+                                    <option value="LEA" data-level="l">
+                                        LEA
+                                    </option>
+                                    <option value="MEEF" data-level="m">
+                                        MEEF
+                                    </option>
+                                    <option value="MLLCER" data-level="m">
+                                        Master LLCER
+                                    </option>
+                                    <option value="LMI" data-level="m">
+                                        LMI
+                                    </option>
+                                    <option value="AGREG" data-level="a">
+                                        Agrégation interne
+                                    </option>
+                                </select>
+                                <select
+                                    id="semestre-select-2"
+                                    class="wishes-ui"
                                 >
-                                    S5
-                                </option>
-                                <option
-                                    value="S6"
-                                    data-nota="true"
-                                    data-notm="true"
-                                >
-                                    S6
-                                </option>
-                            </select>
-                            <select
-                                id="course-add-select"
+                                    <option value="S1" selected>S1</option>
+                                    <option value="S2">S2</option>
+                                    <option value="S3" data-nota="true">
+                                        S3
+                                    </option>
+                                    <option value="S4" data-nota="true">
+                                        S4
+                                    </option>
+                                    <option
+                                        value="S5"
+                                        data-nota="true"
+                                        data-notm="true"
+                                    >
+                                        S5
+                                    </option>
+                                    <option
+                                        value="S6"
+                                        data-nota="true"
+                                        data-notm="true"
+                                    >
+                                        S6
+                                    </option>
+                                </select>
+                                <select
+                                    id="course-add-select"
+                                    class="wishes-ui"
+                                ></select>
+                                <input
+                                    id="custom-vol"
+                                    type="number"
+                                    placeholder="Vol. pers."
+                                    class="wishes-ui"
+                                />
+                                <button id="course-add-btn" class="wishes-ui">
+                                    Ajouter
+                                </button>
+                            </div>
+                            <div
+                                id="course-add-div"
                                 class="wishes-ui"
-                            ></select>
-                            <input
-                                id="custom-vol"
-                                type="number"
-                                placeholder="Vol. pers."
-                                class="wishes-ui"
-                            />
-                            <button id="course-add-btn" class="wishes-ui">
-                                Ajouter
-                            </button>
+                                style="display: none"
+                            >
+                                <span id="course-add-span"></span>
+                            </div>
                         </div>
-                        <div
-                            id="course-add-div"
-                            class="wishes-ui"
-                            style="display: none"
-                        >
-                            <span id="course-add-span"></span>
-                        </div>
-                    </div>
-                    <div>
-                        <b>Supprimer un enseignement</b>
                         <div>
-                            <select id="filière-select-3" class="wishes-ui">
-                                <option value="LLCER" selected data-level="l">
-                                    LLCER
-                                </option>
-                                <option value="LEA" data-level="l">LEA</option>
-                                <option value="MEEF" data-level="m">
-                                    MEEF
-                                </option>
-                                <option value="MLLCER" data-level="m">
-                                    Master LLCER
-                                </option>
-                                <option value="LMI" data-level="m">LMI</option>
-                                <option value="AGREG" data-level="a">
-                                    Agrégation interne
-                                </option>
-                            </select>
-                            <select id="semestre-select-3" class="wishes-ui">
-                                <option value="S1" selected>S1</option>
-                                <option value="S2">S2</option>
-                                <option value="S3" data-nota="true">S3</option>
-                                <option value="S4" data-nota="true">S4</option>
-                                <option
-                                    value="S5"
-                                    data-nota="true"
-                                    data-notm="true"
+                            <b>Supprimer un enseignement</b>
+                            <div>
+                                <select id="filière-select-3" class="wishes-ui">
+                                    <option
+                                        value="LLCER"
+                                        selected
+                                        data-level="l"
+                                    >
+                                        LLCER
+                                    </option>
+                                    <option value="LEA" data-level="l">
+                                        LEA
+                                    </option>
+                                    <option value="MEEF" data-level="m">
+                                        MEEF
+                                    </option>
+                                    <option value="MLLCER" data-level="m">
+                                        Master LLCER
+                                    </option>
+                                    <option value="LMI" data-level="m">
+                                        LMI
+                                    </option>
+                                    <option value="AGREG" data-level="a">
+                                        Agrégation interne
+                                    </option>
+                                </select>
+                                <select
+                                    id="semestre-select-3"
+                                    class="wishes-ui"
                                 >
-                                    S5
-                                </option>
-                                <option
-                                    value="S6"
-                                    data-nota="true"
-                                    data-notm="true"
+                                    <option value="S1" selected>S1</option>
+                                    <option value="S2">S2</option>
+                                    <option value="S3" data-nota="true">
+                                        S3
+                                    </option>
+                                    <option value="S4" data-nota="true">
+                                        S4
+                                    </option>
+                                    <option
+                                        value="S5"
+                                        data-nota="true"
+                                        data-notm="true"
+                                    >
+                                        S5
+                                    </option>
+                                    <option
+                                        value="S6"
+                                        data-nota="true"
+                                        data-notm="true"
+                                    >
+                                        S6
+                                    </option>
+                                </select>
+                                <select
+                                    id="course-delete-select"
+                                    class="wishes-ui"
+                                ></select>
+                                <button
+                                    id="course-delete-btn"
+                                    class="wishes-ui reset-btn"
                                 >
-                                    S6
-                                </option>
-                            </select>
-                            <select
-                                id="course-delete-select"
+                                    Supprimer
+                                </button>
+                            </div>
+                            <div
+                                id="course-delete-div"
                                 class="wishes-ui"
-                            ></select>
-                            <button id="course-delete-btn" class="wishes-ui reset-btn">
-                                Supprimer
+                                style="display: none"
+                            >
+                                <span id="course-delete-span"></span>
+                            </div>
+                        </div>
+                        <br />
+                        <div>
+                            <button id="cancel-changes-btn" class="wishes-ui reset-btn">Annuler</button>
+                            <button id="save-changes-btn" class="wishes-ui">
+                                Enregistrer
                             </button>
+                            <span id="save-chg-spinner" class="spinner"></span>
                         </div>
-                        <div
-                            id="course-delete-div"
-                            class="wishes-ui"
-                            style="display: none"
-                        >
-                            <span id="course-delete-span"></span>
-                        </div>
-                    </div>
-                    <br />
-                    <div>
-                        <button id="save-changes-btn" class="wishes-ui">
-                            Enregistrer
-                        </button>
-                        <span id="save-chg-spinner" class="spinner"></span>
                     </div>
                 </div>
                 <div>
@@ -333,7 +371,8 @@
                     </div>
                     <div id="course-list">
                         <div id="course-item" style="display: none">
-                            <span class="course-name" id="course-name"></span><br />
+                            <span class="course-name" id="course-name"></span
+                            ><br />
                             <span id="course-teachers-span"
                                 >Enseignants : <span id="course-teachers"></span
                                 ><br

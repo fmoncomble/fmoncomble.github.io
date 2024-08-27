@@ -27,6 +27,7 @@ input.token-input {
 
 select.wishes-ui {
     height: 36px;
+    max-width: fit-content;
 }
 
 button.wishes-ui {
