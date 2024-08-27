@@ -83,3 +83,11 @@ dialog#instructions-dialog {
 button#send-btn {
     width: 20%;
 }
+
+.footer {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    text-align: center;
+    font-size: small;
+}

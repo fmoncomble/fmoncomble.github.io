@@ -28,7 +28,6 @@
                     </button>
                 </div>
                 <div id="teacher-input-div" style="display: none">
-                    <div id="instructions">Afficher les instructions</div>
                     <label for="teacher-name" class="wishes-ui">
                         Nom de l'enseignant.e :
                         <input
@@ -44,6 +43,7 @@
                     <button id="go-btn" class="wishes-ui">Commencer</button>
                     <div id="teacher-status"></div>
                     <div id="teacher-service"></div>
+                    <div id="instructions">Afficher les instructions</div>
                     <br />
                 </div>
                 <div id="class-choice" class="wishes-ui" style="display: none">
@@ -152,7 +152,9 @@
                     </dialog>
                     <dialog id="missing-info">
                         <div>Complétez les informations manquantes</div>
-                        <button id="missing-ok-btn" class="wishes-ui">OK</button>
+                        <button id="missing-ok-btn" class="wishes-ui">
+                            OK
+                        </button>
                     </dialog>
                 </div>
             </div>
@@ -347,11 +349,13 @@
                         </tr>
                     </table>
                 </div>
+                <br />
                 <div id="validation-div">
                     <h2>3. Valider</h2>
                     <button id="send-btn" class="wishes-ui">Valider</button>
                 </div>
             </div>
         </div>
+        <div class="footer">© Florent Moncomble 2024</div>
     </body>
 </html>
