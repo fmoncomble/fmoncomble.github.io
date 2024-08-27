@@ -14,6 +14,11 @@ h1 {
     background-color: #a6b8d9;
 }
 
+input#custom-service,
+input#eqtd-input {
+    max-width: 12%;
+}
+
 .arrow {
     display: inline-block;
 }

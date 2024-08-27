@@ -386,17 +386,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             const cVol = Number(c.eqtd);
             volTotal += cVol;
         }
-        hTotal.textContent = volTotal;
-        if (volTotal > tService) {
-            hTotal.style.fontWeight = 'bold';
-            hTotal.style.color = 'orange';
-            volHc = volTotal - Number(tService);
-            hc.textContent = `, ${volHc} HC`;
+        hTotal.textContent = volTotal + ' hTD';
+        if (volTotal >= tService) {
+            hTotal.style.color = 'green';
+            if (volTotal > tService) {
+                volHc = volTotal - Number(tService);
+                hc.textContent = `, ${volHc} HC`;
+                hc.style.color = 'green';
+            }
         }
         if (volHc > tService * 2) {
-            hc.style.fontWeight = 'bold';
             hc.style.color = 'red';
             hTotal.style.color = 'red';
+        }
+        if (volTotal < tService) {
+            hc.textContent = null;
+            hTotal.style.color = 'orange';
         }
     }
 

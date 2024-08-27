@@ -1,5 +1,6 @@
-body {
+html, body {
     background-color: #c4d0e6;
+    max-height: 100vh;
 }
 
 h1 {
@@ -24,6 +25,7 @@ h2 {
 
 div#added-courses-list {
     background-color: white;
+    max-height: 150px;
 }
 
 table,

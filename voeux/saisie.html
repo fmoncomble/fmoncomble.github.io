@@ -50,7 +50,6 @@
                     <h2>1. Ajouter des enseignements :</h2>
                     <div>
                         <label for="filière" class="wishes-ui">
-                            Filière :
                             <select
                                 name="filière"
                                 id="filière"
@@ -72,10 +71,7 @@
                                 </option>
                             </select>
                         </label>
-                    </div>
-                    <div>
                         <label for="semestre" class="wishes-ui">
-                            Semestre :
                             <select
                                 name="semestre"
                                 id="semestre"
@@ -101,10 +97,7 @@
                                 </option>
                             </select>
                         </label>
-                    </div>
-                    <div>
                         <label for="cours" class="wishes-ui">
-                            Cours :
                             <select
                                 name="cours"
                                 id="cours"
@@ -131,7 +124,7 @@
                     <div id="added-courses" class="wishes-ui">
                         <b
                             >Enseignements enregistrés (Total :
-                            <span id="hTotal">0 </span> hTD<span id="hc"></span
+                            <span id="hTotal">0 </span><span id="hc"></span
                             >)</b
                         >
                         <br />
@@ -194,6 +187,9 @@
                             </li>
                             <li>
                                 <p>Pour le supprimer, cliquez sur le ❌.</p>
+                            </li>
+                            <li>
+                                <p>Le volume horaire de votre service est ajusté en temps réel : en <span style="color: orange; font-weight: bold">orange</span> s'il est insuffisant, <span style="color: green; font-weight: bold">vert</span> s'il est conforme, <span style="color: red; font-weight: bold">rouge</span> s'il dépasse la limite autorisée.</p>
                             </li>
                         </ul>
                     </li>
