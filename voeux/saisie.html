@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script type="text/javascript" src="saisie.js"></script>
         <script type="application/json" src="profs.json"></script>
         <link rel="stylesheet" type="text/css" href="vœux.css" />
@@ -46,7 +47,7 @@
                     <br />
                 </div>
                 <div id="class-choice" class="wishes-ui" style="display: none">
-                    <b>Ajouter un enseignement :</b><br /><br />
+                    <h2>1. Ajouter des enseignements :</h2>
                     <div>
                         <label for="filière" class="wishes-ui">
                             Filière :
@@ -135,13 +136,6 @@
                         >
                         <br />
                         <div id="added-courses-list"></div>
-                        <button
-                            id="send-btn"
-                            class="wishes-ui"
-                            style="display: none"
-                        >
-                            Valider
-                        </button>
                     </div>
                     <dialog id="confirm-dialog">
                         <b>Récapitulatif :</b><br />
@@ -156,28 +150,27 @@
                             </button>
                         </div>
                     </dialog>
+                    <dialog id="missing-info">
+                        <div>Complétez les informations manquantes</div>
+                        <button id="missing-ok-btn" class="wishes-ui">OK</button>
+                    </dialog>
                 </div>
             </div>
             <dialog id="first-time">
-                <div><p>
-                    <b
-                        >Entrez vos prénom et nom et cliquez sur
-                        <span
-                            style="
-                                color: white;
-                                background-color: darkblue;
-                                border-radius: 2px;
-                                padding: 2px 4px;
-                                font-size: small;
-                            "
-                            >Commencer</span
-                        >.</b
-                    >
-                </p></div>
+                <div>
+                    <p>
+                        <b
+                            >Entrez vos prénom et nom et cliquez sur
+                            <span class="btn-span">Commencer</span>.</b
+                        >
+                    </p>
+                </div>
                 <button id="ok-btn" class="wishes-ui">OK</button>
             </dialog>
             <dialog id="instructions-dialog">
-                <div style="text-align: center;"><p><b>Mode d'emploi</b></p></div>
+                <div style="text-align: center">
+                    <p><b>Mode d'emploi</b></p>
+                </div>
                 <ol>
                     <li>
                         <p>
@@ -187,16 +180,7 @@
                             Pour ajouter un enseignement à vos vœux,
                             sélectionnez-le à l'aide des menus déroulants, puis
                             cliquez sur
-                            <span
-                                style="
-                                    color: white;
-                                    background-color: darkblue;
-                                    border-radius: 2px;
-                                    padding: 2px 4px;
-                                    font-size: small;
-                                "
-                                >Ajouter</span
-                            >
+                            <span class="btn-span">Ajouter</span>
                             à côté de sa description.
                         </p>
                         <ul>
@@ -235,18 +219,9 @@
                             <li>
                                 <p>
                                     Quand vous avez terminé, cliquez sur
-                                    valider, vérifiez le récapitulatif et
-                                    cliquez sur
-                                    <span
-                                        style="
-                                            color: white;
-                                            background-color: darkblue;
-                                            border-radius: 2px;
-                                            padding: 2px 4px;
-                                            font-size: small;
-                                        "
-                                        >Confirmer</span
-                                    >
+                                    <span class="btn-span">Valider</span>,
+                                    vérifiez le récapitulatif et cliquez sur
+                                    <span class="btn-span">Confirmer</span>
                                     pour créer votre fichier de vœux.
                                 </p>
                             </li>
@@ -267,7 +242,9 @@
             </dialog>
             <div id="container-2" class="container" style="display: none">
                 <div>
-                    <b>Sélectionner les plages horaires de disponibilité :</b>
+                    <h2>
+                        2. Sélectionner les plages horaires de disponibilité :
+                    </h2>
                 </div>
                 <br />
                 <div>
@@ -369,6 +346,10 @@
                             <td></td>
                         </tr>
                     </table>
+                </div>
+                <div id="validation-div">
+                    <h2>3. Valider</h2>
+                    <button id="send-btn" class="wishes-ui">Valider</button>
                 </div>
             </div>
         </div>

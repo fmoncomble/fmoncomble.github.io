@@ -1,21 +1,45 @@
+body {
+    background-color: #c4d0e6;
+}
+
+h1 {
+    text-align: center;
+}
+
 .wrapper {
     display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+h2 {
+    background-color: #a6b8d9;
+    padding: 5px 10px;
+    border-radius: 4px;
 }
 
 .container {
     width: 50%;
 }
 
-table, th, td {
+div#added-courses-list {
+    background-color: white;
+}
+
+table,
+th,
+td {
     border: 1px solid black;
     border-collapse: collapse;
 }
 
 table {
     width: 100%;
+    box-shadow: 0 0 10px 5px #a6b8d9;
 }
 
-th, td {
+th,
+td {
     width: 16%;
     height: 1.5em;
 }
@@ -27,6 +51,7 @@ th {
 td {
     cursor: pointer;
     text-align: center;
+    background-color: white;
 }
 
 td:hover {
@@ -44,4 +69,17 @@ div#instructions {
 dialog#confirm-dialog,
 dialog#instructions-dialog {
     text-align: left !important;
+}
+
+.btn-span {
+    color: white;
+    background-color: darkblue;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: small;
+    vertical-align: top;
+}
+
+button#send-btn {
+    width: 20%;
 }

@@ -181,6 +181,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!understand) {
             instrDialog.showModal();
         }
+        if (!teacherInput.value) {
+            window.alert('Entrez votre nom');
+            teacherInput.focus();
+            return;
+        }
         const dispoContainer = document.getElementById('container-2');
         dispoContainer.style.display = 'block';
         jsonFile = null;
@@ -195,11 +200,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const teachers = new Set();
         for (t of teacherData) {
             teachers.add(t.name);
-        }
-        if (!teacherInput.value) {
-            window.alert('Entrez votre nom');
-            teacherInput.focus();
-            return;
         }
         tName = teacherInput.value;
         if (!teachers.has(teacherInput.value)) {
@@ -359,7 +359,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateVol();
         const firstChild = addedCoursesList.firstChild;
         addedCoursesList.insertBefore(entry, firstChild);
-        sendBtn.style.display = 'block';
         resetForm();
         i++;
     }
@@ -440,12 +439,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const confirmDialog = document.getElementById('confirm-dialog');
     sendBtn.onclick = () => {
-        if (!jsonFile.Dispos || jsonFile.Dispos.length === 0) {
-            window.alert('Sélectionnez vos disponibilités');
-            return;
-        }
-        if (!jsonFile.Cours || jsonFile.Cours.length === 0) {
-            window.alert('Ajoutez des cours');
+        if (!jsonFile || !jsonFile.Dispos || !jsonFile.Cours || jsonFile.Dispos.length === 0 || jsonFile.Cours.length === 0) {
+            const missingInfoDialog = document.getElementById('missing-info')
+            const missingOkBtn = missingInfoDialog.querySelector('button');
+            missingOkBtn.addEventListener('click', () => {
+                missingInfoDialog.close();
+            });
+            missingInfoDialog.showModal();
             return;
         }
         const summaryDiv = document.getElementById('summary');
