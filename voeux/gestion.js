@@ -483,22 +483,45 @@ document.addEventListener('DOMContentLoaded', async () => {
     courseAddBtn.addEventListener('click', () => {
         addCourse();
     });
-    volumeInput.addEventListener('input', () => {
-        let multiplier;
-        if (formatSelect.value === 'CM') {
-            multiplier = 1.5;
-        } else if (
-            formatSelect.value === 'TD' ||
-            formatSelect.value === 'TD_OPT'
-        ) {
-            multiplier = 1;
-        } else if (formatSelect.value === 'TP') {
-            multiplier = 1 / 1.5;
+    courseInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            addCourse();
         }
-        let result = (volumeInput.value * multiplier).toFixed(2);
-        eqtdInput.value = Number(parseFloat(result).toString());
+    });
+    courseInput.addEventListener('input', () => {
+        adjustEqtd();
+    })
+    volumeInput.addEventListener('input', () => {
+        adjustEqtd();
+    });
+    volumeInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            volumeSelect.value = 13;
+            volumeInput.disabled = true;
+        }
     });
     formatSelect.addEventListener('change', () => {
+        adjustEqtd();
+        adjustGrpNb();
+    });
+
+    const volumeSelect = document.getElementById('volume-select');
+    volumeSelect.addEventListener('change', () => {
+        if (volumeSelect.value === 'autre') {
+            volumeInput.disabled = false;
+            volumeInput.focus();
+        } else {
+            volumeInput.disabled = true;
+            adjustEqtd();
+        }
+    });
+
+    semestreSelect.addEventListener('change', () => {
+        adjustGrpNb();
+    });
+    grpInput.value = 5;
+
+    function adjustEqtd() {
         let multiplier;
         if (formatSelect.value === 'CM') {
             multiplier = 1.5;
@@ -510,14 +533,64 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else if (formatSelect.value === 'TP') {
             multiplier = 1 / 1.5;
         }
-        let result = (volumeInput.value * multiplier).toFixed(2);
+        let result;
+        if (volumeSelect.value !== 'autre') {
+            result = (volumeSelect.value * multiplier).toFixed(2);
+        } else if (volumeSelect.value === 'autre' && volumeInput.value) {
+            result = (volumeInput.value * multiplier).toFixed(2);
+        }
         eqtdInput.value = Number(parseFloat(result).toString());
-    });
+    }
+
+    function adjustGrpNb() {
+        if (formatSelect.value === 'CM') {
+            grpInput.value = 1;
+        } else if (
+            formatSelect.value === 'TD' ||
+            formatSelect.value === 'TD_OPT'
+        ) {
+            if (semestreSelect.value === 'S1') {
+                grpInput.value = 5;
+            } else if (semestreSelect.value === 'S2') {
+                grpInput.value = 4;
+            } else if (
+                semestreSelect.value === 'S3' ||
+                semestreSelect.value === 'S4'
+            ) {
+                grpInput.value = 3;
+            } else if (
+                semestreSelect.value === 'S5' ||
+                semestreSelect.value === 'S6'
+            ) {
+                grpInput.value = 2;
+            }
+        } else if (formatSelect.value === 'TP') {
+            if (semestreSelect.value === 'S1') {
+                grpInput.value = 10;
+            } else if (semestreSelect.value === 'S2') {
+                grpInput.value = 8;
+            } else if (
+                semestreSelect.value === 'S3' ||
+                semestreSelect.value === 'S4'
+            ) {
+                grpInput.value = 6;
+            } else if (
+                semestreSelect.value === 'S5' ||
+                semestreSelect.value === 'S6'
+            ) {
+                grpInput.value = 4;
+            }
+        }
+    }
+
     let id;
     let courseModify = false;
     function addCourse() {
         const format = formatSelect.value;
-        const volume = Number(volumeInput.value.replace(',', '.'));
+        let volume = Number(volumeSelect.value);
+        if (volumeSelect.value === 'autre' && volumeInput.value) {
+            volume = Number(volumeInput.value.replace(',', '.'));
+        }
         if (!courseInput.value || !volume) {
             window.alert('Entrez un intitulé et/ou le volume horaire');
             if (!courseInput.value) {
@@ -527,7 +600,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             return;
         }
-        const nbgrp = Number(grpInput.value);
+        let nbgrp = Number(grpInput.value);
         let multiplier;
         if (format === 'CM') {
             multiplier = 1.5;
@@ -578,8 +651,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (checkCourse) {
             if (
                 checkCourse.format !== format ||
-                checkCourse.volume !== volume
+                checkCourse.nbgrp !== nbgrp ||
+                checkCourse.volume !== volume ||
+                checkCourse.eqtd !== eqtd
             ) {
+                newCourse.id = id;
                 const dialog = document.createElement('dialog');
                 const div = document.createElement('div');
                 div.textContent =
@@ -624,6 +700,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         elt.removeAttribute('style');
                     }
                     courseChanged = true;
+                    getCourseIds();
+                    compareData();
                 };
                 noBtn.onclick = () => {
                     dialog.remove();
@@ -664,6 +742,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 elt.removeAttribute('style');
             }
             getCourseIds();
+            compareData();
         }
         courseModify = false;
         buildCourseList();
@@ -738,10 +817,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         semestreSelect.value = oldCourse.semestre;
         formatSelect.value = oldCourse.format;
         courseInput.value = oldCourse.intitulé;
-        volumeInput.value = oldCourse.volume;
+        if (oldCourse.volume !== 13 && oldCourse.volume !== 19.5) {
+            volumeSelect.value = 'autre';
+            volumeInput.value = oldCourse.volume;
+        } else {
+            volumeSelect.value = oldCourse.volume;
+        }
         id = oldCourse.id;
         if (oldCourse.nbgrp) {
             grpInput.value = oldCourse.nbgrp;
+        } else {
+            adjustGrpNb();
         }
         eqtdInput.value = oldCourse.eqtd;
         courseAddBtn.textContent = 'Modifier';
@@ -809,6 +895,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         courseChanged = true;
         getCourseIds();
         buildCourseList();
+        compareData();
     }
 
     // Upload changes
@@ -1034,7 +1121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             div.style.marginLeft = '2rem';
                             div.textContent = `${c.filière} ${c.semestre} ${c.intitulé} ${c.eqtd}h TD`;
                             if (c.nbgrp) {
-                                div.textContent += ` — ${c.nbgrp} groupes`;
+                                div.textContent += ` — ${c.nbgrp} groupe(s)`;
                             }
                             sDiv.appendChild(div);
                         }
@@ -1052,6 +1139,72 @@ document.addEventListener('DOMContentLoaded', async () => {
             coursesArrow.classList.remove('rotated');
             coursesArrow.classList.add('plain');
             coursesDisplay.style.maxHeight = null;
+        }
+    }
+
+    // Danger zone
+    const dangerZoneHeader = document.getElementById('danger-zone-header');
+    const dangerZone = document.getElementById('danger-zone');
+    dangerZoneHeader.addEventListener('click', () => {
+        const dangerBtns = dangerZone.querySelectorAll('button');
+        for (let dB of dangerBtns) {
+            if (dB.style.display === 'none') {
+                dB.style.display = 'inline-block';
+            } else {
+                dB.style.display = 'none';
+            }
+        }
+    });
+    const eraseProfsBtn = document.getElementById('erase-profs-btn');
+    eraseProfsBtn.addEventListener('click', () => {
+        eraseDialog('profs');
+    });
+    const eraseCoursesBtn = document.getElementById('erase-courses-btn');
+    eraseCoursesBtn.addEventListener('click', () => {
+        eraseDialog('cours');
+    });
+    function eraseDialog(e) {
+        const dialog = document.createElement('dialog');
+        const div = document.createElement('div');
+        div.textContent = `Voulez-vous vraiment écraser le fichier ${e} ?
+Cette opération est irréversible.`;
+        const yesBtn = document.createElement('button');
+        yesBtn.textContent = 'Oui';
+        yesBtn.classList.add('wishes-ui', 'danger-btn');
+        yesBtn.addEventListener('click', () => {
+            if (e === 'profs') {
+                teacherData = [];
+                profChanged = true;
+                buildProfList();
+            } else if (e === 'cours') {
+                courseData = [];
+                courseChanged = true;
+                buildCourseList();
+            }
+            saveChanges();
+            dialog.remove();
+        });
+        const noBtn = document.createElement('button');
+        noBtn.textContent = 'Non';
+        noBtn.classList.add('wishes-ui');
+        noBtn.addEventListener('click', () => {
+            dialog.remove();
+        });
+        dialog.appendChild(div);
+        dialog.appendChild(yesBtn);
+        dialog.appendChild(noBtn);
+        document.body.appendChild(dialog);
+        dialog.showModal();
+    }
+
+    // Compare files
+    async function compareData() {
+        let checkTeacherData = await getFile(teacherDBUrl);
+        let checkCourseData = await getFile(courseDBUrl);
+        if (teacherData !== checkTeacherData || courseData || checkCourseData) {
+            saveChangesBtn.disabled = false;
+        } else {
+            saveChangesBtn.disabled = true;
         }
     }
 });

@@ -46,7 +46,8 @@ label#file-input-label:hover {
 }
 
 #course-teachers-span,
-#course-number-span {
+#course-number-span,
+#pb-course-number {
     margin-left: 2rem;
 }
 
@@ -113,7 +114,9 @@ h2 {
     font-weight: bold;
 }
 
-table, th, td {
+table,
+th,
+td {
     border: 1px solid black;
     border-collapse: collapse;
 }
@@ -122,9 +125,11 @@ table {
     width: 100%;
 }
 
-th, td {
+th,
+td {
     width: 16%;
     height: 1.5em;
+    background-color: white;
 }
 
 th {
@@ -133,4 +138,34 @@ th {
 
 td {
     text-align: center;
+}
+
+#danger-zone-header {
+    background: none;
+    color: #cc0000 !important;
+    margin: 0;
+    cursor: pointer;
+}
+
+.danger-span {
+    background-color: #ffcc00;
+    padding: 1px;
+    vertical-align: sub;
+    border-radius: 4px;
+}
+
+.danger-zone {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: max-content;
+    background: repeating-linear-gradient(
+        45deg,
+        #ffcc00,
+        #ffcc00 20px,
+        black 10px,
+        black 40px
+    );
+    padding: 5px 10px;
+    border-radius: 4px;
 }

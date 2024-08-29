@@ -113,3 +113,8 @@ button.confirm:hover {
     color: gray !important;
     opacity: 0.8;
 }
+
+.danger-btn {
+    background-color: #cc0000 !important;
+    color: #ffcc00 !important;
+}

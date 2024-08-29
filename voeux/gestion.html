@@ -122,13 +122,12 @@
                         <select id="format-select" class="wishes-ui">
                             <option value="CM">CM</option>
                             <option value="TD" selected>TD</option>
-                            <option value="TD_OPT">TD option</option>
                             <option value="TP">TP</option>
                         </select>
                         <input
                             id="grp-input"
                             type="number"
-                            placeholder="Nb grp pers."
+                            placeholder="Nb grp"
                             class="wishes-ui"
                         />
                     </div>
@@ -139,12 +138,18 @@
                             class="wishes-ui"
                             placeholder="Intitulé du cours"
                         />
+                        <select id="volume-select" class="wishes-ui">
+                            <option value="13" selected>13</option>
+                            <option value="19.5">19.5</option>
+                            <option value="autre">Autre</option>
+                        </select>
                         <input
                             id="volume-input"
                             type="number"
                             step="0.01"
-                            placeholder="volume horaire brut"
+                            placeholder="vol."
                             class="wishes-ui"
+                            disabled
                         />
                         <input
                             id="eqtd-input"
@@ -219,24 +224,25 @@
                     </div>
                 </div>
                 <br />
-                <div>
+                <div style="text-align: right;">
                     <h2 class="section-header">
                         Enregistrer les modifications
                     </h2>
 
-                    <button id="save-changes-btn" class="wishes-ui">
+                    <button id="save-changes-btn" class="wishes-ui" disabled>
                         Enregistrer<span class="spinner" id="spinner"></span>
                     </button>
+                    <div id="save-msg" class="wishes-ui"></div>
                 </div>
-                <div id="save-msg" class="wishes-ui"></div>
+                <br />
                 <dialog id="auth-dialog">
                     <div><b>Entrez le jeton d'authentification</b></div>
-                        <input
-                            id="auth-input"
-                            class="wishes-ui token-input"
-                            type="password"
-                            placeholder="Jeton d'authentification"
-                        />
+                    <input
+                        id="auth-input"
+                        class="wishes-ui token-input"
+                        type="password"
+                        placeholder="Jeton d'authentification"
+                    />
                     <button id="auth-save-btn" class="wishes-ui">
                         Enregistrer
                     </button>
@@ -258,6 +264,27 @@
                         <div id="courses-arrow" class="arrow">▶️</div>
                     </h2>
                     <div id="courses-display" class="drawer"></div>
+                </div>
+                <div id="danger-zone" class="danger-zone">
+                    <h2 class="section-header" id="danger-zone-header">
+                        <span class="danger-span">⚠️ Danger zone ⚠️</span>
+                    </h2>
+                    <div>
+                        <button
+                            id="erase-profs-btn"
+                            class="danger-btn wishes-ui"
+                            style="display: none"
+                        >
+                            Ecraser le fichier profs
+                        </button>
+                        <button
+                            id="erase-courses-btn"
+                            class="danger-btn wishes-ui"
+                            style="display: none"
+                        >
+                            Ecraser le fichier cours
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

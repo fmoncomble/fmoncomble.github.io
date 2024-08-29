@@ -65,7 +65,8 @@
                         class="wishes-ui"
                         style="display: none"
                     >
-                        Écraser ou mettre à jour le fichier existant ?
+                        <br />
+                        Écraser ou mettre à jour les données existantes ?
                     </div>
                     <button
                         id="erase-btn"
@@ -82,7 +83,7 @@
                         class="wishes-ui"
                         style="display: none"
                     >
-                        Enregistrer
+                        Synchroniser
                     </button>
                     <span
                         id="save-spinner"
@@ -109,14 +110,14 @@
                         </button>
                     </div>
                     <div id="service-modify" style="display: none">
-                    <div
-                        id="ens-modify"
-                        class="wishes-ui"
-                        style="display: none"
-                    >
-                        ▶️ Modifier le service de
-                        <span id="ens-modify-name"></span> :
-                    </div>
+                        <div
+                            id="ens-modify"
+                            class="wishes-ui"
+                            style="display: none"
+                        >
+                            ▶️ Modifier le service de
+                            <span id="ens-modify-name"></span> :
+                        </div>
                         <div>
                             <b>Ajouter un enseignement</b>
                             <div>
@@ -268,9 +269,14 @@
                         </div>
                         <br />
                         <div>
-                            <button id="cancel-changes-btn" class="wishes-ui reset-btn">Annuler</button>
+                            <button
+                                id="cancel-changes-btn"
+                                class="wishes-ui reset-btn"
+                            >
+                                Annuler
+                            </button>
                             <button id="save-changes-btn" class="wishes-ui">
-                                Enregistrer
+                                Synchroniser
                             </button>
                             <span id="save-chg-spinner" class="spinner"></span>
                         </div>
@@ -301,8 +307,11 @@
                             <div><b>Par formation :</b></div>
                             <div>
                                 <select id="filière-select" class="wishes-ui">
-                                    <option disabled selected>Filière</option>
-                                    <option value="LLCER" data-level="l">
+                                    <option
+                                        value="LLCER"
+                                        data-level="l"
+                                        selected
+                                    >
                                         LLCER
                                     </option>
                                     <option value="LEA" data-level="l">
@@ -322,8 +331,7 @@
                                     </option>
                                 </select>
                                 <select id="semestre-select" class="wishes-ui">
-                                    <option disabled selected>Semestre</option>
-                                    <option value="S1">S1</option>
+                                    <option value="S1" selected>S1</option>
                                     <option value="S2">S2</option>
                                     <option value="S3" data-nota="true">
                                         S3
@@ -367,6 +375,12 @@
                                     Vérifier
                                 </button>
                             </div>
+                        </div>
+                        <div class="container">
+                            <div><b>Problèmes :</b></div>
+                            <button id="pb-btn" class="wishes-ui pb-btn">
+                                Afficher
+                            </button>
                         </div>
                     </div>
                     <div id="course-list">
@@ -488,6 +502,20 @@
                         </table>
                     </div>
                     <br />
+                </div>
+                <div id="danger-zone" class="danger-zone">
+                    <h2 class="section-header" id="danger-zone-header">
+                        <span class="danger-span">⚠️ Danger zone ⚠️</span>
+                    </h2>
+                    <div>
+                        <button
+                            id="erase-services-btn"
+                            class="danger-btn wishes-ui"
+                            style="display: none"
+                        >
+                            Ecraser le fichier de services
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

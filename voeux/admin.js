@@ -138,28 +138,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Listen to erase button ('Écraser')
     eraseBtn.addEventListener('click', () => {
-        const eraseDialog = document.createElement('dialog');
-        const div = document.createElement('div');
-        div.textContent = 'Voulez-vous vraiment écraser le fichier existant ?';
-        const yesBtn = document.createElement('button');
-        yesBtn.classList.add('wishes-ui', 'reset-btn');
-        yesBtn.textContent = 'Oui';
-        const noBtn = document.createElement('button');
-        noBtn.classList.add('wishes-ui');
-        noBtn.textContent = 'Non';
-        yesBtn.addEventListener('click', () => {
-            servicesFile = [];
-            compileWishes();
-            eraseDialog.remove();
-        });
-        noBtn.addEventListener('click', () => {
-            eraseDialog.remove();
-        });
-        eraseDialog.appendChild(div);
-        eraseDialog.appendChild(yesBtn);
-        eraseDialog.appendChild(noBtn);
-        document.body.appendChild(eraseDialog);
-        eraseDialog.showModal();
+        if (!files) {
+            window.alert(
+                'Chargez un ou plusieurs fichiers de vœux individuels'
+            );
+        } else {
+            const eraseDialog = document.createElement('dialog');
+            const div = document.createElement('div');
+            div.innerHTML =
+                'Voulez-vous vraiment écraser les données existantes ?';
+            const yesBtn = document.createElement('button');
+            yesBtn.classList.add('wishes-ui', 'reset-btn');
+            yesBtn.textContent = 'Oui';
+            const noBtn = document.createElement('button');
+            noBtn.classList.add('wishes-ui');
+            noBtn.textContent = 'Non';
+            yesBtn.addEventListener('click', () => {
+                servicesFile = [];
+                compileWishes();
+                eraseDialog.remove();
+            });
+            noBtn.addEventListener('click', () => {
+                eraseDialog.remove();
+            });
+            eraseDialog.appendChild(div);
+            eraseDialog.appendChild(yesBtn);
+            eraseDialog.appendChild(noBtn);
+            document.body.appendChild(eraseDialog);
+            eraseDialog.showModal();
+        }
     });
 
     // Load individual wish files
@@ -215,7 +222,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     existingProf.Cours.sort(sortBySem);
                     existingProf.Cours.sort(sortByFil);
                     if (i === files.length - 1) {
-                        saveBtn.style.display = 'block';
+                        saveBtn.style.display = 'inline-block';
                     }
                     thisDialog.remove();
                 };
@@ -223,7 +230,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const index = servicesFile.indexOf(existingProf);
                     servicesFile.splice(index, 1, newJson);
                     if (i === files.length - 1) {
-                        saveBtn.style.display = 'block';
+                        saveBtn.style.display = 'inline-block';
                     }
                     thisDialog.remove();
                 };
@@ -245,7 +252,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                     return 0;
                 });
-                saveBtn.style.display = 'block';
+                saveBtn.style.display = 'inline-block';
             }
         }
         compileBtn.style.backgroundColor = 'green';
@@ -255,6 +262,109 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     compileBtn.addEventListener('click', async () => compileWishes());
+
+    // Logic to save/update services file
+    saveBtn.addEventListener('click', async () => {
+        if (servicesFile.length === 0) {
+            const eraseDialog = document.createElement('dialog');
+            const div = document.createElement('div');
+            div.innerHTML =
+                'Voulez-vous vraiment écraser les données existantes ?<br>Cela supprimera toutes les données.';
+            const div2 = document.createElement('div');
+            div2.style.color = '#cc0000';
+            div2.style.fontWeight = 'bold';
+            div2.innerHTML = 'Cette opération est irréversible.';
+            const yesBtn = document.createElement('button');
+            yesBtn.classList.add('wishes-ui', 'reset-btn');
+            yesBtn.textContent = 'Oui';
+            const noBtn = document.createElement('button');
+            noBtn.classList.add('wishes-ui');
+            noBtn.textContent = 'Non';
+            yesBtn.addEventListener('click', async () => {
+                eraseDialog.remove();
+                const saveSpinner = document.getElementById('save-spinner');
+                saveSpinner.style.display = 'inline-block';
+                const success = await saveFile(servicesFile);
+                saveSpinner.style.display = 'none';
+                if (success) {
+                    saveBtn.style.backgroundColor = 'green';
+                }
+                setTimeout(() => {
+                    saveBtn.removeAttribute('style');
+                    saveBtn.classList.toggle('danger-btn');
+                    saveBtn.style.display = 'none';
+                }, 1000);
+            });
+            noBtn.addEventListener('click', () => {
+                eraseDialog.remove();
+            });
+            eraseDialog.appendChild(div);
+            eraseDialog.appendChild(div2);
+            eraseDialog.appendChild(yesBtn);
+            eraseDialog.appendChild(noBtn);
+            document.body.appendChild(eraseDialog);
+            eraseDialog.showModal();
+        } else {
+            const saveSpinner = document.getElementById('save-spinner');
+            saveSpinner.style.display = 'inline-block';
+            const success = await saveFile(servicesFile);
+            saveSpinner.style.display = 'none';
+            if (success) {
+                saveBtn.style.backgroundColor = 'green';
+            }
+            setTimeout(() => {
+                saveBtn.removeAttribute('style');
+                saveBtn.classList.toggle('danger-btn');
+                saveBtn.style.display = 'none';
+            }, 1000);
+        }
+    });
+
+    async function saveFile(file) {
+        const fileString = JSON.stringify(file);
+        const encoder = new TextEncoder();
+        const utf8Array = encoder.encode(fileString);
+        const finalFile = btoa(String.fromCharCode.apply(null, utf8Array));
+        const url =
+            'https://api.github.com/repos/fmoncomble/voeux/contents/services.json';
+        const token = localStorage.getItem('github-token');
+        const headers = new Headers({
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/vnd.github+json',
+            'Content-Type': 'application/json',
+        });
+        const body = JSON.stringify({
+            message: 'Updated services',
+            content: finalFile,
+            sha: sha,
+            branch: 'main',
+        });
+        try {
+            const saveRes = await fetch(url, {
+                method: 'PUT',
+                headers: headers,
+                body: body,
+            });
+            const data = await saveRes.json();
+            sha = data.content.sha;
+            if (!saveRes.ok) {
+                if (saveRes.status === 401) {
+                    window.alert(
+                        "Vous devez entrer un jeton d'authentification"
+                    );
+                    throw new Error(saveRes.message);
+                } else if (saveRes.status === 409) {
+                    window.alert('Erreur : ' + saveRes.message);
+                    throw new Error(saveRes.message);
+                }
+            } else {
+                return true;
+            }
+        } catch (error) {
+            window.alert('Une erreur a été rencontrée : ' + error);
+            console.error(error);
+        }
+    }
 
     // Function to display list of courses
     async function buildCourseList(filière, semestre, prof) {
@@ -272,6 +382,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 courses.push(copy);
             });
         }
+        courses.sort(sortByInt);
+        courses.sort(sortBySem);
+        courses.sort(sortByFil);
         let logic;
         if (filière && semestre) {
             logic = 'course';
@@ -293,30 +406,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const courseItems = new Set();
         for (let c of courses) {
-            const courseId = `${c.filière} — ${c.semestre} — ${c.intitulé}`;
+            const courseId = c.id;
             let newItem;
             let courseTeachers;
-            let reqNb;
-            const nbgrp = Number(c.nbgrp);
-            if (nbgrp) {
-                reqNb = nbgrp;
-            } else if (c.format === 'CM' || c.format === 'TD_OPT') {
-                reqNb = 1;
-            } else if (c.filière === 'LLCER' || c.filière === 'LEA') {
-                if (c.semestre === 'S1') {
-                    reqNb = 5;
-                } else if (c.semestre === 'S2') {
-                    reqNb = 4;
-                } else if (c.semestre === 'S3' || c.semestre === 'S4') {
-                    reqNb = 3;
-                } else if (c.semestre === 'S5' || c.semestre === 'S6') {
-                    reqNb = 2;
-                } else {
-                    reqNb = 1;
-                }
-            } else {
-                reqNb = 1;
-            }
+            let reqNb = Number(c.nbgrp);
             const courseNb = courses.filter(
                 (i) =>
                     i.filière === c.filière &&
@@ -466,63 +559,100 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Logic to save/update services file
-    saveBtn.addEventListener('click', async () => {
-        const saveSpinner = document.getElementById('save-spinner');
-        saveSpinner.style.display = 'inline-block';
-        const success = await saveFile(servicesFile);
-        saveSpinner.style.display = 'none';
-        if (success) {
-            saveBtn.style.backgroundColor = 'green';
+    // Function to display problem courses
+    function showPbCourses() {
+        const courseItemArray = Array.from(courseList.children);
+        for (let i = 1; i < courseItemArray.length; i++) {
+            courseItemArray[i].textContent;
+            courseItemArray[i].remove();
         }
-        setTimeout(() => {
-            saveBtn.removeAttribute('style');
-        }, 1000);
-    });
-
-    async function saveFile(file) {
-        const fileString = JSON.stringify(file);
-        const encoder = new TextEncoder();
-        const utf8Array = encoder.encode(fileString);
-        const finalFile = btoa(String.fromCharCode.apply(null, utf8Array));
-        const url =
-            'https://api.github.com/repos/fmoncomble/voeux/contents/services.json';
-        const token = localStorage.getItem('github-token');
-        const headers = new Headers({
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/vnd.github+json',
-            'Content-Type': 'application/json',
-        });
-        const body = JSON.stringify({
-            message: 'Updated services',
-            content: finalFile,
-            sha: sha,
-            branch: 'main',
-        });
-        try {
-            const saveRes = await fetch(url, {
-                method: 'PUT',
-                headers: headers,
-                body: body,
-            });
-            if (!saveRes.ok) {
-                if (saveRes.status === 401) {
-                    window.alert(
-                        "Vous devez entrer un jeton d'authentification"
-                    );
-                    throw new Error(saveRes.message);
-                } else if (saveRes.status === 409) {
-                    window.alert('Erreur : ' + saveRes.message);
-                    throw new Error(saveRes.message);
-                }
-            } else {
-                return true;
+        const courseItem = document.getElementById('course-item');
+        let taughtCourses = [];
+        for (let s of servicesFile) {
+            let indivCourses = s.Cours;
+            for (let c of indivCourses) {
+                taughtCourses.push(c);
             }
-        } catch (error) {
-            window.alert('Une erreur a été rencontrée : ' + error);
-            console.error(error);
+        }
+        for (let c of courseFile) {
+            const courses = taughtCourses.filter((s) => s.id === c.id);
+            if (courses.length === 0 || courses.length > c.nbgrp) {
+                newPbItem = courseItem.cloneNode(true);
+                const pbCourseName = newPbItem.querySelector('#course-name');
+                pbCourseName.textContent = `${c.filière} — ${c.semestre} — ${c.intitulé}`;
+                const pbCourseTeachersSpan = newPbItem.querySelector(
+                    '#course-teachers-span'
+                );
+                if (courses.length === 0) {
+                    pbCourseTeachersSpan.style.display = 'none';
+                } else if (courses.length > c.nbgrp) {
+                    let courseTeachers = [];
+                    const pbCourseTeachers =
+                        newPbItem.querySelector('#course-teachers');
+                    for (let s of servicesFile) {
+                        let sCours = s.Cours.filter((i) => i.id === c.id);
+                        if (sCours.length > 0) {
+                            sCours.forEach(() => courseTeachers.push(s.Name));
+                        }
+                    }
+                    let i = 1;
+                    for (let cT of courseTeachers) {
+                        let firstName = cT.split(' ')[0].split('')[0] + '.';
+                        let surName = cT.split(' ')[1];
+                        let fullName = `${firstName} ${surName}`;
+                        if (i === 1) {
+                            pbCourseTeachers.textContent = fullName;
+                        } else {
+                            pbCourseTeachers.textContent += `, ${fullName}`;
+                        }
+                        i++;
+                    }
+                }
+                const pbCourseNumber =
+                    newPbItem.querySelector('#course-number');
+                pbCourseNumber.textContent = `${courses.length}/${c.nbgrp} 🚨`;
+                pbCourseNumber.style.color = '#cc0000';
+                newPbItem.style.display = 'block';
+                courseList.appendChild(newPbItem);
+            } else if (courses.length < c.nbgrp) {
+                newPbItem = courseItem.cloneNode(true);
+                const pbCourseName = newPbItem.querySelector('#course-name');
+                pbCourseName.textContent = `${c.filière} — ${c.semestre} — ${c.intitulé}`;
+                let courseTeachers = [];
+                const pbCourseTeachers =
+                    newPbItem.querySelector('#course-teachers');
+                for (let s of servicesFile) {
+                    let sCours = s.Cours.filter((i) => i.id === c.id);
+                    if (sCours.length > 0) {
+                        sCours.forEach(() => courseTeachers.push(s.Name));
+                    }
+                }
+                let i = 1;
+                for (let cT of courseTeachers) {
+                    let firstName = cT.split(' ')[0].split('')[0] + '.';
+                    let surName = cT.split(' ')[1];
+                    let fullName = `${firstName} ${surName}`;
+                    if (i === 1) {
+                        pbCourseTeachers.textContent = fullName;
+                    } else {
+                        pbCourseTeachers.textContent += `, ${fullName}`;
+                    }
+                    i++;
+                }
+                const pbCourseNumber =
+                    newPbItem.querySelector('#course-number');
+                pbCourseNumber.textContent = `${courses.length}/${c.nbgrp} ⚠️`;
+                pbCourseNumber.style.color = 'orange';
+                newPbItem.style.display = 'block';
+                courseList.appendChild(newPbItem);
+            }
         }
     }
+
+    const pbBtn = document.getElementById('pb-btn');
+    pbBtn.addEventListener('click', () => {
+        showPbCourses();
+    });
 
     // Handle course selection for checking data
     const filièreSelect = document.getElementById('filière-select');
@@ -939,43 +1069,132 @@ document.addEventListener('DOMContentLoaded', async () => {
         return 0;
     }
 
-    // Function to flatten servicesFile
+    // Function to flatten servicesFile and group by teacherName
     function flattenJson() {
         return new Promise((resolve, reject) => {
             try {
-                const jsonForXls = [];
+                const groupedByTeacher = {};
                 for (let s of servicesFile) {
                     const teacherName = s.Name;
                     const teacherCourses = s.Cours;
+                    if (!groupedByTeacher[teacherName]) {
+                        groupedByTeacher[teacherName] = [];
+                    }
                     for (let c of teacherCourses) {
-                        const course = {};
-                        course.teacher = teacherName;
-                        course.filière = c.filière;
-                        course.semestre = c.semestre;
-                        course.format = c.format;
-                        course.intitulé = c.intitulé;
-                        course.volume = Number(c.volume);
-                        course.eqtd = Number(c.eqtd);
-                        jsonForXls.push(course);
+                        const course = {
+                            Enseignant: teacherName,
+                            Filière: c.filière,
+                            Semestre: c.semestre,
+                            Format: c.format,
+                            Intitulé: c.intitulé,
+                            Volume: Number(c.volume),
+                            EqTD: Number(c.eqtd),
+                        };
+                        groupedByTeacher[teacherName].push(course);
                     }
                 }
-                resolve(jsonForXls);
+                resolve(groupedByTeacher);
             } catch (error) {
                 reject(error);
             }
         });
     }
 
-    // Function to generate and download XLSX file from flattened file
+    // Function to generate and download XLSX file from grouped data
     async function makeXlsx() {
-        const json = await flattenJson();
+        const groupedData = await flattenJson();
         const workbook = XLSX.utils.book_new();
-        const worksheet = XLSX.utils.json_to_sheet(json);
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Services');
+
+        // Iterate over each teacher and create a worksheet
+        for (const teacherName in groupedData) {
+            if (groupedData.hasOwnProperty(teacherName)) {
+                const teacherCourses = groupedData[teacherName];
+                const worksheetData = [...teacherCourses];
+
+                // Calculate the sum of volumes for each format
+                const formatSums = {};
+                teacherCourses.forEach((course) => {
+                    if (!formatSums[course.format]) {
+                        formatSums[course.format] = 0;
+                    }
+                    formatSums[course.format] += course.volume;
+                });
+
+                // Append summary lines to the worksheet data
+                for (const format in formatSums) {
+                    if (formatSums.hasOwnProperty(format)) {
+                        worksheetData.push({
+                            Enseignant: '',
+                            Filière: '',
+                            Semestre: '',
+                            Format: `Total ${format}`,
+                            Intitulé: '',
+                            Volume: formatSums[format],
+                            EqTD: '',
+                        });
+                    }
+                }
+
+                // Create a worksheet from the data
+                const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+                XLSX.utils.book_append_sheet(workbook, worksheet, teacherName);
+            }
+        }
+
+        // Write the workbook to a file
         XLSX.writeFile(workbook, 'Services.xlsx');
     }
+
     const exportBtn = document.getElementById('export-btn');
     exportBtn.onclick = async () => {
         await makeXlsx();
     };
+
+    // Danger zone
+    const dangerZoneHeader = document.getElementById('danger-zone-header');
+    const dangerZone = document.getElementById('danger-zone');
+    dangerZoneHeader.addEventListener('click', () => {
+        const dangerBtn = dangerZone.querySelector('button');
+        if (dangerBtn.style.display === 'none') {
+            dangerBtn.style.display = 'inline-block';
+        } else {
+            dangerBtn.style.display = 'none';
+        }
+    });
+    const eraseServicesBtn = document.getElementById('erase-services-btn');
+    eraseServicesBtn.addEventListener('click', () => {
+        const dialog = document.createElement('dialog');
+        const div = document.createElement('div');
+        div.textContent = `Voulez-vous vraiment écraser le fichier de services ?`;
+        const div2 = document.createElement('div');
+        div2.style.color = '#cc0000';
+        div2.style.fontWeight = 'bold';
+        div2.innerHTML = 'Cette opération est irréversible.';
+        const yesBtn = document.createElement('button');
+        yesBtn.textContent = 'Oui';
+        yesBtn.classList.add('wishes-ui', 'danger-btn');
+        yesBtn.addEventListener('click', async () => {
+            servicesFile = [];
+            const success = await saveFile(servicesFile);
+            if (success) {
+                eraseServicesBtn.style.backgroundColor = 'green';
+            }
+            setTimeout(() => {
+                eraseServicesBtn.removeAttribute('style');
+            }, 1000);
+            dialog.remove();
+        });
+        const noBtn = document.createElement('button');
+        noBtn.textContent = 'Non';
+        noBtn.classList.add('wishes-ui');
+        noBtn.addEventListener('click', () => {
+            dialog.remove();
+        });
+        dialog.appendChild(div);
+        dialog.appendChild(div2);
+        dialog.appendChild(yesBtn);
+        dialog.appendChild(noBtn);
+        document.body.appendChild(dialog);
+        dialog.showModal();
+    });
 });

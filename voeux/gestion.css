@@ -15,8 +15,9 @@ h1 {
 }
 
 input#custom-service,
-input#eqtd-input {
-    max-width: 12%;
+input#eqtd-input,
+input#volume-input {
+    max-width: 5em;
 }
 
 .arrow {
@@ -81,7 +82,6 @@ button.wishes-ui {
 }
 
 #save-changes-btn {
-    float: right;
     text-align: left;
     width: 110px;
 }
@@ -144,4 +144,38 @@ div#deleted-prof-div,
 div#deleted-course-div {
     color: #cc0000;
     font-weight: bold;
+}
+
+#danger-zone-header {
+    background: none;
+    color: #cc0000 !important;
+    margin: 0;
+    cursor: pointer;
+}
+
+.danger-span {
+    background-color: #ffcc00;
+    padding: 1px;
+    vertical-align: sub;
+    border-radius: 4px;
+}
+
+.danger-zone {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: max-content;
+    background: repeating-linear-gradient(
+        45deg,
+        #ffcc00,
+        #ffcc00 20px,
+        black 10px,
+        black 40px
+    );
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+button:disabled {
+    cursor: not-allowed;
 }
