@@ -392,6 +392,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             courses = courses.filter(
                 (c) => c.filière === filière && c.semestre === semestre
             );
+            if (courses.length === 0) {
+                const newItem = courseItem.cloneNode(true);
+                newItem.textContent = `Aucun enseignement trouvé pour ${filière} ${semestre}`;
+                courseList.appendChild(newItem);
+                newItem.style.display = 'block';
+                dispoDiv.style.display = 'none';
+            }
         } else if (prof) {
             logic = 'prof';
             courses = courses.filter((c) => c.teacher === prof);
@@ -1114,10 +1121,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Calculate the sum of volumes for each format
                 const formatSums = {};
                 teacherCourses.forEach((course) => {
-                    if (!formatSums[course.format]) {
-                        formatSums[course.format] = 0;
+                    if (!formatSums[course.Format]) {
+                        formatSums[course.Format] = 0;
                     }
-                    formatSums[course.format] += course.volume;
+                    formatSums[course.Format] += course.Volume;
                 });
 
                 // Append summary lines to the worksheet data
@@ -1142,7 +1149,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // Write the workbook to a file
-        XLSX.writeFile(workbook, 'Services.xlsx');
+        const date = new Date().toISOString().split('T')[0];
+        XLSX.writeFile(workbook, `Services_${date}.xlsx`);
     }
 
     const exportBtn = document.getElementById('export-btn');
