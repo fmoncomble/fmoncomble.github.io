@@ -103,7 +103,12 @@ button.wishes-ui {
 }
 
 .show-hide:hover {
-    color: #0000cc;
+    color: darkblue;
+}
+
+li[class*="-span"] {
+    background-color: #c4d0e6;
+    font-weight: bold;
 }
 
 .drawer {

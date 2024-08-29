@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const courseDeleteBtn = document.getElementById('course-delete-btn');
     const saveChangesBtn = document.getElementById('save-changes-btn');
     const profList = document.getElementById('prof-list');
+    const showProfs = document.getElementById('show-profs');
+    const profsDisplay = document.getElementById('profs-display');
 
     profAddInput.addEventListener('input', () => {
         if (profAddInput.value) {
@@ -258,7 +260,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    /// Build available course list according to filière and semestre
+    // Build available course list according to filière and semestre
     function buildCourseList() {
         const options = Array.from(courseSelect2.querySelectorAll('option'));
         for (o of options) {
@@ -338,6 +340,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                         addedProfDiv.textContent = null;
                     }, 1000);
                     profChanged = true;
+                    compareData();
+                    buildProfList();
+                    if (profsDisplay.style.maxHeight) {
+                        updateProfDisplay();
+                    }
                 };
                 noBtn.onclick = () => {
                     dialog.remove();
@@ -352,15 +359,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             teacherData.push(newProf);
             teacherData.sort((a, b) => {
-                const intA = a.name.split(' ')[1].toLowerCase();
-                const intB = b.name.split(' ')[1].toLowerCase();
-                if (intA < intB) {
-                    return -1;
+                const aSegments = a.name.split(' ');
+                const bSegments = b.name.split(' ');
+                let result = 0;
+                let i = 1;
+                while (result === 0 && i >= 0) {
+                    const intA = aSegments[i].toLowerCase();
+                    const intB = bSegments[i].toLowerCase();
+                    i--;
+                    result = intA.localeCompare(intB);
                 }
-                if (intA > intB) {
-                    return 1;
-                }
-                return 0;
+                return result;
             });
             const addedProfDiv = document.getElementById('added-prof-div');
             addedProfDiv.textContent = `${profAddInput.value}, ${profStatusSelect.value} a été ajouté·e`;
@@ -371,10 +380,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             }, 1000);
             profAddInput.value = null;
             profChanged = true;
+            compareData();
+            buildProfList();
+            if (profsDisplay.style.maxHeight) {
+                updateProfDisplay();
+            }
         }
         profModify = false;
-
-        buildProfList();
         if (profAddBtn.textContent === 'Modifier') {
             profAddBtn.textContent = 'Ajouter';
         }
@@ -475,7 +487,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 1000);
         profDeleteInput.value = null;
         profChanged = true;
+        compareData();
         buildProfList();
+        if (profsDisplay.style.maxHeight) {
+            updateProfDisplay();
+        }
+    }
+
+    // Function to update prof list in real time
+    function updateProfDisplay() {
+        profsDisplay.innerHTML = null;
+        for (t of teacherData) {
+            const div = document.createElement('li');
+            div.textContent = `${t.name}, ${t.status}`;
+            if (t.service) {
+                div.textContent += `, service de ${t.service}h TD`;
+            }
+            profsDisplay.appendChild(div);
+            profsDisplay.style.maxHeight = profsDisplay.scrollHeight + 'px';
+        }
     }
 
     // Add course
@@ -490,7 +520,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     courseInput.addEventListener('input', () => {
         adjustEqtd();
-    })
+    });
     volumeInput.addEventListener('input', () => {
         adjustEqtd();
     });
@@ -746,6 +776,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         courseModify = false;
         buildCourseList();
+        updateDisplay(newCourse);
     }
 
     const courseCancelBtn = document.getElementById('course-add-cancel');
@@ -896,6 +927,54 @@ document.addEventListener('DOMContentLoaded', async () => {
         getCourseIds();
         buildCourseList();
         compareData();
+        updateDisplay(oldCourse);
+    }
+
+    // Function to update course display in real time
+    function updateDisplay(course) {
+        if (coursesDisplay.style.maxHeight) {
+            const fDisplays = Array.from(coursesDisplay.children);
+            const fList = fDisplays.find(
+                (d) => d.id === course.filière.toLowerCase()
+            );
+            if (fList) {
+                const sDisplays = Array.from(fList.children);
+                const sList = sDisplays.find(
+                    (d) => d.id === course.semestre.toLowerCase()
+                );
+                if (sList) {
+                    sList.innerHTML = null;
+                    const courses = courseData.filter(
+                        (c) =>
+                            c.filière === course.filière &&
+                            c.semestre === course.semestre
+                    );
+                    if (courses.length > 0) {
+                        for (c of courses) {
+                            const div = document.createElement('li');
+                            div.classList.add('course');
+                            div.style.fontWeight = 'normal';
+                            div.textContent = `${c.intitulé} : ${c.volume}h ${c.format}`;
+                            if (c.format !== 'TD') {
+                                div.textContent += ` = ${c.eqtd}h eqTD`;
+                            }
+                            if (c.nbgrp) {
+                                div.textContent += ` — ${c.nbgrp} groupe(s)`;
+                            }
+                            sList.appendChild(div);
+                            sList.style.maxHeight = sList.scrollHeight + 'px';
+                            fList.style.maxHeight =
+                                fList.scrollHeight + sList.scrollHeight + 'px';
+                            coursesDisplay.style.maxHeight =
+                                coursesDisplay.scrollHeight +
+                                fList.scrollHeight +
+                                sList.scrollHeight +
+                                'px';
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // Upload changes
@@ -945,6 +1024,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         'Fichier "' + msg + '" mis à jour\n';
                     setTimeout(() => {
                         saveChangesBtn.removeAttribute('style');
+                        saveChangesBtn.disabled = true;
                         saveMsg.textContent = null;
                     }, 1000);
                     profChanged = false;
@@ -972,6 +1052,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         'Fichier "' + msg + '" mis à jour\n';
                     setTimeout(() => {
                         saveChangesBtn.removeAttribute('style');
+                        saveChangesBtn.disabled = true;
                         saveMsg.textContent = null;
                     }, 1000);
                     courseChanged = false;
@@ -1025,8 +1106,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Display lists
-    const showProfs = document.getElementById('show-profs');
-    const profsDisplay = document.getElementById('profs-display');
     showProfs.onclick = () => {
         displayProfs();
     };
@@ -1034,13 +1113,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         const profsArrow = document.getElementById('profs-arrow');
         if (!profsDisplay.style.maxHeight) {
             profsDisplay.innerHTML = null;
-            for (t of teacherData) {
-                const div = document.createElement('div');
-                div.textContent = `${t.name}, ${t.status}`;
-                if (t.service) {
-                    div.textContent += `, service de ${t.service}h TD`;
+            const statuses = Array.from(
+                profStatusSelect.querySelectorAll('option')
+            );
+            for (let s of statuses) {
+                const sList = document.createElement('ul');
+                sList.classList.add('status-list');
+                sList.id = `${s.value.toLowerCase()}`;
+                const sSpan = document.createElement('li');
+                sSpan.classList.add('status-span');
+                sSpan.textContent = s.value.toUpperCase();
+                const profs = teacherData.filter(
+                    (t) => t.status.toLowerCase() === s.value.toLowerCase()
+                );
+                console.log(profs);
+                if (profs.length > 0) {
+                    for (t of profs) {
+                        const div = document.createElement('li');
+                        div.textContent = `${t.name}`;
+                        if (t.service) {
+                            div.textContent += `, service de ${t.service}h TD`;
+                        }
+                        sList.appendChild(div);
+                    }
+                    profsDisplay.appendChild(sSpan);
+                    profsDisplay.appendChild(sList);
                 }
-                profsDisplay.appendChild(div);
+                    sList.style.maxHeight = sList.scrollHeight + 'px';
+                    profsDisplay.style.maxHeight =
+                        profsDisplay.scrollHeight + sList.scrollHeight + 'px';
             }
             profsArrow.classList.remove('plain');
             profsArrow.classList.add('rotated');
@@ -1068,36 +1169,50 @@ document.addEventListener('DOMContentLoaded', async () => {
                 semestreSelect.querySelectorAll('option')
             );
             for (f of filières) {
-                const fDiv = document.createElement('div');
+                const fDiv = document.createElement('ul');
                 fDiv.classList.add('f-div');
                 fDiv.classList.add('drawer');
-                const fSpan = document.createElement('h3');
+                fDiv.id = `${f.value.toLowerCase()}`;
+                const fSpan = document.createElement('li');
                 fSpan.classList.add('f-span');
                 fSpan.classList.add('show-hide');
                 fSpan.textContent = f.value.toUpperCase();
+                const arrowDiv = document.createElement('div');
+                arrowDiv.classList.add('arrow');
+                arrowDiv.textContent = '▶️';
+                fSpan.appendChild(arrowDiv);
                 fSpan.onclick = () => {
                     if (!fDiv.style.maxHeight) {
+                        arrowDiv.classList.add('rotated');
+                        arrowDiv.classList.remove('plain');
                         fDiv.style.maxHeight = fDiv.scrollHeight + 'px';
                         coursesDisplay.style.maxHeight =
                             coursesDisplay.scrollHeight +
                             fDiv.scrollHeight +
                             'px';
                     } else {
+                        arrowDiv.classList.add('plain');
+                        arrowDiv.classList.remove('rotated');
                         fDiv.style.maxHeight = null;
                     }
                 };
                 for (s of semestres) {
-                    const sDiv = document.createElement('div');
+                    const sDiv = document.createElement('ul');
                     sDiv.classList.add('s-div');
                     sDiv.classList.add('drawer');
-                    sDiv.style.marginLeft = '2rem';
-                    const sSpan = document.createElement('h4');
-                    sSpan.style.marginLeft = '2rem';
+                    sDiv.id = `${s.value.toLowerCase()}`;
+                    const sSpan = document.createElement('li');
                     sSpan.classList.add('s-span');
                     sSpan.classList.add('show-hide');
                     sSpan.textContent = s.value;
+                    const arrowDiv = document.createElement('div');
+                    arrowDiv.classList.add('arrow');
+                    arrowDiv.textContent = '▶️';
+                    sSpan.appendChild(arrowDiv);
                     sSpan.onclick = () => {
                         if (!sDiv.style.maxHeight) {
+                            arrowDiv.classList.add('rotated');
+                            arrowDiv.classList.remove('plain');
                             sDiv.style.maxHeight = sDiv.scrollHeight + 'px';
                             fDiv.style.maxHeight =
                                 fDiv.scrollHeight + sDiv.scrollHeight + 'px';
@@ -1107,6 +1222,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 sDiv.scrollHeight +
                                 'px';
                         } else {
+                            arrowDiv.classList.add('plain');
+                            arrowDiv.classList.remove('rotated');
                             sDiv.style.maxHeight = null;
                         }
                     };
@@ -1115,11 +1232,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     );
                     if (courses.length > 0) {
                         for (c of courses) {
-                            const div = document.createElement('div');
+                            const div = document.createElement('li');
                             div.classList.add('course');
                             div.style.fontWeight = 'normal';
-                            div.style.marginLeft = '2rem';
-                            div.textContent = `${c.filière} ${c.semestre} ${c.intitulé} ${c.eqtd}h TD`;
+                            div.textContent = `${c.intitulé} : ${c.volume}h ${c.format}`;
+                            if (c.format !== 'TD') {
+                                div.textContent += ` = ${c.eqtd}h eqTD`;
+                            }
                             if (c.nbgrp) {
                                 div.textContent += ` — ${c.nbgrp} groupe(s)`;
                             }
@@ -1201,7 +1320,10 @@ Cette opération est irréversible.`;
     async function compareData() {
         let checkTeacherData = await getFile(teacherDBUrl);
         let checkCourseData = await getFile(courseDBUrl);
-        if (teacherData !== checkTeacherData || courseData || checkCourseData) {
+        if (
+            teacherData !== checkTeacherData ||
+            courseData !== checkCourseData
+        ) {
             saveChangesBtn.disabled = false;
         } else {
             saveChangesBtn.disabled = true;
