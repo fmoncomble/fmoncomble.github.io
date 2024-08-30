@@ -14,6 +14,11 @@ input#token-input {
 div#auth-div {
     color: green;
     font-weight: bold;
+    text-align: center;
+}
+
+div#file-exist {
+    text-align: center;
 }
 
 label#file-input-label {

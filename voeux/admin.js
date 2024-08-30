@@ -998,7 +998,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 profStatus === 'ATER'
             ) {
                 baseService = 192;
-            } else if (profStatus === 'PRAG' || profStatus === 'PRCE') {
+            } else if (profStatus === 'PRAG/PRCE') {
                 baseService = 384;
             } else if (profStatus === 'LECT') {
                 baseService = 200;

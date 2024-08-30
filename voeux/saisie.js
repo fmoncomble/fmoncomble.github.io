@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             if (tStatus === 'MCF' || tStatus === 'PR' || tStatus === 'ATER') {
                 tService = 192;
-            } else if (tStatus === 'PRAG' || tStatus === 'PRCE') {
+            } else if (tStatus === 'PRAG/PRCE') {
                 tService = 384;
             } else if (tStatus === 'LECT') {
                 tService = 200;
@@ -527,13 +527,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const noBtn = document.getElementById('no-btn');
 
     yesBtn.onclick = () => {
+        const data = new Date().toISOString.split('-')[0];
+        const name = tName.replaceAll(' ', '_');
         const myBlob = new Blob([JSON.stringify(jsonFile)], {
             type: 'text/plain',
         });
         const url = window.URL.createObjectURL(myBlob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Vœux ${tName}.json`;
+        a.download = `Vœux_${tName}_${date}.json`;
         a.click();
         window.URL.revokeObjectURL(url);
         confirmDialog.close();
