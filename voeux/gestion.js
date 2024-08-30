@@ -262,7 +262,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Build available course list according to filière and semestre
     function buildCourseList() {
-        console.log('Rebuilding course list');
         const options = Array.from(courseSelect2.querySelectorAll('option'));
         for (o of options) {
             o.remove();
@@ -814,35 +813,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     function sortByFil(a, b) {
         const filA = a.filière.toLowerCase();
         const filB = b.filière.toLowerCase();
-        if (filA < filB) {
-            return -1;
-        }
-        if (filA > filB) {
-            return 1;
-        }
-        return 0;
+        return filA.localeCompare(filB);
     }
     function sortBySem(a, b) {
         const semA = a.semestre.toLowerCase();
         const semB = b.semestre.toLowerCase();
-        if (semA < semB) {
-            return -1;
-        }
-        if (semA > semB) {
-            return 1;
-        }
-        return 0;
+        return semA.localeCompare(semB);
     }
     function sortByInt(a, b) {
         const intA = a.intitulé.toLowerCase();
         const intB = b.intitulé.toLowerCase();
-        if (intA < intB) {
-            return -1;
-        }
-        if (intA > intB) {
-            return 1;
-        }
-        return 0;
+        return intA.localeCompare(intB);
     }
 
     // Modify course
@@ -1027,16 +1008,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             const finalFile = btoa(String.fromCharCode.apply(null, utf8Array));
             const msg = 'profs';
             try {
+                const btnText = saveChangesBtn.firstChild;
+                btnText.textContent = null;
                 spinner.style.display = 'inline-block';
                 const success = await updateFile(url, finalFile, msg);
                 if (success) {
                     spinner.style.display = 'none';
+                    btnText.textContent = '✔︎';
                     saveChangesBtn.style.backgroundColor = 'green';
                     const saveMsg = document.getElementById('save-msg');
-                    saveMsg.textContent = saveMsg.textContent +=
-                        'Fichier "' + msg + '" mis à jour\n';
+                    saveMsg.textContent = 'Fichier "' + msg + '" mis à jour\n';
                     setTimeout(() => {
                         saveChangesBtn.removeAttribute('style');
+                        btnText.textContent = 'Synchroniser';
                         saveChangesBtn.disabled = true;
                         saveMsg.textContent = null;
                     }, 1000);
@@ -1055,16 +1039,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             const finalFile = btoa(String.fromCharCode.apply(null, utf8Array));
             const msg = 'cours';
             try {
+                const btnText = saveChangesBtn.firstChild;
+                btnText.textContent = null;
                 spinner.style.display = 'inline-block';
                 const success = await updateFile(url, finalFile, msg);
                 if (success) {
                     spinner.style.display = 'none';
+                    btnText.textContent = '✔︎';
                     saveChangesBtn.style.backgroundColor = 'green';
                     const saveMsg = document.getElementById('save-msg');
-                    saveMsg.textContent = saveMsg.textContent +=
-                        'Fichier "' + msg + '" mis à jour\n';
+                    saveMsg.textContent = 'Fichier "' + msg + '" mis à jour\n';
                     setTimeout(() => {
                         saveChangesBtn.removeAttribute('style');
+                        btnText.textContent = 'Synchroniser';
                         saveChangesBtn.disabled = true;
                         saveMsg.textContent = null;
                     }, 1000);
@@ -1139,7 +1126,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const profs = teacherData.filter(
                     (t) => t.status.toLowerCase() === s.value.toLowerCase()
                 );
-                console.log(profs);
                 if (profs.length > 0) {
                     for (t of profs) {
                         const div = document.createElement('li');

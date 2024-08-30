@@ -84,12 +84,12 @@ button.wishes-ui {
 }
 
 #save-changes-btn {
-    text-align: left;
+    text-align: center;
     width: 110px;
 }
 
 #save-msg {
-    float: right;
+    display: inline-block;
 }
 
 .wrapper {
@@ -129,7 +129,6 @@ li[class*="-span"] {
     display: none;
     vertical-align: middle;
     margin-left: 5px;
-    float: right;
 }
 
 @keyframes spin {
