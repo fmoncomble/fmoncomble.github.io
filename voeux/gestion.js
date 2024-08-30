@@ -193,6 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let semestre = 'S1';
     semestreSelect.value = semestre;
     filièreSelect.addEventListener('change', () => {
+        adjustGrpNb();
         filière = filièreSelect.value;
         const options = Array.from(filièreSelect.querySelectorAll('option'));
         const optionLevel = options.find((o) => o.value === filièreSelect.value)
@@ -570,43 +571,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function adjustGrpNb() {
-        if (formatSelect.value === 'CM') {
+        if (filièreSelect.value === 'LLCER' || filièreSelect.value === 'LEA') {
+            if (formatSelect.value === 'CM') {
+                grpInput.value = 1;
+            } else if (formatSelect.value === 'TD') {
+                if (semestreSelect.value === 'S1') {
+                    grpInput.value = 5;
+                } else if (semestreSelect.value === 'S2') {
+                    grpInput.value = 4;
+                } else if (
+                    semestreSelect.value === 'S3' ||
+                    semestreSelect.value === 'S4'
+                ) {
+                    grpInput.value = 3;
+                } else if (
+                    semestreSelect.value === 'S5' ||
+                    semestreSelect.value === 'S6'
+                ) {
+                    grpInput.value = 2;
+                }
+            } else if (formatSelect.value === 'TP') {
+                if (semestreSelect.value === 'S1') {
+                    grpInput.value = 10;
+                } else if (semestreSelect.value === 'S2') {
+                    grpInput.value = 8;
+                } else if (
+                    semestreSelect.value === 'S3' ||
+                    semestreSelect.value === 'S4'
+                ) {
+                    grpInput.value = 6;
+                } else if (
+                    semestreSelect.value === 'S5' ||
+                    semestreSelect.value === 'S6'
+                ) {
+                    grpInput.value = 4;
+                }
+            }
+        } else {
             grpInput.value = 1;
-        } else if (
-            formatSelect.value === 'TD' ||
-            formatSelect.value === 'TD_OPT'
-        ) {
-            if (semestreSelect.value === 'S1') {
-                grpInput.value = 5;
-            } else if (semestreSelect.value === 'S2') {
-                grpInput.value = 4;
-            } else if (
-                semestreSelect.value === 'S3' ||
-                semestreSelect.value === 'S4'
-            ) {
-                grpInput.value = 3;
-            } else if (
-                semestreSelect.value === 'S5' ||
-                semestreSelect.value === 'S6'
-            ) {
-                grpInput.value = 2;
-            }
-        } else if (formatSelect.value === 'TP') {
-            if (semestreSelect.value === 'S1') {
-                grpInput.value = 10;
-            } else if (semestreSelect.value === 'S2') {
-                grpInput.value = 8;
-            } else if (
-                semestreSelect.value === 'S3' ||
-                semestreSelect.value === 'S4'
-            ) {
-                grpInput.value = 6;
-            } else if (
-                semestreSelect.value === 'S5' ||
-                semestreSelect.value === 'S6'
-            ) {
-                grpInput.value = 4;
-            }
         }
     }
 
