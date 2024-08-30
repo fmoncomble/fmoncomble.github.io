@@ -264,6 +264,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Limit available semester options according to filière
     filièreInput.addEventListener('change', () => {
+        const meefWarning = document.getElementById('meef-warning');
+        if (filièreInput.value === 'MEEF') {
+            meefWarning.style.display = 'inline-block';
+        } else {
+            meefWarning.style.display = 'none';
+        }
         semestreInput.value = 'S1';
         filière = filièreInput.value;
         const options = Array.from(filièreInput.querySelectorAll('option'));
@@ -594,18 +600,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             const hour = tc.parentNode.firstElementChild.textContent;
             if (!tc.classList.contains('selected')) {
                 tc.classList.toggle('selected');
-                tc.textContent = '✅';
-                tc.style.backgroundColor = 'rgb(214, 245, 214)';
+                // tc.textContent = '✅';
+                // tc.style.backgroundColor = 'rgb(214, 245, 214)';
+                tc.style.backgroundColor = '#ffe6e6';
+                tc.textContent = '❌';
                 const dispo = {};
                 dispo.day = day;
                 dispo.hour = hour;
-                tc.addEventListener('mouseover', showRed);
-                tc.addEventListener('mouseout', showGreen);
+                tc.addEventListener('mouseover', showGreen);
+                tc.addEventListener('mouseout', showRed);
+                // tc.addEventListener('mouseover', showRed);
+                // tc.addEventListener('mouseout', showGreen);
                 saveDispo(dispo);
             } else {
                 tc.classList.toggle('selected');
-                tc.removeEventListener('mouseover', showRed);
-                tc.removeEventListener('mouseout', showGreen);
+                // tc.removeEventListener('mouseover', showRed);
+                // tc.removeEventListener('mouseout', showGreen);
+                tc.removeEventListener('mouseover', showGreen);
+                tc.removeEventListener('mouseout', showRed);
                 tc.textContent = '';
                 tc.removeAttribute('style');
                 const dispo = jsonFile.Dispos.find(
@@ -613,6 +625,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 );
                 deleteDispo(dispo);
             }
+            console.log('Dispos: ', jsonFile.Dispos);
         });
     }
     function saveDispo(dispo) {

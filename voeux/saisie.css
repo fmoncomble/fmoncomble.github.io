@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     background-color: #c4d0e6;
     max-height: 100vh;
 }
@@ -57,7 +58,9 @@ td {
 }
 
 td:hover {
-    background-color: #ebfaeb;
+    background-color: #fff5f5
+    ;
+    /* #ebfaeb; */
 }
 
 div#instructions {
@@ -92,4 +95,16 @@ button#send-btn {
     right: 5px;
     text-align: center;
     font-size: small;
+}
+
+span#meef-warning {
+    font-weight: bold;
+    color: black;
+    background-color: #ffcc00;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+span#meef-warning span {
+    text-decoration: underline double;
 }

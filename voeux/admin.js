@@ -556,8 +556,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         }
                     }
                     const dCell = rows[rowIndex].cells[colIndex];
-                    dCell.style.backgroundColor = 'rgb(214, 245, 214)';
-                    dCell.textContent = '✅';
+                    // dCell.style.backgroundColor = 'rgb(214, 245, 214)';
+                    // dCell.textContent = '✅';
+                    dCell.style.backgroundColor = '#ffe6e6';
+                    dCell.textContent = '❌';
                 }
                 dispoDiv.style.display = 'block';
             } else {
