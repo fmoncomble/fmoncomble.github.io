@@ -343,7 +343,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     compareData();
                     buildProfList();
                     if (profsDisplay.style.maxHeight) {
-                        updateProfDisplay();
+                        let update = true;
+                        displayProfs(update);
                     }
                 };
                 noBtn.onclick = () => {
@@ -383,7 +384,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             compareData();
             buildProfList();
             if (profsDisplay.style.maxHeight) {
-                updateProfDisplay();
+                let update = true;
+                displayProfs(update);
             }
         }
         profModify = false;
@@ -490,21 +492,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         compareData();
         buildProfList();
         if (profsDisplay.style.maxHeight) {
-            updateProfDisplay();
-        }
-    }
-
-    // Function to update prof list in real time
-    function updateProfDisplay() {
-        profsDisplay.innerHTML = null;
-        for (t of teacherData) {
-            const div = document.createElement('li');
-            div.textContent = `${t.name}, ${t.status}`;
-            if (t.service) {
-                div.textContent += `, service de ${t.service}h TD`;
-            }
-            profsDisplay.appendChild(div);
-            profsDisplay.style.maxHeight = profsDisplay.scrollHeight + 'px';
+            let update = true;
+            displayProfs(update);
         }
     }
 
@@ -1109,9 +1098,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     showProfs.onclick = () => {
         displayProfs();
     };
-    function displayProfs() {
+    function displayProfs(update) {
         const profsArrow = document.getElementById('profs-arrow');
-        if (!profsDisplay.style.maxHeight) {
+        if (!profsDisplay.style.maxHeight || update) {
             profsDisplay.innerHTML = null;
             const statuses = Array.from(
                 profStatusSelect.querySelectorAll('option')
@@ -1139,9 +1128,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     profsDisplay.appendChild(sSpan);
                     profsDisplay.appendChild(sList);
                 }
-                    sList.style.maxHeight = sList.scrollHeight + 'px';
-                    profsDisplay.style.maxHeight =
-                        profsDisplay.scrollHeight + sList.scrollHeight + 'px';
+                sList.style.maxHeight = sList.scrollHeight + 'px';
+                profsDisplay.style.maxHeight =
+                    profsDisplay.scrollHeight + sList.scrollHeight + 'px';
             }
             profsArrow.classList.remove('plain');
             profsArrow.classList.add('rotated');

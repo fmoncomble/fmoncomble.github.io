@@ -38,6 +38,7 @@ div#auth-div {
     color: green;
     display: none;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 @keyframes turn {

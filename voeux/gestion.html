@@ -8,14 +8,14 @@
     </head>
     <body>
         <h1 class="wishes-ui">Gestion des fichiers enseignant·es et cours</h1>
+        <div id="auth-div">
+            <span>Authentification OK ✅</span>
+            <button class="wishes-ui reset-btn" id="reset-btn">
+                Déconnecter
+            </button>
+        </div>
         <div class="wrapper">
             <div id="container-1" class="container">
-                <div id="auth-div">
-                    <span>Authentification OK ✅</span>
-                    <button class="wishes-ui reset-btn" id="reset-btn">
-                        Déconnecter
-                    </button>
-                </div>
                 <h2 class="section-header">Enseignant·es</h2>
                 <div id="prof-add" class="wishes-ui">
                     <b>Ajouter un·e enseignant·e</b>
@@ -29,8 +29,7 @@
                         <select id="status-select" class="wishes-ui">
                             <option value="PR" selected>PR</option>
                             <option value="MCF">MCF</option>
-                            <option value="PRAG">PRAG</option>
-                            <option value="PRCE">PRCE</option>
+                            <option value="PRAG/PRCE">PRAG/PRCE</option>
                             <option value="ATER">ATER</option>
                             <option value="LECT">Lecteur·rice</option>
                             <option value="VAC">Chargé·e de cours</option>
