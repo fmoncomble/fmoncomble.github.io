@@ -296,26 +296,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         const customService = Number(
             document.getElementById('custom-service').value
         );
-        let newProf;
+        const customHc = Number(document.getElementById('custom-hc').value);
+        let newProf = {
+            name: profAddInput.value,
+            status: profStatusSelect.value,
+        };
         if (customService) {
-            newProf = {
-                name: profAddInput.value,
-                status: profStatusSelect.value,
-                service: customService,
-            };
-        } else {
-            newProf = {
-                name: profAddInput.value,
-                status: profStatusSelect.value,
-            };
+            newProf.service = customService;
         }
+        if (customHc) {
+            newProf.hc = customHc;
+        }
+        //  else {
+        //     newProf = {
+        //         name: profAddInput.value,
+        //         status: profStatusSelect.value,
+        //     };
+        // }
         const checkProf = teacherData.find(
             (t) => t.name === profAddInput.value
         );
         if (checkProf) {
             if (
                 checkProf.status !== profStatusSelect.value ||
-                checkProf.service !== customService
+                checkProf.service !== customService ||
+                checkProf.hc !== customHc
             ) {
                 const dialog = document.createElement('dialog');
                 const div = document.createElement('div');
@@ -377,7 +382,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return result;
             });
             const addedProfDiv = document.getElementById('added-prof-div');
-            addedProfDiv.textContent = `${profAddInput.value}, ${profStatusSelect.value} a été ajouté·e`;
+            addedProfDiv.textContent = `${profAddInput.value} a été ajouté·e`;
             addedProfDiv.style.display = 'block';
             setTimeout(() => {
                 addedProfDiv.style.display = 'none';
@@ -964,7 +969,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             div.style.fontWeight = 'normal';
                             div.textContent = `${c.intitulé} : ${c.volume}h ${c.format}`;
                             if (c.format !== 'TD') {
-                                div.textContent += ` = ${c.eqtd}h eqTD`;
+                                div.textContent += ` = ${c.eqtd}h éq. TD`;
                             }
                             if (c.nbgrp) {
                                 div.textContent += ` — ${c.nbgrp} groupe(s)`;
@@ -1142,6 +1147,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                         if (t.service) {
                             div.textContent += `, service de ${t.service}h TD`;
                         }
+                        if (t.hc) {
+                            div.textContent += ` (${t.hc} HC max)`;
+                        }
                         sList.appendChild(div);
                     }
                     profsDisplay.appendChild(sSpan);
@@ -1245,7 +1253,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             div.style.fontWeight = 'normal';
                             div.textContent = `${c.intitulé} : ${c.volume}h ${c.format}`;
                             if (c.format !== 'TD') {
-                                div.textContent += ` = ${c.eqtd}h eqTD`;
+                                div.textContent += ` = ${c.eqtd}h éq. TD`;
                             }
                             if (c.nbgrp) {
                                 div.textContent += ` — ${c.nbgrp} groupe(s)`;

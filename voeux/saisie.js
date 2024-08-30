@@ -182,6 +182,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let tName;
     let tService;
+    let tHc;
     let filière = 'LLCER';
     let semestre = 'S1';
 
@@ -247,6 +248,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (tService) {
             teacherService.textContent = `Service statutaire : ${tService} heures éq. TD`;
+        }
+        const customHc = teacherData.find((t) => t.name === tName).hc;
+        if (customHc) {
+            tHc = customHc;
+            teacherService.textContent += ` (${tHc} HC max)`;
         }
         filièreInput.value = 'LLCER';
         filière = 'LLCER';
@@ -321,8 +327,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         );
         courseInfo.textContent = `${filière} — ${semestre} — ${cName} : ${course.volume}h ${course.format}`;
         if (course.format !== 'TD') {
-            courseInfo.textContent += ` = ${course.eqtd}h eqTD`
-        };
+            courseInfo.textContent += ` = ${course.eqtd}h éq. TD`;
+        }
         courseInfo.style.display = 'inline';
         saveBtn.style.display = 'inline';
         saveBtn.onclick = () => saveCourse(course);
@@ -363,7 +369,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const deleteBtn = document.createElement('span');
         addedCourse.textContent = `${course.filière} — ${course.semestre} — ${course.intitulé} : ${course.volume}h ${course.format}`;
         if (course.format !== 'TD') {
-            addedCourse.textContent += ` = ${course.eqtd}h eqTD`;
+            addedCourse.textContent += ` = ${course.eqtd}h éq. TD`;
         }
         deleteBtn.textContent = ' ❌';
         deleteBtn.style.cursor = 'pointer';
@@ -396,12 +402,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (volTotal >= tService) {
             hTotal.style.color = 'green';
             if (volTotal > tService) {
-                volHc = volTotal - Number(tService);
+                // volHc = volTotal - Number(tService);
+                volHc = Number(
+                    parseFloat(
+                        (volTotal - Number(tService)).toFixed(2)
+                    ).toString()
+                );
                 hc.textContent = `, ${volHc} HC`;
                 hc.style.color = 'green';
             }
         }
-        if (volHc > tService) {
+        if ((tHc && volHc > tHc) || volHc > tService) {
             hc.style.color = 'red';
             hTotal.style.color = 'red';
         }
@@ -522,14 +533,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (eqtdTotal > tService) {
             profSummary.textContent += ` (${eqtdTotal - tService}HC)`;
         }
-        if (eqtdTotal > tService * 2 || eqtdTotal < tService) {
+        if (
+            (tHc && eqtdTotal > tService + tHc) ||
+            eqtdTotal > tService * 2 ||
+            eqtdTotal < tService
+        ) {
             profSummary.style.color = 'red';
             profSummary.textContent += ` ⚠️`;
             if (eqtdTotal < tService) {
                 profSummary.textContent += ` — volume horaire insuffisant`;
-            } else if (eqtdTotal > tService * 2) {
-                profSummary.textContent += ` — volume horaire supérieur à la limite autorisée`
+            } else if (
+                (tHc && eqtdTotal > tService + tHc) ||
+                eqtdTotal > tService * 2
+            ) {
+                profSummary.textContent += ` — volume horaire supérieur à la limite autorisée`;
             }
+        } else {
+            profSummary.style.color = 'green';
         }
         confirmDialog.showModal();
     };

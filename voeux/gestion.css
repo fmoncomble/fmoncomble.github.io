@@ -16,7 +16,8 @@ h1 {
 
 input#custom-service,
 input#eqtd-input,
-input#volume-input {
+input#volume-input,
+input#custom-hc {
     max-width: 5em;
 }
 
