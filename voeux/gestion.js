@@ -262,10 +262,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Build available course list according to filière and semestre
     function buildCourseList() {
+        console.log('Rebuilding course list');
         const options = Array.from(courseSelect2.querySelectorAll('option'));
         for (o of options) {
             o.remove();
         }
+        courseData.sort(sortByInt);
+        courseData.sort(sortBySem);
+        courseData.sort(sortByFil);
         const courses = courseData.filter(
             (c) => c.filière === filière2 && c.semestre === semestre2
         );
@@ -669,6 +673,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (checkCourse) {
             if (
+                checkCourse.intitulé !== courseInput.value ||
                 checkCourse.format !== format ||
                 checkCourse.nbgrp !== nbgrp ||
                 checkCourse.volume !== volume ||
@@ -721,8 +726,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                     courseChanged = true;
                     getCourseIds();
                     compareData();
+                    buildCourseList();
+                    updateDisplay(newCourse);
                 };
                 noBtn.onclick = () => {
+                    courseAddBtn.textContent = 'Ajouter';
+                    const elts = Array.from(
+                        document
+                            .getElementById('course-add')
+                            .querySelectorAll('select, input')
+                    );
+                    for (let elt of elts) {
+                        if (elt.tagName === 'SELECT') {
+                            elt.value =
+                                elt.querySelector('option[selected]').value;
+                        } else {
+                            elt.value = null;
+                        }
+                        elt.removeAttribute('style');
+                    }
                     dialog.remove();
                     return;
                 };
@@ -735,9 +757,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             newCourse.id = makeCourseId(1, 9999);
             courseData.push(newCourse);
-            courseData.sort(sortByInt);
-            courseData.sort(sortBySem);
-            courseData.sort(sortByFil);
             const addedCourseDiv = document.getElementById('added-course-div');
             addedCourseDiv.textContent = `${filièreSelect.value.toUpperCase()} ${
                 semestreSelect.value
@@ -762,10 +781,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             getCourseIds();
             compareData();
+            buildCourseList();
+            updateDisplay(newCourse);
         }
         courseModify = false;
-        buildCourseList();
-        updateDisplay(newCourse);
     }
 
     const courseCancelBtn = document.getElementById('course-add-cancel');
