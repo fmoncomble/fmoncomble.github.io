@@ -527,7 +527,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const noBtn = document.getElementById('no-btn');
 
     yesBtn.onclick = () => {
-        const data = new Date().toISOString.split('-')[0];
+        const date = new Date().toISOString().split('-')[0];
         const name = tName.replaceAll(' ', '_');
         const myBlob = new Blob([JSON.stringify(jsonFile)], {
             type: 'text/plain',
@@ -535,7 +535,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const url = window.URL.createObjectURL(myBlob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Vœux_${tName}_${date}.json`;
+        a.download = `Vœux_${name}_${date}.json`;
         a.click();
         window.URL.revokeObjectURL(url);
         confirmDialog.close();
