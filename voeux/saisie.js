@@ -407,6 +407,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         for (let c of jsonFile.Cours) {
             const cVol = Number(c.eqtd);
             volTotal += cVol;
+            volTotal = Number(
+                parseFloat(Number(volTotal).toFixed(2)).toString()
+            );
         }
         hTotal.textContent = volTotal + ' hTD';
         if (volTotal >= tService) {
@@ -591,6 +594,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             indisposDiv.appendChild(dayList);
         }
+        eqtdTotal = Number(
+            parseFloat(Number(eqtdTotal).toFixed(2)).toString()
+        );
         const profSummary = document.getElementById('prof-summary');
         profSummary.textContent = `Total : ${eqtdTotal}h éq. TD`;
         if (eqtdTotal > tService) {
