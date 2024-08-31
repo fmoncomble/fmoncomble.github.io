@@ -247,7 +247,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
         if (tService) {
-            teacherService.textContent = `Service statutaire : ${tService} heures éq. TD`;
+            if (tService === Infinity) {
+                teacherService.textContent = null;
+            } else {
+                teacherService.textContent = `Service statutaire : ${tService} heures éq. TD`;
+            }
         }
         const customHc = teacherData.find((t) => t.name === tName).hc;
         if (customHc) {
@@ -424,6 +428,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (volTotal < tService) {
             hc.textContent = null;
             hTotal.style.color = 'orange';
+        }
+        if (tService === Infinity) {
+            hTotal.style.color = 'black';
         }
     }
 

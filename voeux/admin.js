@@ -520,20 +520,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             const serviceDiv = document.createElement('div');
             serviceDiv.style.marginTop = '10px';
             serviceDiv.style.fontWeight = 'bold';
-            serviceDiv.textContent = `Total : ${totalService}h TD / ${baseService}`;
-            if (totalService > baseService) {
-                const nbHc = totalService - baseService;
-                serviceDiv.textContent += ` (${nbHc} HC)`;
-            }
-            if (totalService === baseService) {
-                serviceDiv.style.color = 'green';
-            } else if (
-                totalService > 2 * baseService ||
-                totalService < baseService
-            ) {
-                serviceDiv.style.color = '#cc0000';
-            } else {
-                serviceDiv.style.color = 'green';
+            serviceDiv.textContent = `Total : ${totalService}h éq. TD`;
+            if (baseService !== Infinity) {
+                serviceDiv.textContent += ` / ${baseService}`;
+                if (totalService > baseService) {
+                    const nbHc = totalService - baseService;
+                    serviceDiv.textContent += ` (${nbHc} HC)`;
+                }
+                if (totalService === baseService) {
+                    serviceDiv.style.color = 'green';
+                } else if (
+                    totalService > 2 * baseService ||
+                    totalService < baseService
+                ) {
+                    serviceDiv.style.color = '#cc0000';
+                } else {
+                    serviceDiv.style.color = 'green';
+                }
             }
             courseList.appendChild(serviceDiv);
             const dispoTable = dispoDiv.querySelector('table');
@@ -962,7 +965,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (customVol) {
             courseAddSpan.textContent += ` (${customVol}h)`;
         }
-        courseAddSpan.textContent += ` a été ajouté au service de ${prof}. Total : ${totalService} sur ${baseService}`;
+        courseAddSpan.textContent += ` a été ajouté au service de ${prof}. Total : ${totalService}h éq. TD`;
+        if (baseService !== Infinity) {
+            courseAddSpan.textContent += ` sur ${baseService}`;
+        }
         courseAddDiv.style.display = 'block';
         setTimeout(() => {
             courseAddDiv.style.display = 'none';
@@ -1000,7 +1006,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = computeServiceVol(profEntry);
         const baseService = data[0];
         const totalService = data[1];
-        courseDeleteSpan.textContent = `${filière.toUpperCase()} ${semestre} ${courseName} a été supprimé du service de ${prof}. Total : ${totalService} sur ${baseService}`;
+        courseDeleteSpan.textContent = `${filière.toUpperCase()} ${semestre} ${courseName} a été supprimé du service de ${prof}. Total : ${totalService}h éq. TD`;
+        if (baseService !== Infinity) {
+            courseDeleteSpan.textContent += ` sur ${baseService}`;
+        }
         courseDeleteDiv.style.display = 'block';
         setTimeout(() => {
             courseDeleteDiv.style.display = 'none';
