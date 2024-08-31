@@ -129,6 +129,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             fileExist.style.display = 'block';
             voeux = decoder.decode(bytes);
             servicesFile = JSON.parse(voeux);
+            if (servicesFile.length === 0) {
+                fileExist.textContent += `(le fichier est vide)`
+            }
             const actionChoiceDiv = document.getElementById('action-choice');
             actionChoiceDiv.style.display = 'block';
             eraseBtn.style.display = 'inline';
