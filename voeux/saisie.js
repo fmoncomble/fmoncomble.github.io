@@ -276,6 +276,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         semestreInput.value = 'S1';
         filière = filièreInput.value;
+        semestre = semestreInput.value;
         const options = Array.from(filièreInput.querySelectorAll('option'));
         const optionLevel = options.find((o) => o.value === filièreInput.value)
             .dataset.level;
@@ -308,7 +309,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const courseOptions = Array.from(
             courseInput.querySelectorAll('option')
         );
-        for (co of courseOptions) {
+        for (let co of courseOptions) {
             co.remove();
         }
         const option1 = document.createElement('option');
