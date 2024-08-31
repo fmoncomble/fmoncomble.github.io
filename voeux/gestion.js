@@ -624,7 +624,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (volumeSelect.value === 'autre' && volumeInput.value) {
             volume = Number(volumeInput.value.replace(',', '.'));
         }
-        if (!courseInput.value || !volume) {
+        if (!courseInput.value || (volumeSelect.value !== 'autre' && !volume)) {
             window.alert('Entrez un intitulé et/ou le volume horaire');
             if (!courseInput.value) {
                 courseInput.focus();
@@ -799,6 +799,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('course-add').firstElementChild.textContent =
             'Ajouter un cours :';
         courseModify = false;
+        courseInput.focus();
     }
 
     const courseCancelBtn = document.getElementById('course-add-cancel');
