@@ -1218,15 +1218,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         yesBtn.textContent = 'Oui';
         yesBtn.classList.add('wishes-ui', 'danger-btn');
         yesBtn.addEventListener('click', async () => {
+            const spinner = document.createElement('span');
+            spinner.classList.add('spinner');
+            spinner.style.border = 'solid 2px #ffcc00';
+            spinner.style.borderLeft = 'solid 2px #cc0000';
+            yesBtn.appendChild(spinner);
+            const btnText = yesBtn.firstChild;
+            btnText.textContent = null;
+            spinner.style.display = 'inline-block';
             servicesFile = [];
             const success = await saveFile(servicesFile);
             if (success) {
-                eraseServicesBtn.style.backgroundColor = 'green';
+                spinner.style.display = 'none';
+                btnText.textContent = '✔︎';
             }
             setTimeout(() => {
-                eraseServicesBtn.removeAttribute('style');
+                yesBtn.removeAttribute('style');
+                btnText.textContent = 'Oui';
+                dialog.remove();
+                const dangerBtn = dangerZone.querySelector('button');
+                dangerBtn.style.display = 'none';
             }, 1000);
-            dialog.remove();
         });
         const noBtn = document.createElement('button');
         noBtn.textContent = 'Non';
