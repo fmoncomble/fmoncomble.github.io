@@ -175,7 +175,8 @@ td {
     border-radius: 4px;
 }
 
-button#save-btn {
+button#save-btn,
+button#save-changes-btn {
     text-align: center;
     width: 110px;
 }

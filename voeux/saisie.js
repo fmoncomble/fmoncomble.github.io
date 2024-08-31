@@ -408,7 +408,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (volTotal >= tService) {
             hTotal.style.color = 'green';
             if (volTotal > tService) {
-                // volHc = volTotal - Number(tService);
                 volHc = Number(
                     parseFloat(
                         (volTotal - Number(tService)).toFixed(2)

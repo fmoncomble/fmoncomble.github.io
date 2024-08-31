@@ -901,7 +901,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 elt.style.backgroundColor = '#e6f5ff';
             }
         }
-        // courseModify = true;
         courseInput.focus();
         courseCancelBtn.disabled = false;
     }

@@ -308,18 +308,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.body.appendChild(eraseDialog);
             eraseDialog.showModal();
         } else {
-            // const saveSpinner = document.getElementById('save-spinner');
-            // saveSpinner.style.display = 'inline-block';
-            // const success = await saveFile(servicesFile);
-            // saveSpinner.style.display = 'none';
-            // if (success) {
-            //     saveBtn.style.backgroundColor = 'green';
-            // }
-            // setTimeout(() => {
-            //     saveBtn.removeAttribute('style');
-            //     saveBtn.classList.toggle('danger-btn');
-            //     saveBtn.style.display = 'none';
-            // }, 1000);
             const btnText = saveBtn.firstChild;
             const saveSpinner = document.getElementById('save-spinner');
             btnText.textContent = null;
@@ -1054,20 +1042,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const saveChangesBtn = document.getElementById('save-changes-btn');
     saveChangesBtn.addEventListener('click', async () => {
+        const btnText = saveChangesBtn.firstChild;
         const saveChgSpinner = document.getElementById('save-chg-spinner');
+        btnText.textContent = null;
         saveChgSpinner.style.display = 'inline-block';
         const success = await saveFile(servicesFile);
-        saveChgSpinner.style.display = 'none';
         if (success) {
+            saveChgSpinner.style.display = 'none';
+            btnText.textContent = '✔︎';
             saveChangesBtn.style.backgroundColor = 'green';
         }
         setTimeout(() => {
             saveChangesBtn.removeAttribute('style');
+            btnText.textContent = 'Synchroniser';
+            const servModDiv = document.getElementById('service-modify');
+            servModDiv.style.display = 'none';
+            profInput2.value = null;
         }, 1000);
-        saveChgSpinner.style.display = 'none';
-        const servModDiv = document.getElementById('service-modify');
-        servModDiv.style.display = 'none';
-        profInput2.value = null;
     });
 
     const cancelChangesBtn = document.getElementById('cancel-changes-btn');
