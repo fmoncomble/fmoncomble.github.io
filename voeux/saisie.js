@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let filière = 'LLCER';
     let semestre = 'S1';
 
-    let jsonFile;
+    let jsonFile = {};
 
     goBtn.onclick = start;
     teacherInput.addEventListener('keydown', (e) => {
@@ -456,6 +456,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function duplicateEntry(course, entry, addedCourses) {
+        const existingCourses = jsonFile.Cours.filter(
+            (c) => c.id === course.id
+        );
+        if (existingCourses && existingCourses.length >= course.nbgrp) {
+            window.alert('Le nombre de groupes est atteint pour ce cours');
+            return;
+        }
         jsonFile.Cours.push(course);
         const newEntry = entry.cloneNode(true);
         const btns = Array.from(newEntry.querySelectorAll('span.btn'));
@@ -486,14 +493,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     sendBtn.onclick = () => {
         if (
             !jsonFile ||
-            !jsonFile.Dispos ||
+            (!noIndispo &&
+                (!jsonFile.Dispos || jsonFile.Dispos.length === 0)) ||
             !jsonFile.Cours ||
-            jsonFile.Dispos.length === 0 ||
             jsonFile.Cours.length === 0
         ) {
             const missingInfoDialog = document.getElementById('missing-info');
+            let missingInfoId = document.getElementById('missing-info-id');
+            if (!jsonFile) {
+                missingInfoId.textContent += 'Enseignements';
+                if (!noIndispo) {
+                    missingInfoId.textContent += ' & Indisponibilités';
+                }
+            } else {
+                if (!jsonFile.Cours || jsonFile.Cours.length === 0) {
+                    missingInfoId.textContent += 'Enseignements';
+                }
+                if (
+                    !noIndispo &&
+                    (!jsonFile.Dispos || jsonFile.Dispos.length === 0)
+                ) {
+                    if (missingInfoId.textContent) {
+                        missingInfoId.textContent += ' & ';
+                    }
+                    missingInfoId.textContent += 'Indisponibilités';
+                }
+            }
             const missingOkBtn = missingInfoDialog.querySelector('button');
             missingOkBtn.addEventListener('click', () => {
+                missingInfoId.textContent = null;
                 missingInfoDialog.close();
             });
             missingInfoDialog.showModal();
@@ -506,7 +534,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         let filières = jsonFile.Cours.map((c) => c.filière);
         filières = [...new Set(filières)];
         const filièreList = document.createElement('ul');
-        for (f of filières) {
+        for (let f of filières) {
             const filièreItem = document.createElement('li');
             filièreItem.textContent = f;
             const fCourses = jsonFile.Cours.filter((c) => c.filière === f);
@@ -534,8 +562,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             volTotal += Number(c.volume);
             eqtdTotal += Number(c.eqtd);
         }
+        const indisposDiv = document.getElementById('indispos');
+        indisposDiv.innerHTML = null;
+        if (!jsonFile.Dispos || jsonFile.Dispos.length === 0) {
+            indisposDiv.textContent = 'Aucune';
+        } else {
+            let days = jsonFile.Dispos.map((i) => i.day);
+            days = [...new Set(days)];
+            const dayList = document.createElement('ul');
+            for (let d of days) {
+                const dayItem = document.createElement('li');
+                dayItem.textContent = d;
+                const dIndispos = jsonFile.Dispos.filter((i) => i.day === d);
+                const hourList = document.createElement('ul');
+                for (let dI of dIndispos) {
+                    const hourItem = document.createElement('li');
+                    hourItem.textContent = dI.hour;
+                    hourList.appendChild(hourItem);
+                }
+                dayList.appendChild(dayItem);
+                dayList.appendChild(hourList);
+            }
+            indisposDiv.appendChild(dayList);
+        }
         const profSummary = document.getElementById('prof-summary');
-        profSummary.textContent = `Total : ${eqtdTotal}h TD`;
+        profSummary.textContent = `Total : ${eqtdTotal}h éq. TD`;
         if (eqtdTotal > tService) {
             profSummary.textContent += ` (${eqtdTotal - tService}HC)`;
         }
@@ -584,6 +635,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Handle availability table
     const table = document.querySelector('table');
     const tableCells = Array.from(document.querySelectorAll('td'));
+    const dispoCheck = document.querySelector('input#dispo-check');
+    let noIndispo = true;
+    dispoCheck.addEventListener('change', () => {
+        if (dispoCheck.checked) {
+            noIndispo = true;
+        } else {
+            noIndispo = false;
+        }
+    });
     for (let tc of tableCells) {
         function showRed() {
             tc.style.backgroundColor = '#ffe6e6';
@@ -600,8 +660,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const hour = tc.parentNode.firstElementChild.textContent;
             if (!tc.classList.contains('selected')) {
                 tc.classList.toggle('selected');
-                // tc.textContent = '✅';
-                // tc.style.backgroundColor = 'rgb(214, 245, 214)';
                 tc.style.backgroundColor = '#ffe6e6';
                 tc.textContent = '❌';
                 const dispo = {};
@@ -609,13 +667,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 dispo.hour = hour;
                 tc.addEventListener('mouseover', showGreen);
                 tc.addEventListener('mouseout', showRed);
-                // tc.addEventListener('mouseover', showRed);
-                // tc.addEventListener('mouseout', showGreen);
                 saveDispo(dispo);
             } else {
                 tc.classList.toggle('selected');
-                // tc.removeEventListener('mouseover', showRed);
-                // tc.removeEventListener('mouseout', showGreen);
                 tc.removeEventListener('mouseover', showGreen);
                 tc.removeEventListener('mouseout', showRed);
                 tc.textContent = '';
@@ -625,7 +679,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 );
                 deleteDispo(dispo);
             }
-            console.log('Dispos: ', jsonFile.Dispos);
         });
     }
     function saveDispo(dispo) {
@@ -640,9 +693,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else if (jsonFile && jsonFile.Dispos) {
             jsonFile.Dispos.push(dispo);
         }
+        dispoCheck.checked = false;
+        noIndispo = false;
     }
     function deleteDispo(dispo) {
         const d = jsonFile.Dispos.indexOf(dispo);
         jsonFile.Dispos.splice(d, 1);
+        if (jsonFile.Dispos.length === 0) {
+            dispoCheck.checked = true;
+            noIndispo = true;
+        }
     }
 });

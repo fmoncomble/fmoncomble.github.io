@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const semestreSelect2 = document.getElementById('course-semestre-2');
     const courseSelect2 = document.getElementById('course-name-2');
     const courseModifyBtn = document.getElementById('course-modify-btn');
+    const courseCopyBtn = document.getElementById('course-copy-btn');
     const courseDeleteBtn = document.getElementById('course-delete-btn');
     const saveChangesBtn = document.getElementById('save-changes-btn');
     const profList = document.getElementById('prof-list');
@@ -307,12 +308,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (customHc) {
             newProf.hc = customHc;
         }
-        //  else {
-        //     newProf = {
-        //         name: profAddInput.value,
-        //         status: profStatusSelect.value,
-        //     };
-        // }
         const checkProf = teacherData.find(
             (t) => t.name === profAddInput.value
         );
@@ -397,6 +392,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 displayProfs(update);
             }
         }
+        document.getElementById('prof-add').firstElementChild.textContent =
+            'Ajouter un·e enseignant·e :';
         profModify = false;
         if (profAddBtn.textContent === 'Modifier') {
             profAddBtn.textContent = 'Ajouter';
@@ -418,6 +415,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         profCancelBtn.disabled = true;
         profAddBtn.textContent = 'Ajouter';
+        document.getElementById('prof-add').firstElementChild.textContent =
+            'Ajouter un·e enseignant·e :';
         profModify = false;
     });
 
@@ -426,6 +425,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         modifyProf();
     });
     function modifyProf() {
+        document.getElementById('prof-add').firstElementChild.textContent =
+            "Modifier l'enseignant·e :";
         const oldProfName = profDeleteInput.value;
         if (!oldProfName) {
             window.alert("Entrez le nom de l'enseignant·e à modifier");
@@ -526,6 +527,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (e.key === 'Escape') {
             volumeSelect.value = 13;
             volumeInput.disabled = true;
+        } else if (e.key === 'Enter') {
+            addCourse();
         }
     });
     formatSelect.addEventListener('change', () => {
@@ -614,6 +617,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let id;
     let courseModify = false;
+    let courseCopy = false;
     function addCourse() {
         const format = formatSelect.value;
         let volume = Number(volumeSelect.value);
@@ -729,6 +733,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         }
                         elt.removeAttribute('style');
                     }
+                    volumeInput.disabled = true;
                     courseChanged = true;
                     getCourseIds();
                     compareData();
@@ -751,6 +756,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         }
                         elt.removeAttribute('style');
                     }
+                    volumeInput.disabled = true;
                     dialog.remove();
                     return;
                 };
@@ -790,6 +796,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             buildCourseList();
             updateDisplay(newCourse);
         }
+        document.getElementById('course-add').firstElementChild.textContent =
+            'Ajouter un cours :';
         courseModify = false;
     }
 
@@ -806,9 +814,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             elt.removeAttribute('style');
         }
+        volumeInput.disabled = true;
         courseAddBtn.textContent = 'Ajouter';
         courseCancelBtn.disabled = true;
         courseModify = false;
+        courseCopy = false;
+        document.getElementById(
+            'course-add'
+        ).firstElementChild.textContent = 'Ajouter un cours :';
     });
 
     // Course sorting functions
@@ -828,8 +841,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         return intA.localeCompare(intB);
     }
 
-    // Modify course
+    // Modify or copy course
     courseModifyBtn.addEventListener('click', () => {
+        courseCopy = false;
+        courseModify = true;
+        modifyCourse();
+    });
+    courseCopyBtn.addEventListener('click', () => {
+        courseCopy = true;
+        courseModify = false;
         modifyCourse();
     });
     function modifyCourse() {
@@ -850,23 +870,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             volumeSelect.value = oldCourse.volume;
         }
-        id = oldCourse.id;
+        if (courseModify) {
+            document.getElementById(
+                'course-add'
+            ).firstElementChild.textContent = 'Modifier le cours :';
+            courseAddBtn.textContent = 'Modifier';
+            id = oldCourse.id;
+        } else if (courseCopy) {
+            document.getElementById(
+                'course-add'
+            ).firstElementChild.textContent = 'Copier le cours :';
+            courseAddBtn.textContent = 'Ajouter';
+        }
         if (oldCourse.nbgrp) {
             grpInput.value = oldCourse.nbgrp;
         } else {
             adjustGrpNb();
         }
         eqtdInput.value = oldCourse.eqtd;
-        courseAddBtn.textContent = 'Modifier';
         const elts = Array.from(
             document
                 .getElementById('course-add')
                 .querySelectorAll('select, input')
         );
         for (let elt of elts) {
-            elt.style.backgroundColor = '#e9fce9';
+            if (courseModify) {
+                elt.style.backgroundColor = '#e9fce9';
+            } else if (courseCopy) {
+                elt.style.backgroundColor = '#e6f5ff';
+            }
         }
-        courseModify = true;
+        // courseModify = true;
         courseInput.focus();
         courseCancelBtn.disabled = false;
     }

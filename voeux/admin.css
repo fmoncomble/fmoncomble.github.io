@@ -174,3 +174,8 @@ td {
     padding: 5px 10px;
     border-radius: 4px;
 }
+
+button#save-btn {
+    text-align: center;
+    width: 110px;
+}

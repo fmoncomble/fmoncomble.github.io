@@ -106,7 +106,11 @@
                                 <option value="" disabled selected></option>
                             </select>
                         </label>
-                        <span id="meef-warning" style="display: none">⚠️ MEEF : pour les cours rémunérés en heures CM <span>et</span> TD, pensez à ajouter les <span>deux</span> lignes.</span>
+                        <span id="meef-warning" style="display: none"
+                            >⚠️ MEEF : pour les cours rémunérés en heures CM
+                            <span>et</span> TD, pensez à ajouter les
+                            <span>deux</span> lignes.</span
+                        >
                     </div>
                     <div id="save" class="wishes-ui">
                         <div
@@ -125,15 +129,18 @@
                     <div id="added-courses" class="wishes-ui">
                         <b
                             >Enseignements enregistrés (Total :
-                            <span id="hTotal">0 </span><span id="hc"></span
-                            >)</b
+                            <span id="hTotal">0 </span><span id="hc"></span>)</b
                         >
                         <br />
                         <div id="added-courses-list"></div>
                     </div>
                     <dialog id="confirm-dialog">
                         <b>Récapitulatif :</b><br />
+                        <p>Enseignements :</p>
                         <div id="summary"></div>
+                        <p>Indisponibilités :</p>
+                        <div id="indispos"></div>
+                        <br />
                         <div id="prof-summary"></div>
                         <br /><br />
                         <div style="text-align: center">
@@ -145,7 +152,8 @@
                         </div>
                     </dialog>
                     <dialog id="missing-info">
-                        <div>Complétez les informations manquantes</div>
+                        <div>Complétez les informations manquantes :</div>
+                        <div id="missing-info-id"></div>
                         <button id="missing-ok-btn" class="wishes-ui">
                             OK
                         </button>
@@ -190,7 +198,24 @@
                                 <p>Pour le supprimer, cliquez sur le ❌.</p>
                             </li>
                             <li>
-                                <p>Le volume horaire de votre service est ajusté en temps réel : en <span style="color: orange; font-weight: bold">orange</span> s'il est insuffisant, <span style="color: green; font-weight: bold">vert</span> s'il est conforme, <span style="color: red; font-weight: bold">rouge</span> s'il dépasse la limite autorisée.</p>
+                                <p>
+                                    Le volume horaire de votre service est
+                                    ajusté en temps réel : en
+                                    <span
+                                        style="color: orange; font-weight: bold"
+                                        >orange</span
+                                    >
+                                    s'il est insuffisant,
+                                    <span
+                                        style="color: green; font-weight: bold"
+                                        >vert</span
+                                    >
+                                    s'il est conforme,
+                                    <span style="color: red; font-weight: bold"
+                                        >rouge</span
+                                    >
+                                    s'il dépasse la limite autorisée.
+                                </p>
                             </li>
                         </ul>
                     </li>
@@ -244,6 +269,19 @@
                     <h2>
                         2. Sélectionner les plages horaires d'indisponibilité :
                     </h2>
+                </div>
+                <br />
+                <div>
+                    <label for="dispo-check" class="dispo-check">
+                        <input
+                            type="checkbox"
+                            id="dispo-check"
+                            class="dispo-check"
+                            name="dispo-check"
+                            checked
+                        />
+                        Aucune indisponibilité
+                    </label>
                 </div>
                 <br />
                 <div>

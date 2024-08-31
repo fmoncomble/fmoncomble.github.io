@@ -282,16 +282,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             noBtn.textContent = 'Non';
             yesBtn.addEventListener('click', async () => {
                 eraseDialog.remove();
+                const btnText = saveChangesBtn.firstChild;
                 const saveSpinner = document.getElementById('save-spinner');
+                btnText.textContent = null;
                 saveSpinner.style.display = 'inline-block';
                 const success = await saveFile(servicesFile);
-                saveSpinner.style.display = 'none';
                 if (success) {
+                    saveSpinner.style.display = 'none';
+                    btnText.textContent = '✔︎';
                     saveBtn.style.backgroundColor = 'green';
                 }
                 setTimeout(() => {
                     saveBtn.removeAttribute('style');
-                    saveBtn.classList.toggle('danger-btn');
+                    btnText.textContent = 'Synchroniser';
                     saveBtn.style.display = 'none';
                 }, 1000);
             });
@@ -305,16 +308,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.body.appendChild(eraseDialog);
             eraseDialog.showModal();
         } else {
+            // const saveSpinner = document.getElementById('save-spinner');
+            // saveSpinner.style.display = 'inline-block';
+            // const success = await saveFile(servicesFile);
+            // saveSpinner.style.display = 'none';
+            // if (success) {
+            //     saveBtn.style.backgroundColor = 'green';
+            // }
+            // setTimeout(() => {
+            //     saveBtn.removeAttribute('style');
+            //     saveBtn.classList.toggle('danger-btn');
+            //     saveBtn.style.display = 'none';
+            // }, 1000);
+            const btnText = saveBtn.firstChild;
             const saveSpinner = document.getElementById('save-spinner');
+            btnText.textContent = null;
             saveSpinner.style.display = 'inline-block';
             const success = await saveFile(servicesFile);
-            saveSpinner.style.display = 'none';
             if (success) {
+                saveSpinner.style.display = 'none';
+                btnText.textContent = '✔︎';
                 saveBtn.style.backgroundColor = 'green';
             }
             setTimeout(() => {
                 saveBtn.removeAttribute('style');
-                saveBtn.classList.toggle('danger-btn');
+                btnText.textContent = 'Synchroniser';
                 saveBtn.style.display = 'none';
             }, 1000);
         }
@@ -535,6 +553,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const colHeaders = rows[0].getElementsByTagName('th');
             const profDispos = profFromFile.Dispos;
             if (profDispos && profDispos.length > 0) {
+                dispoDiv.querySelector('div').textContent =
+                    'Indisponibilités :';
                 const cells = dispoTable.getElementsByTagName('td');
                 for (let c of cells) {
                     c.textContent = '';
@@ -556,14 +576,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                         }
                     }
                     const dCell = rows[rowIndex].cells[colIndex];
-                    // dCell.style.backgroundColor = 'rgb(214, 245, 214)';
-                    // dCell.textContent = '✅';
                     dCell.style.backgroundColor = '#ffe6e6';
                     dCell.textContent = '❌';
                 }
                 dispoDiv.style.display = 'block';
             } else {
-                dispoDiv.style.display = 'none';
+                dispoDiv.querySelector('div').textContent =
+                    'Aucune indisponibilité';
+                const cells = dispoTable.getElementsByTagName('td');
+                for (let c of cells) {
+                    c.textContent = null;
+                    c.removeAttribute('style');
+                }
+                dispoDiv.style.display = 'block';
             }
         }
     }
@@ -695,15 +720,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         const semestre = semestreSelect.value;
         buildCourseList(filière, semestre, null);
     });
+
+    // Handle teacher selection
+    const profInput = document.getElementById('prof-input');
+    const profList = document.getElementById('prof-list');
     const checkProfBtn = document.getElementById('check-prof-btn');
     checkProfBtn.addEventListener('click', () => {
         const prof = profInput.value;
         buildCourseList(null, null, prof);
     });
-
-    // Handle teacher selection
-    const profInput = document.getElementById('prof-input');
-    const profList = document.getElementById('prof-list');
+    profInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const prof = profInput.value;
+            buildCourseList(null, null, prof);
+        }
+    });
+    profInput.addEventListener('click', () => {
+        profInput.value = null;
+    });
     async function getProfFile() {
         try {
             const url =

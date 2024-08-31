@@ -108,3 +108,13 @@ span#meef-warning {
 span#meef-warning span {
     text-decoration: underline double;
 }
+
+.dispo-check {
+    vertical-align: middle;
+    display: inline-block;
+}
+
+input#dispo-check {
+    height: 2em;
+    width: 2em;
+}
