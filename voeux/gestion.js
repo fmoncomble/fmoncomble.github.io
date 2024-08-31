@@ -1328,7 +1328,7 @@ Cette opération est irréversible.`;
         const yesBtn = document.createElement('button');
         yesBtn.textContent = 'Oui';
         yesBtn.classList.add('wishes-ui', 'danger-btn');
-        yesBtn.addEventListener('click', () => {
+        yesBtn.addEventListener('click', async () => {
             if (e === 'profs') {
                 teacherData = [];
                 profChanged = true;
@@ -1338,14 +1338,30 @@ Cette opération est irréversible.`;
                 courseChanged = true;
                 buildCourseList();
             }
-            saveChanges();
             dialog.remove();
+            await saveChanges();
+            const dangerBtns = dangerZone.querySelectorAll('button');
+            for (let dB of dangerBtns) {
+                if (dB.style.display === 'none') {
+                    dB.style.display = 'inline-block';
+                } else {
+                    dB.style.display = 'none';
+                }
+            }
         });
         const noBtn = document.createElement('button');
         noBtn.textContent = 'Non';
         noBtn.classList.add('wishes-ui');
         noBtn.addEventListener('click', () => {
             dialog.remove();
+            const dangerBtns = dangerZone.querySelectorAll('button');
+            for (let dB of dangerBtns) {
+                if (dB.style.display === 'none') {
+                    dB.style.display = 'inline-block';
+                } else {
+                    dB.style.display = 'none';
+                }
+            }
         });
         dialog.appendChild(div);
         dialog.appendChild(yesBtn);
