@@ -1203,7 +1203,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         let result = totalService.toFixed(2);
         totalService = Number(parseFloat(result));
-        // totalService = Number(totalService);
         return [baseService, totalService];
     }
 
@@ -1322,6 +1321,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
 
                 // Append summary lines to the worksheet data
+                let volSum = 0;
+                let eqtdSum = 0;
+                teacherCourses.forEach((course) => {
+                    volSum += course.Volume;
+                    eqtdSum += course.EqTD;
+                });
+                const result = eqtdSum.toFixed(2);
+                eqtdSum = Number(parseFloat(result));
+                worksheetData.push({
+                    Enseignant: '',
+                    Filière: '',
+                    Semestre: '',
+                    Format: `Total`,
+                    Intitulé: '',
+                    Volume: `${volSum}h`,
+                    EqTD: `${eqtdSum}h éq. TD`,
+                })
                 for (const format in formatSums) {
                     if (formatSums.hasOwnProperty(format)) {
                         worksheetData.push({
