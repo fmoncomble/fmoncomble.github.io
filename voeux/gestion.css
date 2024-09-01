@@ -94,10 +94,18 @@ button.wishes-ui {
 
 .wrapper {
     display: flex;
+    flex-direction: column;
+    max-width: 99%;
+}
+
+@media (min-aspect-ratio: 1/1) {
+    .wrapper {
+        flex-direction: row;
+    }
 }
 
 .container {
-    width: 50%;
+    min-width: 50%;
 }
 
 .show-hide {

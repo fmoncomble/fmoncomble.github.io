@@ -595,9 +595,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             indisposDiv.appendChild(dayList);
         }
-        eqtdTotal = Number(
-            parseFloat(Number(eqtdTotal).toFixed(2)).toString()
-        );
+        eqtdTotal = Number(parseFloat(Number(eqtdTotal).toFixed(2)).toString());
         const profSummary = document.getElementById('prof-summary');
         profSummary.textContent = `Total : ${eqtdTotal}h éq. TD`;
         if (eqtdTotal > tService) {
@@ -657,6 +655,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             noIndispo = false;
         }
     });
+    // Adapt availability table depending on screen size
+    const mediaQuery = window.matchMedia('(max-aspect-ratio: 1/1)');
+    function adaptToScreen(e) {
+        if (e.matches) {
+            const tableHeaders = Array.from(document.querySelectorAll('th'));
+            for (let i = 1; i < 6; i++) {
+                tableHeaders[i].textContent =
+                    tableHeaders[i].textContent.slice(0, 2) + '.';
+            }
+            for (let i = 5; i < 17; i++) {
+                tableHeaders[i].textContent = tableHeaders[i].textContent
+                    .replaceAll('h', '')
+                    .replaceAll(' ', '');
+            }
+        }
+    }
+    mediaQuery.addEventListener('change', adaptToScreen);
+    adaptToScreen(mediaQuery);
+
     for (let tc of tableCells) {
         function showRed() {
             tc.style.backgroundColor = '#ffe6e6';

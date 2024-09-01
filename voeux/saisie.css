@@ -2,6 +2,8 @@ html,
 body {
     background-color: #c4d0e6;
     max-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 h1 {
@@ -9,9 +11,17 @@ h1 {
 }
 
 .wrapper {
+    position: relative;
     display: flex;
-    width: 100%;
+    flex-direction: column;
+    width: 99%;
     height: 100%;
+}
+
+@media (min-aspect-ratio: 1/1) {
+    .wrapper {
+        flex-direction: row;
+    }
 }
 
 h2 {
@@ -21,7 +31,12 @@ h2 {
 }
 
 .container {
-    width: 50%;
+    min-width: 50%;
+}
+
+.token-input {
+    min-width: auto !important;
+    max-width: 50%;
 }
 
 div#added-courses-list {

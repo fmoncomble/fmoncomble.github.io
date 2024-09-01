@@ -21,6 +21,18 @@ div#file-exist {
     text-align: center;
 }
 
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: 99%;
+}
+
+@media (min-aspect-ratio: 1/1) {
+    .wrapper {
+        flex-direction: row;
+    }
+}
+
 label#file-input-label {
     height: 32px;
     border: none;
@@ -70,12 +82,8 @@ h2 {
     border-radius: 4px;
 }
 
-.wrapper {
-    display: flex;
-}
-
 .container {
-    width: 50%;
+    min-width: 50%;
 }
 
 .spinner {
