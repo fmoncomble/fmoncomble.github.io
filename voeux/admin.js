@@ -1054,6 +1054,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     }
+    filièreSelect3.addEventListener('change', () => {
+        buildCourseDeleteSelect();
+    });
     semestreSelect3.addEventListener('change', () => {
         buildCourseDeleteSelect();
     });
