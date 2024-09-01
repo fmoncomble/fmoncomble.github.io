@@ -52,7 +52,7 @@
                         <button id="add-btn" class="wishes-ui">Ajouter</button
                         ><button id="replace-btn" class="wishes-ui">
                             Remplacer</button
-                        ><button id="cancel-btn" class="wishes-ui">
+                        ><button id="cancel-btn" class="wishes-ui reset-btn">
                             Annuler
                         </button>
                     </dialog>
@@ -276,7 +276,10 @@
                             </button>
                             <button id="save-changes-btn" class="wishes-ui">
                                 Synchroniser
-                                <span id="save-chg-spinner" class="spinner"></span>
+                                <span
+                                    id="save-chg-spinner"
+                                    class="spinner"
+                                ></span>
                             </button>
                         </div>
                     </div>
@@ -301,8 +304,8 @@
             <div id="container-2" class="container">
                 <div>
                     <div><h2>Vérifier les données</h2></div>
-                    <div class="wrapper">
-                        <div class="container">
+                    <div class="data-wrapper">
+                        <div class="data-container">
                             <div><b>Par formation :</b></div>
                             <div>
                                 <select id="filière-select" class="wishes-ui">
@@ -358,7 +361,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="container">
+                        <div class="data-container">
                             <div><b>Par enseignant·e :</b></div>
                             <div>
                                 <input
@@ -375,14 +378,14 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="container">
+                        <div class="data-container">
                             <div><b>Problèmes :</b></div>
                             <button id="pb-btn" class="wishes-ui pb-btn">
                                 Afficher
                             </button>
                         </div>
                     </div>
-                    <div id="course-list">
+                    <!-- <div id="course-list">
                         <div id="course-item" style="display: none">
                             <span class="course-name" id="course-name"></span
                             ><br />
@@ -395,126 +398,146 @@
                                 <span id="course-number"></span
                             ></span>
                         </div>
-                    </div>
-                    <br />
-                    <div id="dispos" style="display: none">
-                        <div>
-                            <b>Indisponibilités :</b>
+                    </div> -->
+                    <div id="course-list-container">
+                        <div id="close-course-list">❌</div>
+                        <ul id="course-list">
+                            <li id="course-item" style="display: none">
+                                <span
+                                    class="course-name"
+                                    id="course-name"
+                                ></span
+                                ><br />
+                                <span id="course-teachers-span"
+                                    >Enseignants :
+                                    <span id="course-teachers"></span><br
+                                /></span>
+                                <span id="course-number-span"
+                                    >Nombre de cours assurés :
+                                    <span id="course-number"></span
+                                ></span>
+                            </li>
+                        </ul>
+                        <br />
+                        <div id="dispos" style="display: none">
+                            <div>
+                                <b>Indisponibilités :</b>
+                            </div>
+                            <table>
+                                <tr>
+                                    <th></th>
+                                    <th>Lundi</th>
+                                    <th>Mardi</th>
+                                    <th>Mercredi</th>
+                                    <th>Jeudi</th>
+                                    <th>Vendredi</th>
+                                </tr>
+                                <tr>
+                                    <th>8h - 9h</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>9h - 10h</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>10h - 11h</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>11h - 12h</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>12h - 13h</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>13h - 14h</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>14h - 15h</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>15h - 16h</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>16h - 17h</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>17h - 18h</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>18h - 19h</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </table>
                         </div>
-                        <table>
-                            <tr>
-                                <th></th>
-                                <th>Lundi</th>
-                                <th>Mardi</th>
-                                <th>Mercredi</th>
-                                <th>Jeudi</th>
-                                <th>Vendredi</th>
-                            </tr>
-                            <tr>
-                                <th>8h - 9h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>9h - 10h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>10h - 11h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>11h - 12h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>12h - 13h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>13h - 14h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>14h - 15h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>15h - 16h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>16h - 17h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>17h - 18h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>18h - 19h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </table>
                     </div>
                     <br />
                 </div>
-                <div id="danger-zone" class="danger-zone">
-                    <h2 class="section-header" id="danger-zone-header">
-                        <span class="danger-span">⚠️ Danger zone ⚠️</span>
-                    </h2>
-                    <div>
-                        <button
-                            id="erase-services-btn"
-                            class="danger-btn wishes-ui"
-                            style="display: none"
-                        >
-                            Ecraser le fichier de services
-                        </button>
-                    </div>
+            </div>
+            <div id="danger-zone" class="danger-zone">
+                <h2 class="section-header" id="danger-zone-header">
+                    <span class="danger-span">⚠️ Danger zone ⚠️</span>
+                </h2>
+                <div>
+                    <button
+                        id="erase-services-btn"
+                        class="danger-btn wishes-ui"
+                        style="display: none"
+                    >
+                        Ecraser le fichier de services
+                    </button>
                 </div>
             </div>
         </div>

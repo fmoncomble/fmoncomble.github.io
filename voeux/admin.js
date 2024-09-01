@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             voeux = decoder.decode(bytes);
             servicesFile = JSON.parse(voeux);
             if (servicesFile.length === 0) {
-                fileExist.textContent += `(le fichier est vide)`
+                fileExist.textContent += `(le fichier est vide)`;
             }
             const actionChoiceDiv = document.getElementById('action-choice');
             actionChoiceDiv.style.display = 'block';
@@ -139,6 +139,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    const fileName = document.getElementById('file-name');
+    let ok = false;
     // Listen to erase button ('Écraser')
     eraseBtn.addEventListener('click', () => {
         if (!files) {
@@ -156,10 +158,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             const noBtn = document.createElement('button');
             noBtn.classList.add('wishes-ui');
             noBtn.textContent = 'Non';
-            yesBtn.addEventListener('click', () => {
+            yesBtn.addEventListener('click', async () => {
                 servicesFile = [];
-                compileWishes();
                 eraseDialog.remove();
+                ok = await compileWishes();
+                if (ok) {
+                    compileBtn.style.backgroundColor = 'green';
+                    setTimeout(() => {
+                        compileBtn.removeAttribute('style');
+                        fileName.textContent = null;
+                    }, 1000);
+                }
             });
             noBtn.addEventListener('click', () => {
                 eraseDialog.remove();
@@ -175,7 +184,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load individual wish files
     let files;
     fileInput.addEventListener('change', () => {
-        const fileName = document.getElementById('file-name');
         const fileList = [];
         files = fileInput.files;
         for (let f of files) {
@@ -204,67 +212,91 @@ document.addEventListener('DOMContentLoaded', async () => {
             );
             return;
         }
-        for (let i = 0; i < files.length; i++) {
-            const newJson = await readWishes(files[i]);
-            const prof = newJson.Name;
-            const cours = newJson.Cours;
-            const existingProf = servicesFile.find((s) => s.Name === prof);
-            if (existingProf) {
-                const dialog = document.getElementById('existing-prof-dialog');
-                const thisDialog = dialog.cloneNode(true);
-                const profIdSpan = thisDialog.querySelector('#prof-id');
-                profIdSpan.textContent = prof;
-                const addBtn = thisDialog.querySelector('#add-btn');
-                const replaceBtn = thisDialog.querySelector('#replace-btn');
-                const cancelBtn = thisDialog.querySelector('#cancel-btn');
-                addBtn.onclick = () => {
-                    cours.forEach((c) => {
-                        existingProf.Cours.push(c);
-                    });
-                    existingProf.Cours.sort(sortByInt);
-                    existingProf.Cours.sort(sortBySem);
-                    existingProf.Cours.sort(sortByFil);
-                    if (i === files.length - 1) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let cancels = 0;
+                for (let i = 0; i < files.length; i++) {
+                    const newJson = await readWishes(files[i]);
+                    const prof = newJson.Name;
+                    const cours = newJson.Cours;
+                    const existingProf = servicesFile.find(
+                        (s) => s.Name === prof
+                    );
+                    if (existingProf) {
+                        const dialog = document.getElementById(
+                            'existing-prof-dialog'
+                        );
+                        const thisDialog = dialog.cloneNode(true);
+                        const profIdSpan = thisDialog.querySelector('#prof-id');
+                        profIdSpan.textContent = prof;
+                        const addBtn = thisDialog.querySelector('#add-btn');
+                        const replaceBtn =
+                            thisDialog.querySelector('#replace-btn');
+                        const cancelBtn =
+                            thisDialog.querySelector('#cancel-btn');
+                        addBtn.onclick = () => {
+                            cours.forEach((c) => {
+                                existingProf.Cours.push(c);
+                            });
+                            existingProf.Cours.sort(sortByInt);
+                            existingProf.Cours.sort(sortBySem);
+                            existingProf.Cours.sort(sortByFil);
+                            thisDialog.remove();
+                            if (i === 0) {
+                                saveBtn.style.display = 'inline-block';
+                                resolve(true);
+                            }
+                        };
+                        replaceBtn.onclick = () => {
+                            const index = servicesFile.indexOf(existingProf);
+                            servicesFile.splice(index, 1, newJson);
+                            thisDialog.remove();
+                            if (i === 0) {
+                                saveBtn.style.display = 'inline-block';
+                                resolve(true);
+                            }
+                        };
+                        cancelBtn.onclick = () => {
+                            cancels++;
+                            thisDialog.remove();
+                            if (cancels === files.length) {
+                                resolve(false);
+                            } else if (i === 0) {
+                                saveBtn.style.display = 'inline-block';
+                                resolve(true);
+                            }
+                        };
+                        document.body.appendChild(thisDialog);
+                        thisDialog.showModal();
+                    } else {
+                        servicesFile.push(newJson);
+                        servicesFile.sort((a, b) => {
+                            const intA = a.Name.split(' ')[1].toLowerCase();
+                            const intB = b.Name.split(' ')[1].toLowerCase();
+                            return intA.localeCompare(intB);
+                        });
                         saveBtn.style.display = 'inline-block';
+                        resolve(true);
                     }
-                    thisDialog.remove();
-                };
-                replaceBtn.onclick = () => {
-                    const index = servicesFile.indexOf(existingProf);
-                    servicesFile.splice(index, 1, newJson);
-                    if (i === files.length - 1) {
-                        saveBtn.style.display = 'inline-block';
-                    }
-                    thisDialog.remove();
-                };
-                cancelBtn.onclick = () => {
-                    thisDialog.remove();
-                };
-                document.body.appendChild(thisDialog);
-                thisDialog.showModal();
-            } else {
-                servicesFile.push(newJson);
-                servicesFile.sort((a, b) => {
-                    const intA = a.Name.split(' ')[1].toLowerCase();
-                    const intB = b.Name.split(' ')[1].toLowerCase();
-                    if (intA < intB) {
-                        return -1;
-                    }
-                    if (intA > intB) {
-                        return 1;
-                    }
-                    return 0;
-                });
-                saveBtn.style.display = 'inline-block';
+                }
+            } catch (error) {
+                reject(error);
             }
-        }
-        compileBtn.style.backgroundColor = 'green';
-        setTimeout(() => {
-            compileBtn.removeAttribute('style');
-        }, 1000);
+        });
     }
 
-    compileBtn.addEventListener('click', async () => compileWishes());
+    compileBtn.addEventListener('click', async () => {
+        ok = await compileWishes();
+        if (ok) {
+            compileBtn.style.backgroundColor = 'green';
+            setTimeout(() => {
+                compileBtn.removeAttribute('style');
+                fileName.textContent = null;
+            }, 1000);
+        } else if (!ok) {
+            fileName.textContent = null;
+        }
+    });
 
     // Logic to save/update services file
     saveBtn.addEventListener('click', async () => {
@@ -376,7 +408,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Function to display list of courses
+    const courseListContainer = document.getElementById(
+        'course-list-container'
+    );
+    const closeBtn = document.getElementById('close-course-list');
+    closeBtn.addEventListener('click', () => {
+        courseListContainer.style.display = 'none';
+    });
     async function buildCourseList(filière, semestre, prof) {
+        courseListContainer.style.display = 'block';
+        const serviceDiv = document.getElementById('service-div');
+        if (serviceDiv) {
+            serviceDiv.remove();
+        }
         const courseItemArray = Array.from(courseList.children);
         for (let i = 1; i < courseItemArray.length; i++) {
             courseItemArray[i].textContent;
@@ -421,68 +465,126 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const courseItems = new Set();
+        let courseIndex = 1;
         for (let c of courses) {
             const courseId = c.id;
             let newItem;
             let courseTeachers;
             let reqNb = Number(c.nbgrp);
-            const courseNb = courses.filter(
-                (i) =>
-                    i.filière === c.filière &&
-                    i.semestre === c.semestre &&
-                    i.intitulé === c.intitulé
-            ).length;
-            const totalCourseNb = courses.filter(
-                (i) =>
-                    i.filière === c.filière &&
-                    i.semestre === c.semestre &&
-                    i.intitulé.split(' (')[0] === c.intitulé.split(' (')[0]
-            ).length;
+            const courseNb = courses.filter((i) => i.id === c.id).length;
+            const totalCourseNb = courses.filter((i) => i.id === c.id).length;
             if (!courseItems.has(courseId)) {
                 courseItems.add(courseId);
                 newItem = courseItem.cloneNode(true);
-                const courseName = newItem.querySelector('span#course-name');
-                courseTeachers = newItem.querySelector('span#course-teachers');
-                courseName.textContent = `${c.filière.toUpperCase()} — ${
-                    c.semestre
-                } — ${c.intitulé}`;
-                const teacherFirstName =
-                    c.teacher.split(' ')[0].split('')[0] + '.';
-                const teacherSurname = c.teacher.split(' ')[1];
-                courseTeachers.textContent =
-                    teacherFirstName + ' ' + teacherSurname;
-                const courseNumberSpan =
-                    newItem.querySelector('span#course-number');
-                courseNumberSpan.textContent = `${courseNb} / ${reqNb}`;
-                if (logic === 'course') {
-                    if (totalCourseNb < reqNb) {
-                        courseNumberSpan.style.color = 'orange';
-                        courseNumberSpan.textContent += ' ⚠️';
-                    } else if (totalCourseNb === reqNb) {
-                        courseNumberSpan.style.color = 'green';
-                        courseNumberSpan.textContent += ' ✅';
-                    } else if (totalCourseNb > reqNb) {
-                        courseNumberSpan.style.color = '#cc0000';
-                        courseNumberSpan.textContent += ' 🚨';
+                newItem.id = `course-item-${courseIndex}`;
+                courseIndex++;
+                const courseListElements = Array.from(
+                    courseList.querySelectorAll('li')
+                );
+                if (courseListElements) {
+                    const thisFHeader = courseListElements.find(
+                        (h) => h.textContent === c.filière.toUpperCase()
+                    );
+                    if (thisFHeader) {
+                        const sList = thisFHeader.nextElementSibling;
+                        if (sList) {
+                            const sHeaders = Array.from(
+                                sList.querySelectorAll('li')
+                            );
+                            if (sHeaders) {
+                                const thisSHeader = sHeaders.find(
+                                    (h) => h.textContent === c.semestre
+                                );
+                                if (thisSHeader) {
+                                    const cList =
+                                        thisSHeader.nextElementSibling;
+                                    if (cList) {
+                                        fillCourseInfo(cList, newItem);
+                                    }
+                                } else {
+                                    const newSHeader =
+                                        document.createElement('li');
+                                    newSHeader.textContent = c.semestre;
+                                    newSHeader.id = `${c.filière}-${c.semestre}-header`;
+                                    newSHeader.classList.add(
+                                        'course-list-header'
+                                    );
+                                    const cList = document.createElement('ul');
+                                    cList.id = `${c.filière}-${c.semestre}-list`;
+                                    fillCourseInfo(cList, newItem);
+                                    sList.appendChild(newSHeader);
+                                    sList.appendChild(cList);
+                                }
+                            }
+                        }
+                    } else {
+                        const newFHeader = document.createElement('li');
+                        newFHeader.textContent = c.filière.toUpperCase();
+                        newFHeader.id = `${c.filière}-header`;
+                        newFHeader.classList.add('course-list-header');
+                        const sList = document.createElement('ul');
+                        sList.id = `${c.filière}-list`;
+                        const newSHeader = document.createElement('li');
+                        newSHeader.id = `${c.filière}-${c.semestre}-header`;
+                        newSHeader.textContent = c.semestre;
+                        newSHeader.classList.add('course-list-header');
+                        const newCList = document.createElement('ul');
+                        newCList.id = `${c.filière}-${c.semestre}-list`;
+                        fillCourseInfo(newCList, newItem);
+                        sList.appendChild(newSHeader);
+                        sList.appendChild(newCList);
+                        courseList.appendChild(newFHeader);
+                        courseList.appendChild(sList);
                     }
                 }
-                if (logic === 'prof') {
-                    const courseTeachersSpan = newItem.querySelector(
-                        'span#course-teachers-span'
+                function fillCourseInfo(parent, newItem) {
+                    const courseName =
+                        newItem.querySelector('span#course-name');
+                    courseTeachers = newItem.querySelector(
+                        'span#course-teachers'
                     );
-                    courseTeachersSpan.remove();
+                    courseName.textContent = `${c.intitulé}`;
+                    const teacherFirstName =
+                        c.teacher.split(' ')[0].split('')[0] + '.';
+                    const teacherSurname = c.teacher.split(' ')[1];
+                    courseTeachers.textContent =
+                        teacherFirstName + ' ' + teacherSurname;
+                    const courseNumberSpan =
+                        newItem.querySelector('span#course-number');
+                    courseNumberSpan.textContent = `${courseNb} / ${reqNb}`;
+                    if (logic === 'course') {
+                        if (totalCourseNb < reqNb) {
+                            courseNumberSpan.style.color = 'orange';
+                            courseNumberSpan.textContent += ' ⚠️';
+                        } else if (totalCourseNb === reqNb) {
+                            courseNumberSpan.style.color = 'green';
+                            courseNumberSpan.textContent += ' ✅';
+                        } else if (totalCourseNb > reqNb) {
+                            courseNumberSpan.style.color = '#cc0000';
+                            courseNumberSpan.textContent += ' 🚨';
+                        }
+                    }
+                    if (logic === 'prof') {
+                        const courseTeachersSpan = newItem.querySelector(
+                            'span#course-teachers-span'
+                        );
+                        courseTeachersSpan.remove();
+                    }
+                    newItem.style.display = 'block';
+                    parent.appendChild(newItem);
                 }
-                courseList.appendChild(newItem);
-                newItem.style.display = 'block';
             } else if (courseItems.has(courseId)) {
-                const existingItem = Array.from(courseList.children).find(
+                const existingF = Array.from(courseList.children).find(
+                    (i) => i.textContent === c.filière.toUpperCase()
+                ).nextElementSibling;
+                const existingS = Array.from(existingF.children).find(
+                    (i) => i.textContent === c.semestre
+                ).nextElementSibling;
+                const existingItem = Array.from(existingS.children).find(
                     (item) => {
                         const courseName =
                             item.querySelector('span#course-name').textContent;
-                        return (
-                            courseName ===
-                            `${c.filière} — ${c.semestre} — ${c.intitulé}`
-                        );
+                        return courseName === `${c.intitulé}`;
                     }
                 );
                 if (logic === 'course') {
@@ -521,13 +623,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             const baseService = data[0];
             const totalService = data[1];
             const serviceDiv = document.createElement('div');
+            serviceDiv.id = 'service-div';
             serviceDiv.style.marginTop = '10px';
             serviceDiv.style.fontWeight = 'bold';
             serviceDiv.textContent = `Total : ${totalService}h éq. TD`;
             if (baseService !== Infinity) {
                 serviceDiv.textContent += ` / ${baseService}`;
                 if (totalService > baseService) {
-                    const nbHc = totalService - baseService;
+                    let nbHc = totalService - baseService;
+                    let result = nbHc.toFixed(2);
+                    nbHc = Number(parseFloat(result));
                     serviceDiv.textContent += ` (${nbHc} HC)`;
                 }
                 if (totalService === baseService) {
@@ -541,7 +646,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     serviceDiv.style.color = 'green';
                 }
             }
-            courseList.appendChild(serviceDiv);
+            courseList.after(serviceDiv);
             const dispoTable = dispoDiv.querySelector('table');
             const rows = dispoTable.getElementsByTagName('tr');
             const colHeaders = rows[0].getElementsByTagName('th');
@@ -589,6 +694,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Function to display problem courses
     function showPbCourses() {
+        courseListContainer.style.display = 'block';
+        const serviceDiv = document.getElementById('service-div');
+        if (serviceDiv) {
+            serviceDiv.remove();
+        }
+        dispoDiv.style.display = 'none';
         const courseItemArray = Array.from(courseList.children);
         for (let i = 1; i < courseItemArray.length; i++) {
             courseItemArray[i].textContent;
@@ -604,75 +715,114 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         for (let c of courseFile) {
             const courses = taughtCourses.filter((s) => s.id === c.id);
-            if (courses.length === 0 || courses.length > c.nbgrp) {
+            if (courses.length !== c.nbgrp) {
                 newPbItem = courseItem.cloneNode(true);
-                const pbCourseName = newPbItem.querySelector('#course-name');
-                pbCourseName.textContent = `${c.filière} — ${c.semestre} — ${c.intitulé}`;
-                const pbCourseTeachersSpan = newPbItem.querySelector(
-                    '#course-teachers-span'
+                const courseListElements = Array.from(
+                    courseList.querySelectorAll('li')
                 );
-                if (courses.length === 0) {
-                    pbCourseTeachersSpan.style.display = 'none';
-                } else if (courses.length > c.nbgrp) {
-                    let courseTeachers = [];
-                    const pbCourseTeachers =
-                        newPbItem.querySelector('#course-teachers');
-                    for (let s of servicesFile) {
-                        let sCours = s.Cours.filter((i) => i.id === c.id);
-                        if (sCours.length > 0) {
-                            sCours.forEach(() => courseTeachers.push(s.Name));
+                if (courseListElements) {
+                    const thisFHeader = courseListElements.find(
+                        (h) => h.textContent === c.filière.toUpperCase()
+                    );
+                    if (thisFHeader) {
+                        const sList = thisFHeader.nextElementSibling;
+                        if (sList) {
+                            const sHeaders = Array.from(
+                                sList.querySelectorAll('li')
+                            );
+                            if (sHeaders) {
+                                const thisSHeader = sHeaders.find(
+                                    (h) => h.textContent === c.semestre
+                                );
+                                if (thisSHeader) {
+                                    const cList =
+                                        thisSHeader.nextElementSibling;
+                                    if (cList) {
+                                        fillCourseInfo(cList, newPbItem);
+                                    }
+                                } else {
+                                    const newSHeader =
+                                        document.createElement('li');
+                                    newSHeader.textContent = c.semestre;
+                                    newSHeader.id = `${c.filière}-${c.semestre}-header`;
+                                    newSHeader.classList.add(
+                                        'course-list-header'
+                                    );
+                                    const cList = document.createElement('ul');
+                                    cList.id = `${c.filière}-${c.semestre}-list`;
+                                    fillCourseInfo(cList, newPbItem);
+                                    sList.appendChild(newSHeader);
+                                    sList.appendChild(cList);
+                                }
+                            }
                         }
-                    }
-                    let i = 1;
-                    for (let cT of courseTeachers) {
-                        let firstName = cT.split(' ')[0].split('')[0] + '.';
-                        let surName = cT.split(' ')[1];
-                        let fullName = `${firstName} ${surName}`;
-                        if (i === 1) {
-                            pbCourseTeachers.textContent = fullName;
-                        } else {
-                            pbCourseTeachers.textContent += `, ${fullName}`;
-                        }
-                        i++;
-                    }
-                }
-                const pbCourseNumber =
-                    newPbItem.querySelector('#course-number');
-                pbCourseNumber.textContent = `${courses.length}/${c.nbgrp} 🚨`;
-                pbCourseNumber.style.color = '#cc0000';
-                newPbItem.style.display = 'block';
-                courseList.appendChild(newPbItem);
-            } else if (courses.length < c.nbgrp) {
-                newPbItem = courseItem.cloneNode(true);
-                const pbCourseName = newPbItem.querySelector('#course-name');
-                pbCourseName.textContent = `${c.filière} — ${c.semestre} — ${c.intitulé}`;
-                let courseTeachers = [];
-                const pbCourseTeachers =
-                    newPbItem.querySelector('#course-teachers');
-                for (let s of servicesFile) {
-                    let sCours = s.Cours.filter((i) => i.id === c.id);
-                    if (sCours.length > 0) {
-                        sCours.forEach(() => courseTeachers.push(s.Name));
-                    }
-                }
-                let i = 1;
-                for (let cT of courseTeachers) {
-                    let firstName = cT.split(' ')[0].split('')[0] + '.';
-                    let surName = cT.split(' ')[1];
-                    let fullName = `${firstName} ${surName}`;
-                    if (i === 1) {
-                        pbCourseTeachers.textContent = fullName;
                     } else {
-                        pbCourseTeachers.textContent += `, ${fullName}`;
+                        const newFHeader = document.createElement('li');
+                        newFHeader.textContent = c.filière.toUpperCase();
+                        newFHeader.id = `${c.filière}-header`;
+                        newFHeader.classList.add('course-list-header');
+                        const sList = document.createElement('ul');
+                        sList.id = `${c.filière}-list`;
+                        const newSHeader = document.createElement('li');
+                        newSHeader.id = `${c.filière}-${c.semestre}-header`;
+                        newSHeader.textContent = c.semestre;
+                        newSHeader.classList.add('course-list-header');
+                        const newCList = document.createElement('ul');
+                        newCList.id = `${c.filière}-${c.semestre}-list`;
+                        fillCourseInfo(newCList, newPbItem);
+                        sList.appendChild(newSHeader);
+                        sList.appendChild(newCList);
+                        courseList.appendChild(newFHeader);
+                        courseList.appendChild(sList);
                     }
-                    i++;
                 }
-                const pbCourseNumber =
-                    newPbItem.querySelector('#course-number');
-                pbCourseNumber.textContent = `${courses.length}/${c.nbgrp} ⚠️`;
-                pbCourseNumber.style.color = 'orange';
-                newPbItem.style.display = 'block';
-                courseList.appendChild(newPbItem);
+                function fillCourseInfo(parent, newPbItem) {
+                    const pbCourseName =
+                        newPbItem.querySelector('#course-name');
+                    pbCourseName.textContent = `${c.intitulé}`;
+                    const pbCourseTeachersSpan = newPbItem.querySelector(
+                        '#course-teachers-span'
+                    );
+                    if (courses.length === 0) {
+                        pbCourseTeachersSpan.style.display = 'none';
+                    } else {
+                        let courseTeachers = [];
+                        const pbCourseTeachers =
+                            newPbItem.querySelector('#course-teachers');
+                        for (let s of servicesFile) {
+                            let sCours = s.Cours.filter((i) => i.id === c.id);
+                            if (sCours.length > 0) {
+                                sCours.forEach(() =>
+                                    courseTeachers.push(s.Name)
+                                );
+                            }
+                        }
+                        let i = 1;
+                        for (let cT of courseTeachers) {
+                            let firstName = cT.split(' ')[0].split('')[0] + '.';
+                            let surName = cT.split(' ')[1];
+                            let fullName = `${firstName} ${surName}`;
+                            if (i === 1) {
+                                pbCourseTeachers.textContent = fullName;
+                            } else {
+                                pbCourseTeachers.textContent += `, ${fullName}`;
+                            }
+                            i++;
+                        }
+                    }
+                    const pbCourseNumber =
+                        newPbItem.querySelector('#course-number');
+                    pbCourseNumber.textContent = `${courses.length}/${c.nbgrp}`;
+                    if (courses.length === 0 || courses.length > c.nbgrp) {
+                        pbCourseNumber.textContent += ` 🚨`;
+                        pbCourseNumber.style.color = '#cc0000';
+                    } else if (courses.length < c.nbgrp) {
+                        pbCourseNumber.textContent += ` ⚠️`;
+                        pbCourseNumber.style.color = 'orange';
+                    }
+                    newPbItem.style.display = 'block';
+                    parent.appendChild(newPbItem);
+                }
             }
         }
     }
@@ -1048,7 +1198,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         for (c of prof.Cours) {
             totalService += Number(c.eqtd);
         }
-        totalService = Number(totalService);
+        let result = totalService.toFixed(2);
+        totalService = Number(parseFloat(result));
+        // totalService = Number(totalService);
         return [baseService, totalService];
     }
 
