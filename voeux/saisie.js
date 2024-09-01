@@ -537,6 +537,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             missingInfoDialog.showModal();
             return;
         }
+        jsonFile.Cours.sort((a, b) => {
+            const intA = a.intitulé.toLowerCase();
+            const intB = b.intitulé.toLowerCase();
+            return intA.localeCompare(intB);
+        });
+        jsonFile.Cours.sort((a, b) => {
+            const semA = a.semestre.toLowerCase();
+            const semB = b.semestre.toLowerCase();
+            return semA.localeCompare(semB);
+        });
+        jsonFile.Cours.sort((a, b) => {
+            const filA = a.filière.toLowerCase();
+            const filB = b.filière.toLowerCase();
+            return filA.localeCompare(filB);
+        });
         const summaryDiv = document.getElementById('summary');
         summaryDiv.innerHTML = null;
         let volTotal = 0;
