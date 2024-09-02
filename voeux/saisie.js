@@ -642,20 +642,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     const yesBtn = document.getElementById('yes-btn');
     const noBtn = document.getElementById('no-btn');
 
-    yesBtn.onclick = () => {
-        const date = new Date().toISOString().split('-')[0];
-        const name = tName.replaceAll(' ', '_');
-        const myBlob = new Blob([JSON.stringify(jsonFile)], {
-            type: 'text/plain',
-        });
-        const url = window.URL.createObjectURL(myBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Vœux_${name}_${date}.json`;
-        a.click();
-        window.URL.revokeObjectURL(url);
-        confirmDialog.close();
+    yesBtn.onclick = async () => {
+        await downloadFile();
+        confirmDialog.innerHTML = null;
+        const doneDiv = document.createElement('div');
+        doneDiv.innerHTML =
+            'Votre fichier de vœux est prêt à être envoyé.<br>Pensez à vous déconnecter avant de quitter cette page.';
+        doneDiv.style.textAlign = 'center';
+        const okBtn = document.createElement('button');
+        okBtn.classList.add('wishes-ui');
+        okBtn.textContent = 'OK';
+        okBtn.onclick = () => {
+            confirmDialog.close();
+            location.reload();
+        };
+        confirmDialog.style.display = 'flex';
+        confirmDialog.style.flexDirection = 'column';
+        confirmDialog.appendChild(doneDiv);
+        confirmDialog.appendChild(okBtn);
     };
+    function downloadFile() {
+        return new Promise((resolve) => {
+            const date = new Date().toISOString().split('-')[0];
+            const name = tName.replaceAll(' ', '_');
+            const myBlob = new Blob([JSON.stringify(jsonFile)], {
+                type: 'text/plain',
+            });
+            const url = window.URL.createObjectURL(myBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Vœux_${name}_${date}.json`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            resolve();
+        });
+    }
     noBtn.onclick = () => {
         confirmDialog.close();
     };
@@ -665,11 +686,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tableCells = Array.from(document.querySelectorAll('td'));
     const dispoCheck = document.querySelector('input#dispo-check');
     let noIndispo = true;
+    let isGliding = false;
+
     dispoCheck.addEventListener('change', () => {
         if (dispoCheck.checked) {
             for (let tc of tableCells) {
-                tc.removeAttribute('style');
-                tc.textContent = null;
+                deselect(tc);
             }
             if (jsonFile && jsonFile.Dispos) {
                 jsonFile.Dispos = [];
@@ -679,6 +701,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             noIndispo = false;
         }
     });
+
     // Adapt availability table depending on screen size
     const mediaQuery = window.matchMedia('(max-aspect-ratio: 1/1)');
     function adaptToScreen(e) {
@@ -698,42 +721,73 @@ document.addEventListener('DOMContentLoaded', async () => {
     mediaQuery.addEventListener('change', adaptToScreen);
     adaptToScreen(mediaQuery);
 
+    function showRed() {
+        this.style.backgroundColor = '#ffe6e6';
+        this.textContent = '❌';
+    }
+    function showGreen() {
+        this.textContent = '✅';
+        this.style.backgroundColor = 'rgb(214, 245, 214)';
+    }
+    let isSelecting = false;
     for (let tc of tableCells) {
-        function showRed() {
-            tc.style.backgroundColor = '#ffe6e6';
-            tc.textContent = '❌';
-        }
-        function showGreen() {
-            tc.textContent = '✅';
-            tc.style.backgroundColor = 'rgb(214, 245, 214)';
-        }
-        tc.addEventListener('click', () => {
-            const index = tc.cellIndex;
-            const header = table.rows[0].cells[index];
-            const day = header.textContent;
-            const hour = tc.parentNode.firstElementChild.textContent;
-            if (!tc.classList.contains('selected')) {
-                tc.classList.toggle('selected');
-                tc.style.backgroundColor = '#ffe6e6';
-                tc.textContent = '❌';
-                const dispo = {};
-                dispo.day = day;
-                dispo.hour = hour;
-                tc.addEventListener('mouseover', showGreen);
-                tc.addEventListener('mouseout', showRed);
-                saveDispo(dispo);
-            } else {
-                tc.classList.toggle('selected');
-                tc.removeEventListener('mouseover', showGreen);
-                tc.removeEventListener('mouseout', showRed);
-                tc.textContent = '';
-                tc.removeAttribute('style');
-                const dispo = jsonFile.Dispos.find(
-                    (d) => d.day === day && d.hour === hour
-                );
-                deleteDispo(dispo);
+        const index = tc.cellIndex;
+        const header = table.rows[0].cells[index];
+        const day = header.textContent;
+        const hour = tc.parentNode.firstElementChild.textContent;
+        tc.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            if (e.button === 0) {
+                isGliding = true;
+                if (!tc.classList.contains('selected')) {
+                    isSelecting = true;
+                    select(tc, day, hour);
+                } else {
+                    isSelecting = false;
+                    deselect(tc, day, hour);
+                }
             }
         });
+        tc.addEventListener('mouseover', (e) => {
+            e.preventDefault();
+            if (e.button === 0 && isGliding) {
+                if (isSelecting) {
+                    select(tc, day, hour);
+                } else if (!isSelecting) {
+                    deselect(tc, day, hour);
+                }
+            }
+        });
+        window.addEventListener('mouseup', (e) => {
+            e.preventDefault();
+            isGliding = false;
+        });
+    }
+    function select(tc, day, hour) {
+        tc.classList.add('selected');
+        if (tc.classList.contains('selected')) {
+            tc.style.backgroundColor = '#ffe6e6';
+            tc.textContent = '❌';
+            const dispo = {};
+            dispo.day = day;
+            dispo.hour = hour;
+            tc.addEventListener('mouseover', showGreen);
+            tc.addEventListener('mouseout', showRed);
+            saveDispo(dispo);
+        }
+    }
+    function deselect(tc, day, hour) {
+        tc.classList.remove('selected');
+        tc.removeEventListener('mouseover', showGreen);
+        tc.removeEventListener('mouseout', showRed);
+        tc.textContent = '';
+        tc.removeAttribute('style');
+        if (day && hour) {
+            const dispo = jsonFile.Dispos.find(
+                (d) => d.day === day && d.hour === hour
+            );
+            deleteDispo(dispo);
+        }
     }
     function saveDispo(dispo) {
         if (!jsonFile) {
