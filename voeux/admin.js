@@ -543,7 +543,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     courseTeachers = newItem.querySelector(
                         'span#course-teachers'
                     );
-                    courseName.textContent = `${c.intitulé}`;
+                    courseName.textContent = `${c.intitulé} (${c.volume}h`;
+                    if (c.format !== 'TD') {
+                        courseName.textContent += ` ${c.format} = ${c.eqtd}h éq.`
+                    }
+                    courseName.textContent += ' TD)';
                     const teacherFirstName =
                         c.teacher.split(' ')[0].split('')[0] + '.';
                     const teacherSurname = c.teacher.split(' ')[1];
@@ -716,6 +720,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         for (let c of courseFile) {
             const courses = taughtCourses.filter((s) => s.id === c.id);
             if (courses.length !== c.nbgrp) {
+                console.log('Problem found for course: ', c);
                 newPbItem = courseItem.cloneNode(true);
                 const courseListElements = Array.from(
                     courseList.querySelectorAll('li')
@@ -779,7 +784,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 function fillCourseInfo(parent, newPbItem) {
                     const pbCourseName =
                         newPbItem.querySelector('#course-name');
-                    pbCourseName.textContent = `${c.intitulé}`;
+                    pbCourseName.textContent = `${c.intitulé} (${c.volume}h`;
+                    if (c.format !== 'TD') {
+                        pbCourseName.textContent += ` ${c.format} = ${c.eqtd}h éq.`
+                    }
+                    pbCourseName.textContent += ' TD)';
                     const pbCourseTeachersSpan = newPbItem.querySelector(
                         '#course-teachers-span'
                     );
