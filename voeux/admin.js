@@ -1238,35 +1238,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     function sortByFil(a, b) {
         const filA = a.filière.toLowerCase();
         const filB = b.filière.toLowerCase();
-        if (filA < filB) {
-            return -1;
-        }
-        if (filA > filB) {
-            return 1;
-        }
-        return 0;
+        return filA.localeCompare(filB);
     }
     function sortBySem(a, b) {
         const semA = a.semestre.toLowerCase();
         const semB = b.semestre.toLowerCase();
-        if (semA < semB) {
-            return -1;
-        }
-        if (semA > semB) {
-            return 1;
-        }
-        return 0;
+        return semA.localeCompare(semB);
     }
     function sortByInt(a, b) {
         const intA = a.intitulé.toLowerCase();
         const intB = b.intitulé.toLowerCase();
-        if (intA < intB) {
-            return -1;
-        }
-        if (intA > intB) {
-            return 1;
-        }
-        return 0;
+        return intA.localeCompare(intB);
     }
 
     // Function to flatten servicesFile and group by teacherName
@@ -1277,6 +1259,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 for (let s of servicesFile) {
                     const teacherName = s.Name;
                     const teacherCourses = s.Cours;
+                    teacherCourses.sort(sortByInt);
+                    teacherCourses.sort(sortBySem);
+                    teacherCourses.sort(sortByFil);
                     if (!groupedByTeacher[teacherName]) {
                         groupedByTeacher[teacherName] = [];
                     }
@@ -1303,24 +1288,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Function to generate and download XLSX file from grouped data
     async function makeXlsx() {
         const groupedData = await flattenJson();
-        const workbook = XLSX.utils.book_new();
+        const workbook = new ExcelJS.Workbook();
 
         // Iterate over each teacher and create a worksheet
         for (const teacherName in groupedData) {
             if (groupedData.hasOwnProperty(teacherName)) {
                 const teacherCourses = groupedData[teacherName];
-                const worksheetData = [...teacherCourses];
+                const worksheet = workbook.addWorksheet(teacherName);
 
-                // Calculate the sum of volumes for each format
-                const formatSums = {};
-                teacherCourses.forEach((course) => {
-                    if (!formatSums[course.Format]) {
-                        formatSums[course.Format] = 0;
-                    }
-                    formatSums[course.Format] += course.Volume;
+                worksheet.columns = [
+                    {
+                        header: 'Enseignant',
+                        key: 'Enseignant',
+                        width: teacherName.length + 1,
+                    },
+                    { header: 'Filière', key: 'Filière' },
+                    { header: 'Semestre', key: 'Semestre' },
+                    { header: 'Format', key: 'Format' },
+                    { header: 'Intitulé', key: 'Intitulé', width: 30 },
+                    { header: 'Volume', key: 'Volume' },
+                    { header: 'EqTD', key: 'EqTD' },
+                ];
+
+                const rows = teacherCourses.map((c) => [
+                    c.Enseignant,
+                    c.Filière,
+                    c.Semestre,
+                    c.Format,
+                    c.Intitulé,
+                    Number(c.Volume),
+                    Number(c.EqTD),
+                ]);
+
+                worksheet.addTable({
+                    name: `Table_${teacherName.replaceAll(/\s+/g, '_').replaceAll('-', '_')}`,
+                    ref: 'A1',
+                    style: {
+                        theme: 'TableStyleMedium9',
+                        showRowStripes: true,
+                    },
+                    columns: worksheet.columns.map((col) => ({
+                        name: col.header,
+                    })),
+                    rows: rows,
                 });
 
-                // Append summary lines to the worksheet data
+                // Calculate and add totals
                 let volSum = 0;
                 let eqtdSum = 0;
                 teacherCourses.forEach((course) => {
@@ -1329,38 +1342,46 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
                 const result = eqtdSum.toFixed(2);
                 eqtdSum = Number(parseFloat(result));
-                worksheetData.push({
-                    Enseignant: '',
-                    Filière: '',
-                    Semestre: '',
-                    Format: `Total`,
-                    Intitulé: '',
-                    Volume: `${volSum}h`,
-                    EqTD: `${eqtdSum}h éq. TD`,
-                })
-                for (const format in formatSums) {
+
+                worksheet.addRow([]);
+                worksheet.addRow(['', '', '', '', 'Total', volSum, eqtdSum]);
+
+                // Add totals by format
+                const formatSums = {};
+                teacherCourses.forEach((course) => {
+                    if (!formatSums[course.Format]) {
+                        formatSums[course.Format] = 0;
+                    }
+                    formatSums[course.Format] += course.Volume;
+                });
+
+                for (let format in formatSums) {
                     if (formatSums.hasOwnProperty(format)) {
-                        worksheetData.push({
-                            Enseignant: '',
-                            Filière: '',
-                            Semestre: '',
-                            Format: `Total ${format}`,
-                            Intitulé: '',
-                            Volume: formatSums[format],
-                            EqTD: '',
-                        });
+                        worksheet.addRow([
+                            '',
+                            '',
+                            '',
+                            '',
+                            `Total ${format}`,
+                            formatSums[format],
+                        ]);
                     }
                 }
-
-                // Create a worksheet from the data
-                const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-                XLSX.utils.book_append_sheet(workbook, worksheet, teacherName);
             }
         }
 
         // Write the workbook to a file
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
         const date = new Date().toISOString().split('T')[0];
-        XLSX.writeFile(workbook, `Services_${date}.xlsx`);
+        link.download = `Services_${date}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
     const exportBtn = document.getElementById('export-btn');

@@ -616,23 +616,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (eqtdTotal > tService) {
             profSummary.textContent += ` (${eqtdTotal - tService}HC)`;
         }
-        if (
-            (tHc && eqtdTotal > tService + tHc) ||
-            eqtdTotal > tService * 2 ||
-            eqtdTotal < tService
-        ) {
-            profSummary.style.color = 'red';
-            profSummary.textContent += ` ⚠️`;
-            if (eqtdTotal < tService) {
-                profSummary.textContent += ` — volume horaire insuffisant`;
-            } else if (
+        if (tService !== Infinity) {
+            if (
                 (tHc && eqtdTotal > tService + tHc) ||
-                eqtdTotal > tService * 2
+                eqtdTotal > tService * 2 ||
+                eqtdTotal < tService
             ) {
-                profSummary.textContent += ` — volume horaire supérieur à la limite autorisée`;
+                profSummary.style.color = 'red';
+                profSummary.textContent += ` ⚠️`;
+                if (eqtdTotal < tService) {
+                    profSummary.textContent += ` — volume horaire insuffisant`;
+                } else if (
+                    (tHc && eqtdTotal > tService + tHc) ||
+                    eqtdTotal > tService * 2
+                ) {
+                    profSummary.textContent += ` — volume horaire supérieur à la limite autorisée`;
+                }
+            } else {
+                profSummary.style.color = 'green';
             }
-        } else {
-            profSummary.style.color = 'green';
         }
         confirmDialog.showModal();
     };
@@ -665,6 +667,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     let noIndispo = true;
     dispoCheck.addEventListener('change', () => {
         if (dispoCheck.checked) {
+            for (let tc of tableCells) {
+                tc.removeAttribute('style');
+                tc.textContent = null;
+            }
+            if (jsonFile && jsonFile.Dispos) {
+                jsonFile.Dispos = [];
+            }
             noIndispo = true;
         } else {
             noIndispo = false;
