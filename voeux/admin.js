@@ -476,7 +476,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!courseItems.has(courseId)) {
                 courseItems.add(courseId);
                 newItem = courseItem.cloneNode(true);
-                newItem.id = `course-item-${courseIndex}`;
+                newItem.id = `course-item-${courseId}`;
                 courseIndex++;
                 const courseListElements = Array.from(
                     courseList.querySelectorAll('li')
@@ -581,16 +581,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const existingF = Array.from(courseList.children).find(
                     (i) => i.textContent === c.filière.toUpperCase()
                 ).nextElementSibling;
+                console.log('Existing filière: ', existingF);
                 const existingS = Array.from(existingF.children).find(
                     (i) => i.textContent === c.semestre
                 ).nextElementSibling;
+                console.log('Existing semester: ', existingS);
                 const existingItem = Array.from(existingS.children).find(
                     (item) => {
-                        const courseName =
-                            item.querySelector('span#course-name').textContent;
-                        return courseName === `${c.intitulé}`;
+                        const id = item.id.split('-')[2];
+                        console.log('Course id = ', c.id);
+                        console.log('item id = ', id);
+                        return id === `${c.id}`;
                     }
                 );
+                console.log('Existing item: ', existingItem);
                 if (logic === 'course') {
                     courseTeachers = existingItem.querySelector(
                         'span#course-teachers'
