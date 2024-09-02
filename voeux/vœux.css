@@ -99,7 +99,7 @@ button.confirm:hover {
 
 .btn {
     float: right;
-    margin-left: 2px;
+    margin-left: 5px;
 }
 
 *:disabled {
@@ -117,4 +117,12 @@ button.confirm:hover {
 .danger-btn {
     background-color: #cc0000 !important;
     color: #ffcc00 !important;
+}
+
+.footer {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+    text-align: right;
+    font-size: small;
 }

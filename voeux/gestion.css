@@ -177,7 +177,7 @@ div#deleted-course-div {
 .danger-zone {
     position: fixed;
     bottom: 0;
-    right: 0;
+    left: 0;
     width: max-content;
     background: repeating-linear-gradient(
         45deg,

@@ -408,18 +408,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         for (let c of jsonFile.Cours) {
             const cVol = Number(c.eqtd);
             volTotal += cVol;
-            volTotal = Number(
-                parseFloat(Number(volTotal).toFixed(2))
-            );
+            volTotal = Number(parseFloat(Number(volTotal).toFixed(2)));
         }
         hTotal.textContent = volTotal + ' hTD';
         if (volTotal >= tService) {
             hTotal.style.color = 'green';
             if (volTotal > tService) {
                 volHc = Number(
-                    parseFloat(
-                        (volTotal - Number(tService)).toFixed(2)
-                    )
+                    parseFloat((volTotal - Number(tService)).toFixed(2))
                 );
                 hc.textContent = `, ${volHc} HC`;
                 hc.style.color = 'green';
@@ -457,9 +453,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 duplicateBtn.textContent = ' ➕';
                 duplicateBtn.style.cursor = 'pointer';
                 duplicateBtn.classList.add('btn');
-                duplicateBtn.addEventListener('click', () =>
-                    duplicateEntry(course, firstEntry)
-                );
+                duplicateBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    duplicateEntry(course, firstEntry);
+                });
                 firstEntry.appendChild(duplicateBtn);
             }
         }
@@ -484,7 +481,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         deleteBtn.textContent = ' ❌';
         deleteBtn.style.cursor = 'pointer';
         deleteBtn.classList.add('btn');
-        deleteBtn.onclick = () => deleteEntry(course, newEntry);
+        deleteBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            deleteEntry(course, newEntry);
+        });
         newEntry.appendChild(deleteBtn);
         entry.after(newEntry);
         updateVol();
