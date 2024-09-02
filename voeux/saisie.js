@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const cVol = Number(c.eqtd);
             volTotal += cVol;
             volTotal = Number(
-                parseFloat(Number(volTotal).toFixed(2)).toString()
+                parseFloat(Number(volTotal).toFixed(2))
             );
         }
         hTotal.textContent = volTotal + ' hTD';
@@ -419,7 +419,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 volHc = Number(
                     parseFloat(
                         (volTotal - Number(tService)).toFixed(2)
-                    ).toString()
+                    )
                 );
                 hc.textContent = `, ${volHc} HC`;
                 hc.style.color = 'green';
@@ -603,14 +603,33 @@ document.addEventListener('DOMContentLoaded', async () => {
                 for (let dI of dIndispos) {
                     const hourItem = document.createElement('li');
                     hourItem.textContent = dI.hour;
-                    hourList.appendChild(hourItem);
+                    const prevHourItem = hourList.lastElementChild;
+                    if (prevHourItem) {
+                        const endHour = prevHourItem.textContent
+                            .split('-')[1]
+                            .trim();
+                        const begHour = hourItem.textContent
+                            .split('-')[0]
+                            .trim();
+                        if (endHour === begHour) {
+                            const begHour = prevHourItem.textContent
+                                .split('-')[0]
+                                .trim();
+                            const endHour = hourItem.textContent
+                                .split('-')[1]
+                                .trim();
+                            prevHourItem.textContent = `${begHour} - ${endHour}`;
+                        } else hourList.appendChild(hourItem);
+                    } else {
+                        hourList.appendChild(hourItem);
+                    }
                 }
                 dayList.appendChild(dayItem);
                 dayList.appendChild(hourList);
             }
             indisposDiv.appendChild(dayList);
         }
-        eqtdTotal = Number(parseFloat(Number(eqtdTotal).toFixed(2)).toString());
+        eqtdTotal = Number(parseFloat(Number(eqtdTotal).toFixed(2)));
         const profSummary = document.getElementById('prof-summary');
         profSummary.textContent = `Total : ${eqtdTotal}h éq. TD`;
         if (eqtdTotal > tService) {
