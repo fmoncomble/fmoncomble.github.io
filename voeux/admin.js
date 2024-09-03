@@ -477,7 +477,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (logic === 'course') {
                 tCourses = courses.filter((i) => i.id === c.id);
                 courseNb = tCourses.length;
-                console.log(`Items of course ${c.intitulé}`, tCourses.length);
             }
             if (logic === 'prof') {
                 courseNb = refCourses.filter((i) => i.id === c.id).length;
@@ -562,10 +561,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                             const sameTeachers = tCourses.filter(
                                 (c) => c.teacher === tCourses[i].teacher
                             );
-                            console.log(
-                                `Courses ${tCourses[i].intitulé} taught by ${tCourses[i].teacher}:`,
-                                sameTeachers.length
-                            );
                             const teacherNameSegments =
                                 tCourses[i].teacher.split(' ');
                             let teacherFirstName = teacherNameSegments[0];
@@ -577,8 +572,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                                     let firstNameSegments =
                                         teacherFirstName.split('-');
                                     teacherFirstName = '';
-                                    firstNameSegments = firstNameSegments.map((f) => `${f.split('')[0]}.`);
-                                    teacherFirstName = firstNameSegments.join('-');
+                                    firstNameSegments = firstNameSegments.map(
+                                        (f) => `${f.split('')[0]}.`
+                                    );
+                                    teacherFirstName =
+                                        firstNameSegments.join('-');
                                 } else {
                                     teacherFirstName =
                                         teacherFirstName.split('')[0] + '.';
