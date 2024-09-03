@@ -439,13 +439,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         courses.sort(sortBySem);
         courses.sort(sortByFil);
         let logic;
+        let refCourses;
         if (filière && semestre) {
             logic = 'course';
             dispoDiv.style.display = 'none';
-            courses = courses.filter(
+            refCourses = courseFile.filter(
                 (c) => c.filière === filière && c.semestre === semestre
             );
-            if (courses.length === 0) {
+            if (refCourses.length === 0) {
                 const newItem = courseItem.cloneNode(true);
                 newItem.textContent = `Aucun enseignement trouvé pour ${filière} ${semestre}`;
                 courseList.appendChild(newItem);
@@ -454,8 +455,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } else if (prof) {
             logic = 'prof';
-            courses = courses.filter((c) => c.teacher === prof);
-            if (courses.length === 0) {
+            refCourses = courses.filter((c) => c.teacher === prof);
+            if (refCourses.length === 0) {
                 const newItem = courseItem.cloneNode(true);
                 newItem.textContent = `Aucun enseignement trouvé pour ${prof}`;
                 courseList.appendChild(newItem);
@@ -466,13 +467,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const courseItems = new Set();
         let courseIndex = 1;
-        for (let c of courses) {
+        for (let c of refCourses) {
             const courseId = c.id;
             let newItem;
             let courseTeachers;
             let reqNb = Number(c.nbgrp);
-            const courseNb = courses.filter((i) => i.id === c.id).length;
-            const totalCourseNb = courses.filter((i) => i.id === c.id).length;
+            let tCourses;
+            let courseNb;
+            if (logic === 'course') {
+                tCourses = courses.filter((i) => i.id === c.id);
+                courseNb = tCourses.length;
+                console.log(`Items of course ${c.intitulé}`, tCourses.length);
+            }
+            if (logic === 'prof') {
+                courseNb = refCourses.filter((i) => i.id === c.id).length;
+            }
             if (!courseItems.has(courseId)) {
                 courseItems.add(courseId);
                 newItem = courseItem.cloneNode(true);
@@ -545,27 +554,60 @@ document.addEventListener('DOMContentLoaded', async () => {
                     );
                     courseName.textContent = `${c.intitulé} (${c.volume}h`;
                     if (c.format !== 'TD') {
-                        courseName.textContent += ` ${c.format} = ${c.eqtd}h éq.`
+                        courseName.textContent += ` ${c.format} = ${c.eqtd}h éq.`;
                     }
                     courseName.textContent += ' TD)';
-                    const teacherFirstName =
-                        c.teacher.split(' ')[0].split('')[0] + '.';
-                    const teacherSurname = c.teacher.split(' ')[1];
-                    courseTeachers.textContent =
-                        teacherFirstName + ' ' + teacherSurname;
+                    if (tCourses && tCourses.length > 0) {
+                        for (let i = 0; i < tCourses.length; ) {
+                            const sameTeachers = tCourses.filter(
+                                (c) => c.teacher === tCourses[i].teacher
+                            );
+                            console.log(
+                                `Courses ${tCourses[i].intitulé} taught by ${tCourses[i].teacher}:`,
+                                sameTeachers.length
+                            );
+                            const teacherNameSegments =
+                                tCourses[i].teacher.split(' ');
+                            let teacherFirstName = teacherNameSegments[0];
+                            if (
+                                teacherFirstName !== 'ATER' &&
+                                teacherFirstName !== 'LECT'
+                            ) {
+                                if (teacherFirstName.includes('-')) {
+                                    let firstNameSegments =
+                                        teacherFirstName.split('-');
+                                    teacherFirstName = '';
+                                    firstNameSegments = firstNameSegments.map((f) => `${f.split('')[0]}.`);
+                                    teacherFirstName = firstNameSegments.join('-');
+                                } else {
+                                    teacherFirstName =
+                                        teacherFirstName.split('')[0] + '.';
+                                }
+                            }
+                            const teacherSurname = teacherNameSegments
+                                .slice(1)
+                                .join(' ');
+                            const teacherName = `${teacherFirstName} ${teacherSurname}`;
+                            if (i > 0) {
+                                courseTeachers.textContent += ', ';
+                            }
+                            courseTeachers.textContent += `${teacherName} (${sameTeachers.length})`;
+                            i += sameTeachers.length;
+                        }
+                    }
                     const courseNumberSpan =
                         newItem.querySelector('span#course-number');
                     courseNumberSpan.textContent = `${courseNb} / ${reqNb}`;
                     if (logic === 'course') {
-                        if (totalCourseNb < reqNb) {
-                            courseNumberSpan.style.color = 'orange';
-                            courseNumberSpan.textContent += ' ⚠️';
-                        } else if (totalCourseNb === reqNb) {
-                            courseNumberSpan.style.color = 'green';
-                            courseNumberSpan.textContent += ' ✅';
-                        } else if (totalCourseNb > reqNb) {
+                        if (courseNb === 0 || courseNb > reqNb) {
                             courseNumberSpan.style.color = '#cc0000';
                             courseNumberSpan.textContent += ' 🚨';
+                        } else if (courseNb < reqNb) {
+                            courseNumberSpan.style.color = 'orange';
+                            courseNumberSpan.textContent += ' ⚠️';
+                        } else if (courseNb === reqNb) {
+                            courseNumberSpan.style.color = 'green';
+                            courseNumberSpan.textContent += ' ✅';
                         }
                     }
                     if (logic === 'prof') {
@@ -576,49 +618,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                     newItem.style.display = 'block';
                     parent.appendChild(newItem);
-                }
-            } else if (courseItems.has(courseId)) {
-                const existingF = Array.from(courseList.children).find(
-                    (i) => i.textContent === c.filière.toUpperCase()
-                ).nextElementSibling;
-                console.log('Existing filière: ', existingF);
-                const existingS = Array.from(existingF.children).find(
-                    (i) => i.textContent === c.semestre
-                ).nextElementSibling;
-                console.log('Existing semester: ', existingS);
-                const existingItem = Array.from(existingS.children).find(
-                    (item) => {
-                        const id = item.id.split('-')[2];
-                        console.log('Course id = ', c.id);
-                        console.log('item id = ', id);
-                        return id === `${c.id}`;
-                    }
-                );
-                console.log('Existing item: ', existingItem);
-                if (logic === 'course') {
-                    courseTeachers = existingItem.querySelector(
-                        'span#course-teachers'
-                    );
-                    const teacherFirstName =
-                        c.teacher.split(' ')[0].split('')[0] + '.';
-                    const teacherSurname = c.teacher.split(' ')[1];
-                    courseTeachers.textContent = courseTeachers.textContent +=
-                        ', ' + teacherFirstName + ' ' + teacherSurname;
-                }
-                const courseNumberSpan =
-                    existingItem.querySelector('span#course-number');
-                courseNumberSpan.textContent = `${courseNb} / ${reqNb}`;
-                if (logic === 'course') {
-                    if (totalCourseNb < reqNb) {
-                        courseNumberSpan.style.color = 'orange';
-                        courseNumberSpan.textContent += ' ⚠️';
-                    } else if (totalCourseNb === reqNb) {
-                        courseNumberSpan.style.color = 'green';
-                        courseNumberSpan.textContent += ' ✅';
-                    } else if (totalCourseNb > reqNb) {
-                        courseNumberSpan.style.color = '#cc0000';
-                        courseNumberSpan.textContent += ' 🚨';
-                    }
                 }
             }
         }
@@ -724,7 +723,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         for (let c of courseFile) {
             const courses = taughtCourses.filter((s) => s.id === c.id);
             if (courses.length !== c.nbgrp) {
-                console.log('Problem found for course: ', c);
                 newPbItem = courseItem.cloneNode(true);
                 const courseListElements = Array.from(
                     courseList.querySelectorAll('li')
@@ -790,7 +788,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         newPbItem.querySelector('#course-name');
                     pbCourseName.textContent = `${c.intitulé} (${c.volume}h`;
                     if (c.format !== 'TD') {
-                        pbCourseName.textContent += ` ${c.format} = ${c.eqtd}h éq.`
+                        pbCourseName.textContent += ` ${c.format} = ${c.eqtd}h éq.`;
                     }
                     pbCourseName.textContent += ' TD)';
                     const pbCourseTeachersSpan = newPbItem.querySelector(
@@ -1334,7 +1332,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ]);
 
                 worksheet.addTable({
-                    name: `Table_${teacherName.replaceAll(/\s+/g, '_').replaceAll('-', '_')}`,
+                    name: `Table_${teacherName
+                        .replaceAll(/\s+/g, '_')
+                        .replaceAll('-', '_')}`,
                     ref: 'A1',
                     style: {
                         theme: 'TableStyleMedium9',
