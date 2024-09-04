@@ -319,8 +319,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (checkProf || profModify) {
             const dialog = document.createElement('dialog');
             const div = document.createElement('div');
-            console.log('Custom service = ', customService);
-            console.log('Custom HC = ', customHc);
             if (
                 checkProf.status !== profStatusSelect.value ||
                 ((checkProf.service || customService > 0) &&
@@ -349,7 +347,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             noBtn.style.display = 'inline-block';
             dialog.appendChild(noBtn);
             yesBtn.onclick = () => {
-                console.log(`Replacing ${checkProf.name} with ${newProf.name}`);
                 const index = teacherData.indexOf(checkProf);
                 teacherData.splice(index, 1, newProf);
                 teacherData.sort(sortProfs);
@@ -369,7 +366,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     displayProfs(update);
                 }
                 if (profModify && newProf.name !== checkProf.name) {
-                    console.log('Name was changed');
                     checkServicesFile(newProf.name, checkProf.name);
                 }
                 profModify = false;
@@ -410,7 +406,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let servicesSha;
     async function checkServicesFile(newName, oldName) {
-        console.log('Checking services file');
         const url =
             'https://api.github.com/repos/fmoncomble/voeux/contents/services.json?ref=main';
         const token = localStorage.getItem('github-token');
@@ -419,115 +414,128 @@ document.addEventListener('DOMContentLoaded', async () => {
             Accept: 'application/vnd.github+json',
             'Content-Type': 'application/json',
         });
-        const res = await fetch(url, {
-            headers: headers,
-        });
-        if (res && res.ok) {
-            const data = await res.json();
-            servicesSha = data.sha;
-            console.log('SHA after checking: ', servicesSha);
-            const binaryString = atob(data.content);
-            const binaryLen = binaryString.length;
-            const bytes = new Uint8Array(binaryLen);
-            for (let i = 0; i < binaryLen; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-            }
-            const decoder = new TextDecoder('utf-8');
-            voeux = decoder.decode(bytes);
-            const servicesFile = JSON.parse(voeux);
-            const teacher = servicesFile.find((s) => s.Name === oldName);
-            if (teacher) {
-                console.log('Entry found for ' + oldName);
-                const dialog = document.createElement('dialog');
-                const div = document.createElement('div');
-                div.textContent = `Voulez-vous mettre à jour l'entrée de ${oldName} dans le fichier de services ?`;
-                const yesBtn = document.createElement('button');
-                yesBtn.textContent = 'Oui';
-                yesBtn.classList.add('wishes-ui');
-                yesBtn.addEventListener('click', async () => {
-                    const spinner = document.createElement('span');
-                    spinner.classList.add('spinner');
-                    spinner.style.display = 'inline-block';
-                    yesBtn.innerHTML = null;
-                    yesBtn.appendChild(spinner);
-                    await updateServiceFile();
-                    yesBtn.textContent = '✔︎';
-                    yesBtn.style.backgroundColor = 'green';
-                    setTimeout(() => {
-                        dialog.remove();
-                    }, 1000);
-                });
-                const noBtn = document.createElement('button');
-                noBtn.textContent = 'Non';
-                noBtn.classList.add('wishes-ui', 'reset-btn');
-                noBtn.addEventListener('click', () => {
-                    dialog.remove();
-                });
-                dialog.appendChild(div);
-                dialog.appendChild(yesBtn);
-                dialog.appendChild(noBtn);
-                document.body.appendChild(dialog);
-                dialog.showModal();
-            } else {
-                console.log('No entry found in services');
-            }
-            async function updateServiceFile() {
-                teacher.Name = newName;
-                servicesFile.sort((a, b) => {
-                    const aName = a.Name.split(' ')[1];
-                    const bName = b.Name.split(' ')[1];
-                    let result = aName.localeCompare(bName);
-                    return result;
-                });
-                console.log('Teacher data: ', teacher);
-                const fileString = JSON.stringify(servicesFile);
-                const encoder = new TextEncoder();
-                const utf8Array = encoder.encode(fileString);
-                const finalFile = btoa(
-                    String.fromCharCode.apply(null, utf8Array)
-                );
-                const url =
-                    'https://api.github.com/repos/fmoncomble/voeux/contents/services.json';
-                const token = localStorage.getItem('github-token');
-                const headers = new Headers({
-                    Authorization: `Bearer ${token}`,
-                    Accept: 'application/vnd.github+json',
-                    'Content-Type': 'application/json',
-                });
-                const body = JSON.stringify({
-                    message: 'Updated services',
-                    content: finalFile,
-                    sha: servicesSha,
-                    branch: 'main',
-                });
-                try {
-                    const saveRes = await fetch(url, {
-                        method: 'PUT',
-                        headers: headers,
-                        body: body,
-                    });
-                    if (!saveRes.ok) {
-                        if (saveRes.status === 401) {
-                            window.alert(
-                                "Vous devez entrer un jeton d'authentification"
-                            );
-                            throw new Error(saveRes.message);
-                        } else if (saveRes.status === 409) {
-                            window.alert('Conflit : ' + saveRes.message);
-                            throw new Error(saveRes.message);
-                        }
-                    } else {
-                        const data = await saveRes.json();
-                        servicesSha = data.content.sha;
-                        console.log('SHA after updating: ', servicesSha);
-                        await saveChanges();
-                        return true;
-                    }
-                } catch (error) {
-                    window.alert('Une erreur a été rencontrée : ' + error);
-                    console.error(error);
+        try {
+            const res = await fetch(url, {
+                headers: headers,
+            });
+            if (res && res.ok) {
+                const data = await res.json();
+                servicesSha = data.sha;
+                const binaryString = atob(data.content);
+                const binaryLen = binaryString.length;
+                const bytes = new Uint8Array(binaryLen);
+                for (let i = 0; i < binaryLen; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
                 }
+                const decoder = new TextDecoder('utf-8');
+                voeux = decoder.decode(bytes);
+                const servicesFile = JSON.parse(voeux);
+                const teacher = servicesFile.find((s) => s.Name === oldName);
+                if (teacher) {
+                    const dialog = document.createElement('dialog');
+                    const div = document.createElement('div');
+                    div.textContent = `Voulez-vous mettre à jour l'entrée de ${oldName} dans le fichier de services ?`;
+                    const yesBtn = document.createElement('button');
+                    yesBtn.textContent = 'Oui';
+                    yesBtn.classList.add('wishes-ui');
+                    yesBtn.addEventListener('click', async () => {
+                        const spinner = document.createElement('span');
+                        spinner.classList.add('spinner');
+                        spinner.style.display = 'inline-block';
+                        yesBtn.innerHTML = null;
+                        yesBtn.appendChild(spinner);
+                        await updateServiceFile();
+                        yesBtn.textContent = '✔︎';
+                        yesBtn.style.backgroundColor = 'green';
+                        setTimeout(() => {
+                            dialog.remove();
+                        }, 1000);
+                    });
+                    const noBtn = document.createElement('button');
+                    noBtn.textContent = 'Non';
+                    noBtn.classList.add('wishes-ui', 'reset-btn');
+                    noBtn.addEventListener('click', () => {
+                        dialog.remove();
+                    });
+                    dialog.appendChild(div);
+                    dialog.appendChild(yesBtn);
+                    dialog.appendChild(noBtn);
+                    document.body.appendChild(dialog);
+                    dialog.showModal();
+                } else {
+                    return;
+                }
+                async function updateServiceFile() {
+                    teacher.Name = newName;
+                    servicesFile.sort((a, b) => {
+                        const aName = a.Name.split(' ')[1];
+                        const bName = b.Name.split(' ')[1];
+                        let result = aName.localeCompare(bName);
+                        return result;
+                    });
+                    const fileString = JSON.stringify(servicesFile);
+                    const encoder = new TextEncoder();
+                    const utf8Array = encoder.encode(fileString);
+                    const finalFile = btoa(
+                        String.fromCharCode.apply(null, utf8Array)
+                    );
+                    const url =
+                        'https://api.github.com/repos/fmoncomble/voeux/contents/services.json';
+                    const token = localStorage.getItem('github-token');
+                    const headers = new Headers({
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/vnd.github+json',
+                        'Content-Type': 'application/json',
+                    });
+                    const body = JSON.stringify({
+                        message: 'Updated services',
+                        content: finalFile,
+                        sha: servicesSha,
+                        branch: 'main',
+                    });
+                    try {
+                        const saveRes = await fetch(url, {
+                            method: 'PUT',
+                            headers: headers,
+                            body: body,
+                        });
+                        if (!saveRes.ok) {
+                            if (saveRes.status === 401) {
+                                window.alert(
+                                    "Vous devez entrer un jeton d'authentification"
+                                );
+                                throw new Error(saveRes.message);
+                            } else if (saveRes.status === 409) {
+                                window.alert(
+                                    'Conflit : ' +
+                                        saveRes.message +
+                                        ' Attendez quelques instants.'
+                                );
+                                throw new Error(saveRes.message);
+                            }
+                        } else {
+                            const data = await saveRes.json();
+                            servicesSha = data.content.sha;
+                            await saveChanges();
+                            return true;
+                        }
+                    } catch (error) {
+                        window.alert('Une erreur a été rencontrée : ' + error);
+                        console.error(error);
+                    }
+                }
+            } else if (!res.ok) {
+                window.alert(
+                    'Erreur en récupérant le fichier de services : ' +
+                        res.message
+                );
+                throw new Error(res.message);
             }
+        } catch (error) {
+            window.alert(
+                'Une erreur est survenue en vérifiant le fichier : ' + error
+            );
+            console.error(error);
         }
     }
 
