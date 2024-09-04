@@ -1002,6 +1002,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     const profInput2 = document.getElementById('prof-input-2');
+    profInput2.addEventListener('click', () => {
+        profInput2.value = null;
+    })
     const goProfBtn = document.getElementById('go-prof-btn');
     goProfBtn.addEventListener('click', () => {
         const ensModDiv = document.getElementById('ens-modify');

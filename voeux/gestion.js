@@ -32,6 +32,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             profCancelBtn.disabled = true;
         }
     });
+    profDeleteInput.addEventListener('click', () => {
+        profDeleteInput.value = null;
+    });
 
     courseInput.addEventListener('input', () => {
         if (courseInput.value) {
@@ -320,16 +323,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             const dialog = document.createElement('dialog');
             const div = document.createElement('div');
             if (
-                checkProf.status !== profStatusSelect.value ||
-                ((checkProf.service || customService > 0) &&
-                    checkProf.service !== customService) ||
-                ((checkProf.hc || customHc > 0) && checkProf.hc !== customHc)
+                !profModify &&
+                JSON.stringify(checkProf) !== JSON.stringify(newProf)
             ) {
-                if (!profModify) {
-                    div.textContent = `Il y a déjà un·e enseignant·e à ce nom : mettre à jour les données de ${profAddInput.value} ?`;
-                } else if (profModify) {
-                    div.textContent = `Mettre à jour les données de ${profDeleteInput.value} ?`;
-                }
+                div.textContent = `Il y a déjà un·e enseignant·e à ce nom : mettre à jour les données de ${profAddInput.value} ?`;
+            } else if (
+                profModify &&
+                JSON.stringify(checkProf) !== JSON.stringify(newProf)
+            ) {
+                div.textContent = `Mettre à jour les données de ${profDeleteInput.value} ?`;
             } else {
                 window.alert(
                     'Il y a déjà un·e enseignant·e identique à ce nom'
@@ -367,8 +369,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 if (profModify && newProf.name !== checkProf.name) {
                     checkServicesFile(newProf.name, checkProf.name);
+                } else {
+                    document.getElementById(
+                        'prof-add'
+                    ).firstElementChild.textContent =
+                        'Ajouter un·e enseignant·e :';
+                    if (profAddBtn.textContent === 'Modifier') {
+                        profAddBtn.textContent = 'Ajouter';
+                    }
+                    profModify = false;
                 }
-                profModify = false;
             };
             noBtn.onclick = () => {
                 dialog.remove();
@@ -395,13 +405,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 let update = true;
                 displayProfs(update);
             }
+            document.getElementById('prof-add').firstElementChild.textContent =
+                'Ajouter un·e enseignant·e :';
+            if (profAddBtn.textContent === 'Modifier') {
+                profAddBtn.textContent = 'Ajouter';
+            }
             profModify = false;
         }
-        document.getElementById('prof-add').firstElementChild.textContent =
-            'Ajouter un·e enseignant·e :';
-        if (profAddBtn.textContent === 'Modifier') {
-            profAddBtn.textContent = 'Ajouter';
-        }
+        // document.getElementById('prof-add').firstElementChild.textContent =
+        //     'Ajouter un·e enseignant·e :';
+        // if (profAddBtn.textContent === 'Modifier') {
+        //     profAddBtn.textContent = 'Ajouter';
+        // }
     }
 
     let servicesSha;
@@ -448,7 +463,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                         yesBtn.textContent = '✔︎';
                         yesBtn.style.backgroundColor = 'green';
                         setTimeout(() => {
+                            document.getElementById(
+                                'prof-add'
+                            ).firstElementChild.textContent =
+                                'Ajouter un·e enseignant·e :';
+                            if (profAddBtn.textContent === 'Modifier') {
+                                profAddBtn.textContent = 'Ajouter';
+                            }
                             dialog.remove();
+                            profModify = false;
                         }, 1000);
                     });
                     const noBtn = document.createElement('button');
@@ -456,6 +479,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     noBtn.classList.add('wishes-ui', 'reset-btn');
                     noBtn.addEventListener('click', () => {
                         dialog.remove();
+                        profModify = false;
                     });
                     dialog.appendChild(div);
                     dialog.appendChild(yesBtn);
