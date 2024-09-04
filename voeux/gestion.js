@@ -308,74 +308,82 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (customHc) {
             newProf.hc = customHc;
         }
-        const checkProf = teacherData.find(
-            (t) => t.name === profAddInput.value
-        );
-        if (checkProf) {
+        let checkProf;
+        if (profModify) {
+            checkProf = teacherData.find(
+                (t) => t.name === profDeleteInput.value
+            );
+        } else {
+            checkProf = teacherData.find((t) => t.name === profAddInput.value);
+        }
+        if (checkProf || profModify) {
+            const dialog = document.createElement('dialog');
+            const div = document.createElement('div');
+            console.log('Custom service = ', customService);
+            console.log('Custom HC = ', customHc);
             if (
                 checkProf.status !== profStatusSelect.value ||
-                checkProf.service !== customService ||
-                checkProf.hc !== customHc
+                ((checkProf.service || customService > 0) &&
+                    checkProf.service !== customService) ||
+                ((checkProf.hc || customHc > 0) && checkProf.hc !== customHc)
             ) {
-                const dialog = document.createElement('dialog');
-                const div = document.createElement('div');
-                div.textContent =
-                    'Il y a déjà un·e enseignant·e à ce nom : mettre à jour les données ?';
-                dialog.appendChild(div);
-                const yesBtn = document.createElement('button');
-                yesBtn.classList.add('wishes-ui');
-                yesBtn.textContent = 'Oui';
-                dialog.appendChild(yesBtn);
-                const noBtn = document.createElement('button');
-                noBtn.classList.add('wishes-ui', 'reset-btn');
-                noBtn.textContent = 'Non';
-                noBtn.style.display = 'inline-block';
-                dialog.appendChild(noBtn);
-                yesBtn.onclick = () => {
-                    const index = teacherData.indexOf(checkProf);
-                    teacherData.splice(index, 1, newProf);
-                    dialog.remove();
-                    const addedProfDiv =
-                        document.getElementById('added-prof-div');
-                    addedProfDiv.textContent = `${newProf.name} a été modifié·e.`;
-                    addedProfDiv.style.display = 'block';
-                    setTimeout(() => {
-                        addedProfDiv.style.display = 'none';
-                        addedProfDiv.textContent = null;
-                    }, 1000);
-                    profChanged = true;
-                    compareData();
-                    buildProfList();
-                    if (profsDisplay.style.maxHeight) {
-                        let update = true;
-                        displayProfs(update);
-                    }
-                };
-                noBtn.onclick = () => {
-                    dialog.remove();
-                    return;
-                };
-                document.body.appendChild(dialog);
-                dialog.showModal();
+                if (!profModify) {
+                    div.textContent = `Il y a déjà un·e enseignant·e à ce nom : mettre à jour les données de ${profAddInput.value} ?`;
+                } else if (profModify) {
+                    div.textContent = `Mettre à jour les données de ${profDeleteInput.value} ?`;
+                }
             } else {
-                window.alert('Il y a déjà un·e enseignant·e à ce nom');
+                window.alert(
+                    'Il y a déjà un·e enseignant·e identique à ce nom'
+                );
                 return;
             }
+            dialog.appendChild(div);
+            const yesBtn = document.createElement('button');
+            yesBtn.classList.add('wishes-ui');
+            yesBtn.textContent = 'Oui';
+            dialog.appendChild(yesBtn);
+            const noBtn = document.createElement('button');
+            noBtn.classList.add('wishes-ui', 'reset-btn');
+            noBtn.textContent = 'Non';
+            noBtn.style.display = 'inline-block';
+            dialog.appendChild(noBtn);
+            yesBtn.onclick = () => {
+                console.log(`Replacing ${checkProf.name} with ${newProf.name}`);
+                const index = teacherData.indexOf(checkProf);
+                teacherData.splice(index, 1, newProf);
+                teacherData.sort(sortProfs);
+                dialog.remove();
+                const addedProfDiv = document.getElementById('added-prof-div');
+                addedProfDiv.textContent = `${newProf.name} a été modifié·e.`;
+                addedProfDiv.style.display = 'block';
+                setTimeout(() => {
+                    addedProfDiv.style.display = 'none';
+                    addedProfDiv.textContent = null;
+                }, 1000);
+                profChanged = true;
+                compareData();
+                buildProfList();
+                if (profsDisplay.style.maxHeight) {
+                    let update = true;
+                    displayProfs(update);
+                }
+                if (profModify && newProf.name !== checkProf.name) {
+                    console.log('Name was changed');
+                    checkServicesFile(newProf.name, checkProf.name);
+                }
+                profModify = false;
+            };
+            noBtn.onclick = () => {
+                dialog.remove();
+                profModify = false;
+                return;
+            };
+            document.body.appendChild(dialog);
+            dialog.showModal();
         } else {
             teacherData.push(newProf);
-            teacherData.sort((a, b) => {
-                const aSegments = a.name.split(' ');
-                const bSegments = b.name.split(' ');
-                let result = 0;
-                let i = 1;
-                while (result === 0 && i >= 0) {
-                    const intA = aSegments[i].toLowerCase();
-                    const intB = bSegments[i].toLowerCase();
-                    i--;
-                    result = intA.localeCompare(intB);
-                }
-                return result;
-            });
+            teacherData.sort(sortProfs);
             const addedProfDiv = document.getElementById('added-prof-div');
             addedProfDiv.textContent = `${profAddInput.value} a été ajouté·e`;
             addedProfDiv.style.display = 'block';
@@ -391,13 +399,150 @@ document.addEventListener('DOMContentLoaded', async () => {
                 let update = true;
                 displayProfs(update);
             }
+            profModify = false;
         }
         document.getElementById('prof-add').firstElementChild.textContent =
             'Ajouter un·e enseignant·e :';
-        profModify = false;
         if (profAddBtn.textContent === 'Modifier') {
             profAddBtn.textContent = 'Ajouter';
         }
+    }
+
+    let servicesSha;
+    async function checkServicesFile(newName, oldName) {
+        console.log('Checking services file');
+        const url =
+            'https://api.github.com/repos/fmoncomble/voeux/contents/services.json?ref=main';
+        const token = localStorage.getItem('github-token');
+        const headers = new Headers({
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/vnd.github+json',
+            'Content-Type': 'application/json',
+        });
+        const res = await fetch(url, {
+            headers: headers,
+        });
+        if (res && res.ok) {
+            const data = await res.json();
+            servicesSha = data.sha;
+            console.log('SHA after checking: ', servicesSha);
+            const binaryString = atob(data.content);
+            const binaryLen = binaryString.length;
+            const bytes = new Uint8Array(binaryLen);
+            for (let i = 0; i < binaryLen; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            const decoder = new TextDecoder('utf-8');
+            voeux = decoder.decode(bytes);
+            const servicesFile = JSON.parse(voeux);
+            const teacher = servicesFile.find((s) => s.Name === oldName);
+            if (teacher) {
+                console.log('Entry found for ' + oldName);
+                const dialog = document.createElement('dialog');
+                const div = document.createElement('div');
+                div.textContent = `Voulez-vous mettre à jour l'entrée de ${oldName} dans le fichier de services ?`;
+                const yesBtn = document.createElement('button');
+                yesBtn.textContent = 'Oui';
+                yesBtn.classList.add('wishes-ui');
+                yesBtn.addEventListener('click', async () => {
+                    const spinner = document.createElement('span');
+                    spinner.classList.add('spinner');
+                    spinner.style.display = 'inline-block';
+                    yesBtn.innerHTML = null;
+                    yesBtn.appendChild(spinner);
+                    await updateServiceFile();
+                    yesBtn.textContent = '✔︎';
+                    yesBtn.style.backgroundColor = 'green';
+                    setTimeout(() => {
+                        dialog.remove();
+                    }, 1000);
+                });
+                const noBtn = document.createElement('button');
+                noBtn.textContent = 'Non';
+                noBtn.classList.add('wishes-ui', 'reset-btn');
+                noBtn.addEventListener('click', () => {
+                    dialog.remove();
+                });
+                dialog.appendChild(div);
+                dialog.appendChild(yesBtn);
+                dialog.appendChild(noBtn);
+                document.body.appendChild(dialog);
+                dialog.showModal();
+            } else {
+                console.log('No entry found in services');
+            }
+            async function updateServiceFile() {
+                teacher.Name = newName;
+                servicesFile.sort((a, b) => {
+                    const aName = a.Name.split(' ')[1];
+                    const bName = b.Name.split(' ')[1];
+                    let result = aName.localeCompare(bName);
+                    return result;
+                });
+                console.log('Teacher data: ', teacher);
+                const fileString = JSON.stringify(servicesFile);
+                const encoder = new TextEncoder();
+                const utf8Array = encoder.encode(fileString);
+                const finalFile = btoa(
+                    String.fromCharCode.apply(null, utf8Array)
+                );
+                const url =
+                    'https://api.github.com/repos/fmoncomble/voeux/contents/services.json';
+                const token = localStorage.getItem('github-token');
+                const headers = new Headers({
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/vnd.github+json',
+                    'Content-Type': 'application/json',
+                });
+                const body = JSON.stringify({
+                    message: 'Updated services',
+                    content: finalFile,
+                    sha: servicesSha,
+                    branch: 'main',
+                });
+                try {
+                    const saveRes = await fetch(url, {
+                        method: 'PUT',
+                        headers: headers,
+                        body: body,
+                    });
+                    if (!saveRes.ok) {
+                        if (saveRes.status === 401) {
+                            window.alert(
+                                "Vous devez entrer un jeton d'authentification"
+                            );
+                            throw new Error(saveRes.message);
+                        } else if (saveRes.status === 409) {
+                            window.alert('Conflit : ' + saveRes.message);
+                            throw new Error(saveRes.message);
+                        }
+                    } else {
+                        const data = await saveRes.json();
+                        servicesSha = data.content.sha;
+                        console.log('SHA after updating: ', servicesSha);
+                        await saveChanges();
+                        return true;
+                    }
+                } catch (error) {
+                    window.alert('Une erreur a été rencontrée : ' + error);
+                    console.error(error);
+                }
+            }
+        }
+    }
+
+    function sortProfs(a, b) {
+        const aSegments = a.name.split(' ');
+        const bSegments = b.name.split(' ');
+        let result = 0;
+        let i = 1;
+        while (result === 0 && i >= 0) {
+            const intA = aSegments[i].toLowerCase();
+            const intB = bSegments[i].toLowerCase();
+            i--;
+            result = intA.localeCompare(intB);
+        }
+        return result;
     }
 
     const profCancelBtn = document.getElementById('prof-add-cancel');
@@ -820,9 +965,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         courseCancelBtn.disabled = true;
         courseModify = false;
         courseCopy = false;
-        document.getElementById(
-            'course-add'
-        ).firstElementChild.textContent = 'Ajouter un cours :';
+        document.getElementById('course-add').firstElementChild.textContent =
+            'Ajouter un cours :';
     });
 
     // Course sorting functions
@@ -1374,13 +1518,10 @@ Cette opération est irréversible.`;
     async function compareData() {
         let checkTeacherData = await getFile(teacherDBUrl);
         let checkCourseData = await getFile(courseDBUrl);
-        if (
-            teacherData !== checkTeacherData ||
-            courseData !== checkCourseData
-        ) {
-            saveChangesBtn.disabled = false;
-        } else {
+        if (teacherData == checkTeacherData && courseData == checkCourseData) {
             saveChangesBtn.disabled = true;
+        } else {
+            saveChangesBtn.disabled = false;
         }
     }
 });
