@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Retrieve existing services file
     let voeux;
     let sha;
+    let remoteFile = [];
     let servicesFile = [];
     async function checkVoeuxFile() {
         const url =
@@ -128,6 +129,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const fileExist = document.getElementById('file-exist');
             fileExist.style.display = 'block';
             voeux = decoder.decode(bytes);
+            remoteFile = JSON.parse(voeux);
             servicesFile = JSON.parse(voeux);
             if (servicesFile.length === 0) {
                 fileExist.textContent += `(le fichier est vide)`;
@@ -168,6 +170,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         compileBtn.removeAttribute('style');
                         fileName.textContent = null;
                     }, 1000);
+                    compareData();
                 }
             });
             noBtn.addEventListener('click', () => {
@@ -293,12 +296,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 compileBtn.removeAttribute('style');
                 fileName.textContent = null;
             }, 1000);
+            compareData();
         } else if (!ok) {
             fileName.textContent = null;
         }
     });
 
     // Logic to save/update services file
+    let saved = false;
     saveBtn.addEventListener('click', async () => {
         if (servicesFile.length === 0) {
             const eraseDialog = document.createElement('dialog');
@@ -399,6 +404,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     throw new Error(saveRes.message);
                 }
             } else {
+                saved = true;
                 return true;
             }
         } catch (error) {
@@ -1004,7 +1010,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profInput2 = document.getElementById('prof-input-2');
     profInput2.addEventListener('click', () => {
         profInput2.value = null;
-    })
+    });
     const goProfBtn = document.getElementById('go-prof-btn');
     goProfBtn.addEventListener('click', () => {
         const ensModDiv = document.getElementById('ens-modify');
@@ -1142,6 +1148,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             courseAddDiv.style.display = 'none';
         }, 1000);
         customVolInput.value = '';
+        compareData();
     }
 
     const courseDeleteBtn = document.getElementById('course-delete-btn');
@@ -1182,6 +1189,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => {
             courseDeleteDiv.style.display = 'none';
         }, 1000);
+        compareData();
     }
 
     // Calculer service total et service dû
@@ -1462,4 +1470,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.body.appendChild(dialog);
         dialog.showModal();
     });
+
+    // Alert before closing window
+    function compareData() {
+        if (saved || JSON.stringify(remoteFile) == JSON.stringify(servicesFile)) {
+            window.removeEventListener('beforeunload', warnClose);
+        } else {
+            window.addEventListener('beforeunload', warnClose);
+        }
+    }
+    function warnClose(e) {
+        e.preventDefault();
+    }
 });

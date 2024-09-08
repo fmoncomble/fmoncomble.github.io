@@ -1550,10 +1550,17 @@ Cette opération est irréversible.`;
     async function compareData() {
         let checkTeacherData = await getFile(teacherDBUrl);
         let checkCourseData = await getFile(courseDBUrl);
-        if (teacherData == checkTeacherData && courseData == checkCourseData) {
+        if (JSON.stringify(teacherData) == JSON.stringify(checkTeacherData) && JSON.stringify(courseData) == JSON.stringify(checkCourseData)) {
             saveChangesBtn.disabled = true;
+            window.removeEventListener('beforeunload', watchClose)
         } else {
             saveChangesBtn.disabled = false;
+            window.addEventListener('beforeunload', watchClose);
         }
+    }
+
+    // Alert if window closed without saving
+    function watchClose(e) {
+        e.preventDefault();
     }
 });

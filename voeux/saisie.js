@@ -400,6 +400,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const firstChild = addedCoursesList.firstChild;
         addedCoursesList.insertBefore(entry, firstChild);
         resetForm();
+        checkData();
         i++;
     }
 
@@ -460,6 +461,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 firstEntry.appendChild(duplicateBtn);
             }
         }
+        checkData();
     }
 
     function duplicateEntry(course, entry, addedCourses) {
@@ -488,6 +490,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         newEntry.appendChild(deleteBtn);
         entry.after(newEntry);
         updateVol();
+        checkData();
         i++;
     }
 
@@ -660,13 +663,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const yesBtn = document.getElementById('yes-btn');
     const noBtn = document.getElementById('no-btn');
+    let saved = false;
 
     yesBtn.onclick = async () => {
         await downloadFile();
+        saved = true;
+        checkData();
         confirmDialog.innerHTML = null;
         const doneDiv = document.createElement('div');
         doneDiv.innerHTML =
-            'Votre fichier de vœux est prêt à être envoyé.<br>Pensez à vous déconnecter avant de quitter cette page.';
+            'Votre fichier de vœux est téléchargé et prêt à être envoyé.<br>Pensez à vous déconnecter avant de quitter cette page.';
         doneDiv.style.textAlign = 'center';
         const okBtn = document.createElement('button');
         okBtn.classList.add('wishes-ui');
@@ -822,6 +828,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         dispoCheck.checked = false;
         noIndispo = false;
+        checkData();
     }
     function deleteDispo(dispo) {
         const d = jsonFile.Dispos.indexOf(dispo);
@@ -830,5 +837,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             dispoCheck.checked = true;
             noIndispo = true;
         }
+        checkData();
+    }
+
+    function checkData() {
+        if (!saved &&
+            jsonFile &&
+            ((jsonFile.Cours && jsonFile.Cours.length > 0) ||
+                (jsonFile.Dispos && jsonFile.Dispos.length > 0))
+        ) {
+            window.addEventListener('beforeunload', warnClose);
+        } else {
+            window.removeEventListener('beforeunload', warnClose);
+        }
+    }
+    function warnClose(e) {
+        e.preventDefault();
     }
 });
