@@ -35,9 +35,11 @@ Scrape and download Reddit posts
 Moncomble, F. (2024). _RedditScraper_ (Version 0.4) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/redditscraper/
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/25a619f7-4076-4e98-9300-ebf137ba4f59) [SocialCorpusScraper](https://fmoncomble.github.io/SocialCorpusScraper/)
-A 4-in-1 bundle of [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/), [MastoScraper](https://fmoncomble.github.io/mastoscraper/), [RedditScraper](https://fmoncomble.github.io/redditscraper/) and [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/)
-
+A 4-in-1 bundle of [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/), [MastoScraper](https://fmoncomble.github.io/mastoscraper/), [RedditScraper](https://fmoncomble.github.io/redditscraper/) and [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/)  
+  
 Moncomble, F. (2024). _SocialCorpusScraper_ (Version 0.4) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/SocialCorpusScraper/
-
-
-
+  
+  
+## Other
+### [![mastothreader](https://github.com/user-attachments/assets/9cd73eb0-e845-43a4-964f-e8dc1ca4e227)](https://fmoncomble.github.io/mastothreader/)
+A web app to create and publish threads to Mastodon
