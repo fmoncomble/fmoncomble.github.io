@@ -258,11 +258,13 @@ computeBtn.addEventListener('click', async () => {
             },
             scales: {
                 x: {
+                    type: 'linear',
                     title: {
                         display: true,
                         text: 'Tokens',
                     },
                     ticks: {
+                        stepSize: 1000,
                         maxTicksLimit: 10,
                     },
                     beginAtZero: true,
