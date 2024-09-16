@@ -166,3 +166,22 @@ span#counter {
         transform: rotate(360deg);
     }
 }
+
+.footer {
+    position: fixed;
+    bottom: 5px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    font-size: x-small;
+    color: #67757e;
+}
+
+.sign {
+    margin: 0px;
+}
+
+div.footer div a img {
+    height: 30px;
+}

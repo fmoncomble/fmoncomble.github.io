@@ -208,7 +208,6 @@ computeBtn.addEventListener('click', async () => {
                 csvData.push({ corpus: label, index: index, lemmes: ttr });
             }
         }
-        console.log(csvData);
         function convertToCsv(data) {
             const header = Object.keys(data[0]).join('\t');
             const rows = data.map((obj) => Object.values(obj).join('\t'));
@@ -227,3 +226,8 @@ computeBtn.addEventListener('click', async () => {
     resetBtn.style.display = 'inline-block';
     resetBtn.onclick = () => location.reload();
 });
+
+const dateSpan = document.getElementById('year');
+const date = new Date();
+const year = date.toISOString().split('-')[0];
+dateSpan.textContent = year;
