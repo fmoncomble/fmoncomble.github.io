@@ -226,6 +226,18 @@ computeBtn.addEventListener('click', async () => {
     } else if (typeChoice === 'lemmas') {
         yText = 'Lemmes uniques';
     };
+    const plugin = {
+        id: 'customBgColor',
+        beforeDraw: (chart, args, options) => {
+            const {ctx} = chart;
+            ctx.save();
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.fillStyle = options.color || 'white';
+            ctx.fillRect(0, 0, chart.width, chart.height);
+            ctx.restore();
+          }
+        
+    }
     const ctx = document.getElementById('chart').getContext('2d');
     const graph = new Chart(ctx, {
         type: 'line',
@@ -234,6 +246,11 @@ computeBtn.addEventListener('click', async () => {
             datasets: dataSet,
         },
         options: {
+            plugins: {
+                customColor: {
+                    color: 'white'
+                }
+            },
             elements: {
                 point: {
                     radius: 0,
@@ -258,6 +275,7 @@ computeBtn.addEventListener('click', async () => {
                 },
             },
         },
+        plugins: [plugin]
     });
     document.querySelector('div.chart-container').style.display = 'block';
     computeBtn.style.display = 'none';
