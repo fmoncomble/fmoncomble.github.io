@@ -26,10 +26,10 @@ const txmDialog = document.getElementById('txm-dialog');
 const okBtn = txmDialog.querySelector('button');
 txmSpan.addEventListener('click', () => {
     txmDialog.showModal();
-})
+});
 okBtn.addEventListener('click', () => {
     txmDialog.close();
-})
+});
 
 const addBtn = document.getElementById('add-btn');
 let index = 0;
@@ -181,7 +181,11 @@ async function generateDataSet(corpora) {
         const corpusName = c.name;
         const lang = c.lang;
         const corpusFiles = c.files;
-        const ttrValues = await computeTTRFromXml(corpusName, lang, corpusFiles);
+        const ttrValues = await computeTTRFromXml(
+            corpusName,
+            lang,
+            corpusFiles
+        );
         const data = [];
         const interval = intervalInput.value;
         ttrValues.forEach((ttr, index) => {
@@ -206,6 +210,7 @@ async function generateDataSet(corpora) {
 const computeBtn = document.getElementById('compute-btn');
 const dlGraphBtn = document.getElementById('dl-graph');
 const dlDataBtn = document.getElementById('dl-data');
+let graph;
 computeBtn.addEventListener('click', async () => {
     if (corpora.length === 0) {
         return;
@@ -218,7 +223,6 @@ computeBtn.addEventListener('click', async () => {
     const result = await generateDataSet(corpora);
     const labels = result[0];
     let stepSize = 1000;
-    console.log('Last label = ', labels[labels.length - 1]);
     if (labels[labels.length - 1] < 10000) {
         stepSize = 100;
     }
@@ -230,62 +234,67 @@ computeBtn.addEventListener('click', async () => {
         yText = 'Mots uniques';
     } else if (typeChoice === 'lemmas') {
         yText = 'Lemmes uniques';
-    };
+    }
     const plugin = {
         id: 'customBgColor',
         beforeDraw: (chart, args, options) => {
-            const {ctx} = chart;
+            const { ctx } = chart;
             ctx.save();
             ctx.globalCompositeOperation = 'destination-over';
             ctx.fillStyle = options.color || 'white';
             ctx.fillRect(0, 0, chart.width, chart.height);
             ctx.restore();
-          }
-        
-    }
+        },
+    };
     const ctx = document.getElementById('chart').getContext('2d');
-    const graph = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: dataSet,
-        },
-        options: {
-            plugins: {
-                customColor: {
-                    color: 'white'
-                }
+    if (graph) {
+        graph.data.labels = labels;
+        graph.data.datasets = dataSet;
+        graph.update();
+    } else {
+        graph = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: dataSet,
             },
-            elements: {
-                point: {
-                    radius: 0,
-                },
-            },
-            scales: {
-                x: {
-                    type: 'linear',
-                    title: {
-                        display: true,
-                        text: 'Tokens',
-                    },
-                    ticks: {
-                        stepSize: stepSize,
-                        maxTicksLimit: 10,
-                    },
-                    beginAtZero: true,
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: yText,
+            options: {
+                plugins: {
+                    customColor: {
+                        color: 'white',
                     },
                 },
+                elements: {
+                    point: {
+                        radius: 0,
+                    },
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Tokens',
+                        },
+                        ticks: {
+                            stepSize: stepSize,
+                            maxTicksLimit: 10,
+                        },
+                        beginAtZero: true,
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: yText,
+                        },
+                    },
+                },
             },
-        },
-        plugins: [plugin]
-    });
+            plugins: [plugin],
+        });
+    }
     document.querySelector('div.chart-container').style.display = 'block';
-    computeBtn.style.display = 'none';
+    computeBtn.textContent = 'Créer le graphe';
     dlGraphBtn.style.display = 'inline-block';
     dlGraphBtn.addEventListener('click', () => {
         const link = document.createElement('a');

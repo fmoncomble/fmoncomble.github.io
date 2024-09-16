@@ -92,19 +92,30 @@
                     <div>
                         <label for="interval-input">
                             Intervalle d'échantillonnage :
-                            <input id="interval-input" name="interval-input" type="number" value="1000" /> tokens
+                            <input
+                                id="interval-input"
+                                name="interval-input"
+                                type="number"
+                                value="1000"
+                            />
+                            tokens
                         </label>
                     </div>
                 </div>
                 <button id="compute-btn">Créer le graphe</button>
                 <span id="counter"></span>
-                <button id="dl-graph" style="display: none">
-                    Télécharger le graphe
-                </button>
-                <button id="dl-data" style="display: none">
-                    Télécharger les données (CSV)
-                </button>
-                <button id="reset" style="display: none">Recommencer</button>
+                <div>
+                    <br />
+                    <button id="dl-graph" style="display: none">
+                        Télécharger le graphe
+                    </button>
+                    <button id="dl-data" style="display: none">
+                        Télécharger les données (CSV)
+                    </button>
+                    <button id="reset" style="display: none">
+                        Réinitialiser
+                    </button>
+                </div>
             </div>
             <br />
             <div class="chart-container">
