@@ -138,11 +138,6 @@ async function computeTTRFromXml(corpusName, lang, corpusFiles) {
                     }
                 }
             } else if (corpusFiles[i].type === 'text/plain') {
-                if (typeChoice === 'types') {
-                    typeChoice = 'normal';
-                } else if (typeChoice === 'lemmas') {
-                    typeChoice = 'root';
-                }
                 let txtString = await readTXT(corpusFiles[i]);
                 function readTXT(file) {
                     return new Promise((resolve) => {
@@ -160,7 +155,7 @@ async function computeTTRFromXml(corpusName, lang, corpusFiles) {
                 } else if (lang === 'fr') {
                     doc = frCompromise(txtString);
                 }
-                if (typeChoice === 'root') {
+                if (typeChoice === 'lemmas') {
                     doc.compute('root');
                 }
                 doc = doc.json();
@@ -225,6 +220,12 @@ computeBtn.addEventListener('click', async () => {
     const dataSet = result[1];
     counterSpan.textContent = null;
     counterSpan.style.display = 'none';
+    let yText;
+    if (typeChoice === 'types') {
+        yText = 'Mots uniques';
+    } else if (typeChoice === 'lemmas') {
+        yText = 'Lemmes uniques';
+    };
     const ctx = document.getElementById('chart').getContext('2d');
     const graph = new Chart(ctx, {
         type: 'line',
@@ -252,7 +253,7 @@ computeBtn.addEventListener('click', async () => {
                 y: {
                     title: {
                         display: true,
-                        text: 'Lemmes uniques',
+                        text: yText,
                     },
                 },
             },
