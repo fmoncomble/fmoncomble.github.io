@@ -174,13 +174,13 @@ span#counter {
 }
 
 .spinner {
-    border: solid 3px lightgray;
+    border: solid 3px white;
     border-left: solid 3px black;
     border-radius: 50%;
     height: 12px;
     width: 12px;
     margin-left: 5px;
-    animation: spin 1s linear infinite;
+    animation: spin 2s linear infinite;
     vertical-align: middle;
 }
 
