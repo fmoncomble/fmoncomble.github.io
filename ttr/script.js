@@ -83,6 +83,8 @@ typeChoiceSelect.addEventListener('change', () => {
     typeChoice = typeChoiceSelect.value;
 });
 
+const intervalInput = document.getElementById('interval-input');
+
 const counterSpan = document.getElementById('counter');
 async function computeTTRFromXml(corpusName, lang, corpusFiles) {
     const lemmas = new Set();
@@ -186,7 +188,7 @@ async function generateDataSet(corpora) {
         const corpusFiles = c.files;
         const ttrValues = await computeTTRFromXml(corpusName, lang, corpusFiles);
         const data = [];
-        const interval = Math.ceil(ttrValues.length / 1000);
+        const interval = intervalInput.value;
         ttrValues.forEach((ttr, index) => {
             if (index % interval === 0) {
                 ttr = Number(ttr.toFixed(2));

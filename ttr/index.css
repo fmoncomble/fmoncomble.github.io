@@ -100,6 +100,10 @@ button:hover,
     color: black;
 }
 
+input#interval-input {
+    width: 6em;
+}
+
 button#compute-btn {
     width: 110px;
     text-align: center;
