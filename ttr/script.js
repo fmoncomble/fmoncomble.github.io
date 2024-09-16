@@ -248,6 +248,7 @@ computeBtn.addEventListener('click', async () => {
     };
     const ctx = document.getElementById('chart').getContext('2d');
     if (graph) {
+        graph.options.scales.y.title.text = yText;
         graph.data.labels = labels;
         graph.data.datasets = dataSet;
         graph.update();
