@@ -217,6 +217,11 @@ computeBtn.addEventListener('click', async () => {
     computeBtn.appendChild(spinner);
     const result = await generateDataSet(corpora);
     const labels = result[0];
+    let stepSize = 1000;
+    console.log('Last label = ', labels[labels.length - 1]);
+    if (labels[labels.length - 1] < 10000) {
+        stepSize = 100;
+    }
     const dataSet = result[1];
     counterSpan.textContent = null;
     counterSpan.style.display = 'none';
@@ -264,7 +269,7 @@ computeBtn.addEventListener('click', async () => {
                         text: 'Tokens',
                     },
                     ticks: {
-                        stepSize: 1000,
+                        stepSize: stepSize,
                         maxTicksLimit: 10,
                     },
                     beginAtZero: true,
