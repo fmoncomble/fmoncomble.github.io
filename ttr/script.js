@@ -1,0 +1,229 @@
+const xmlContainer = document.getElementById('xml-container');
+xmlContainer.style.display = 'block';
+const xmlDiv = document.getElementById('xml-div');
+
+const img = document.querySelector('img');
+img.addEventListener('click', () => {
+    const dialog = document.createElement('dialog');
+    const img2 = document.createElement('img');
+    img2.src = img.src;
+    img2.style.height = '70vh';
+    img2.onclick = () => {
+        dialog.remove();
+    };
+    dialog.appendChild(img2);
+    const closeBtn = document.createElement('div');
+    closeBtn.textContent = '✕';
+    closeBtn.classList.add('close-btn');
+    dialog.appendChild(closeBtn);
+    closeBtn.onclick = () => dialog.remove();
+    document.body.appendChild(dialog);
+    dialog.showModal();
+});
+
+const addBtn = document.getElementById('add-btn');
+let index = 0;
+addCorpus();
+addBtn.addEventListener('click', () => {
+    addCorpus();
+});
+
+let corpora = [];
+function addCorpus() {
+    const newXmlDiv = xmlDiv.cloneNode(true);
+    newXmlDiv.style.display = 'block';
+    index++;
+    const corpusNb = newXmlDiv.querySelector('div.corpus-nb');
+    corpusNb.textContent = `Corpus n°${index}`;
+    addBtn.before(newXmlDiv);
+    const corpusNameInput = newXmlDiv.querySelector('input.corpus-name');
+    const langSelect = newXmlDiv.querySelector('select.lang-select');
+    let lang = 'fr';
+    langSelect.addEventListener('change', () => {
+        lang = langSelect.value;
+    });
+    let xmlFiles;
+    const xmlInput = newXmlDiv.querySelector('input.xml-input');
+    xmlInput.addEventListener('change', (event) => {
+        let corpusName;
+        if (corpusNameInput.value) {
+            corpusName = corpusNameInput.value;
+        } else {
+            corpusName = corpusNb.textContent;
+        }
+        xmlFiles = Array.from(event.target.files);
+        xmlFiles.sort((a, b) => {
+            return a.name.localeCompare(b.name);
+        });
+        const fileNbSpan = newXmlDiv.querySelector('span.file-nb');
+        const fileNames = [];
+        for (let f of xmlFiles) {
+            fileNames.push(f.name);
+        }
+        fileNbSpan.textContent = `${
+            xmlFiles.length
+        } fichier(s) : ${fileNames.join(', ')}`;
+        corpora.push({ name: corpusName, lang: lang, files: xmlFiles });
+    });
+}
+
+const counterSpan = document.getElementById('counter');
+async function computeTTRFromXml(corpusName, lang, xmlFiles) {
+    const lemmas = new Set();
+    const ttrValues = [];
+    if (xmlFiles.length > 0) {
+        for (let i = 0; i < xmlFiles.length; i++) {
+            counterSpan.textContent = `${corpusName} : traitement du fichier ${
+                i + 1
+            } sur ${xmlFiles.length}`;
+            let xmlString = await readXML(xmlFiles[i]);
+            function readXML(xmlFile) {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const xmlString = e.target.result;
+                        resolve(xmlString);
+                    };
+                    reader.readAsText(xmlFile);
+                });
+            }
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
+            const words = xmlDoc.getElementsByTagName('w');
+            for (let j = 0; j < words.length; j++) {
+                const anaElements = words[j].getElementsByTagName('txm:ana');
+                for (let k = 0; k < anaElements.length; k++) {
+                    if (
+                        anaElements[k].getAttribute('type') === `#${lang}lemma`
+                    ) {
+                        const lemma = anaElements[k].textContent;
+                        lemmas.add(lemma);
+                        const ttr = lemmas.size;
+                        ttrValues.push(ttr);
+                    }
+                }
+            }
+        }
+    }
+    return ttrValues;
+}
+
+async function generateDataSet(corpora) {
+    const dataSet = [];
+    let labels = new Set();
+    for (let c of corpora) {
+        const index = corpora.indexOf(c) + 1;
+        const corpusName = c.name;
+        const lang = c.lang;
+        const xmlFiles = c.files;
+        const ttrValues = await computeTTRFromXml(corpusName, lang, xmlFiles);
+        const data = [];
+        const interval = Math.ceil(ttrValues.length / 1000);
+        ttrValues.forEach((ttr, index) => {
+            if (index % interval === 0) {
+                ttr = Number(ttr.toFixed(2));
+                index = Number(index + 1);
+                labels.add(index);
+                data.push({ index, ttr });
+            }
+        });
+        dataSet.push({
+            label: corpusName,
+            data: data,
+            fill: false,
+            parsing: { xAxisKey: 'index', yAxisKey: 'ttr' },
+        });
+    }
+    labels = Array.from(labels).sort((a, b) => a - b);
+    return [labels, dataSet];
+}
+
+const computeBtn = document.getElementById('compute-btn');
+const dlGraphBtn = document.getElementById('dl-graph');
+const dlDataBtn = document.getElementById('dl-data');
+computeBtn.addEventListener('click', async () => {
+    if (corpora.length === 0) {
+        return;
+    }
+    computeBtn.textContent = null;
+    const spinner = document.createElement('span');
+    spinner.classList.add('spinner');
+    spinner.style.display = 'inline-block';
+    computeBtn.appendChild(spinner);
+    const result = await generateDataSet(corpora);
+    const labels = result[0];
+    const dataSet = result[1];
+    counterSpan.textContent = null;
+    counterSpan.style.display = 'none';
+    const ctx = document.getElementById('chart').getContext('2d');
+    const graph = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: dataSet,
+        },
+        options: {
+            elements: {
+                point: {
+                    radius: 0,
+                },
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Tokens',
+                    },
+                    ticks: {
+                        maxTicksLimit: 10,
+                    },
+                    beginAtZero: true,
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Lemmes uniques',
+                    },
+                },
+            },
+        },
+    });
+    computeBtn.style.display = 'none';
+    dlGraphBtn.style.display = 'inline-block';
+    dlGraphBtn.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.href = graph.toBase64Image();
+        link.download = 'graphe.png';
+        link.click();
+    });
+    dlDataBtn.style.display = 'inline-block';
+    dlDataBtn.addEventListener('click', () => {
+        const csvData = [];
+        for (let ds of dataSet) {
+            const label = ds.label;
+            const data = ds.data;
+            for (let d of data) {
+                const index = d.index;
+                const ttr = d.ttr;
+                csvData.push({ corpus: label, index: index, lemmes: ttr });
+            }
+        }
+        console.log(csvData);
+        function convertToCsv(data) {
+            const header = Object.keys(data[0]).join('\t');
+            const rows = data.map((obj) => Object.values(obj).join('\t'));
+            return [header, ...rows].join('\n');
+        }
+        const csvString = convertToCsv(csvData);
+        var myBlob = new Blob([csvString], { type: 'text/csv' });
+        var url = window.URL.createObjectURL(myBlob);
+        var anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = `ttr.csv`;
+        anchor.click();
+        window.URL.revokeObjectURL(url);
+    });
+    const resetBtn = document.getElementById('reset');
+    resetBtn.style.display = 'inline-block';
+    resetBtn.onclick = () => location.reload();
+});

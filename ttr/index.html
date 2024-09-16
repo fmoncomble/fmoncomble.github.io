@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Ratio type/token</title>
+        <script src="https://unpkg.com/chart.js"></script>
+        <script src="script.js" defer></script>
+        <link rel="stylesheet" href="index.css" type="text/css" />
+    </head>
+    <body>
+        <h1>Ratio type/token</h1>
+        <div class="description">
+        <p>Cet outil permet d'estimer la diversité lexicale d'un ou plusieurs corpus sous forme de courbe de progression.</p></div>
+        <div id="img">
+            <img src="graphe.png" height="100px" title="cliquer pour zoomer"/>
+            <div id="zoom">Exemple : cliquer pour zoomer</div>
+        </div>
+        <div id="wrapper">
+            <br />
+            <div id="xml-container" class="file-input">
+                <p><b>Charger des corpus XML-TEI lemmatisés avec TXM</b></p>
+                <div id="xml-div" class="xml-input" style="display: none">
+                    <div class="corpus-nb">Corpus n°1</div>
+                    <div>
+                        <label for="corpus-name">
+                            Nom du corpus :
+                            <input
+                                type="text"
+                                class="corpus-name"
+                                name="corpus-name"
+                            />
+                        </label>
+                    </div>
+                    <div>
+                        <label for="lang-select">
+                            Langue :
+                            <select class="lang-select" name="lang-select">
+                                <option value="fr">Français</option>
+                                <option value="en">Anglais</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="file-input-div">
+                        <label for="xml-input" class="file-label">
+                            Choisir le(s) fichier(s)
+                            <input
+                                class="xml-input"
+                                name="xml-input"
+                                type="file"
+                                multiple
+                                accept=".xml"
+                        /></label><span class="file-nb"></span>
+                    </div>
+                </div>
+                <button id="add-btn">Ajouter un corpus</button>
+            </div>
+            <br />
+            <div>
+                <button id="compute-btn">Créer le graphe</span></button>
+                <span id="counter"></span
+                >
+                <button id="dl-graph" style="display: none">
+                    Télécharger le graphe
+                </button>
+                <button id="dl-data" style="display: none">
+                    Télécharger les données (CSV)
+                </button>
+                <button id="reset" style="display: none">Recommencer</button>
+            </div>
+            <br />
+            <canvas id="chart" width="400" height="200"></canvas>
+        </div>
+    </body>
+</html>
