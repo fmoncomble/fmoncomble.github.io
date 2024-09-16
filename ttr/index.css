@@ -61,6 +61,28 @@ dialog {
     border-color: red;
 }
 
+div#instructions {
+    max-width: 500px;
+    text-wrap: balance;
+}
+
+span#TXM {
+    color: darkblue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+span#TXM:hover {
+    color: blue;
+}
+
+dialog#txm-dialog,
+dialog#txm-dialog div {
+    text-align: center;
+    text-wrap: balance;
+    max-width: 70vh;
+}
+
 button,
 .file-label {
     cursor: pointer;
@@ -165,6 +187,14 @@ span#counter {
     100% {
         transform: rotate(360deg);
     }
+}
+
+div.chart-container {
+    max-width: 70vw;
+    border: solid 1px gray;
+    border-radius: 5px;
+    padding: 10px;
+    display: none;
 }
 
 .footer {

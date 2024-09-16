@@ -21,6 +21,16 @@ img.addEventListener('click', () => {
     dialog.showModal();
 });
 
+const txmSpan = document.getElementById('TXM');
+const txmDialog = document.getElementById('txm-dialog');
+const okBtn = txmDialog.querySelector('button');
+txmSpan.addEventListener('click', () => {
+    txmDialog.showModal();
+})
+okBtn.addEventListener('click', () => {
+    txmDialog.close();
+})
+
 const addBtn = document.getElementById('add-btn');
 let index = 0;
 addCorpus();
@@ -42,7 +52,7 @@ function addCorpus() {
     langSelect.addEventListener('change', () => {
         lang = langSelect.value;
     });
-    let xmlFiles;
+    let corpusFiles;
     const xmlInput = newXmlDiv.querySelector('input.xml-input');
     xmlInput.addEventListener('change', (event) => {
         let corpusName;
@@ -51,53 +61,112 @@ function addCorpus() {
         } else {
             corpusName = corpusNb.textContent;
         }
-        xmlFiles = Array.from(event.target.files);
-        xmlFiles.sort((a, b) => {
+        corpusFiles = Array.from(event.target.files);
+        corpusFiles.sort((a, b) => {
             return a.name.localeCompare(b.name);
         });
         const fileNbSpan = newXmlDiv.querySelector('span.file-nb');
         const fileNames = [];
-        for (let f of xmlFiles) {
+        for (let f of corpusFiles) {
             fileNames.push(f.name);
         }
         fileNbSpan.textContent = `${
-            xmlFiles.length
+            corpusFiles.length
         } fichier(s) : ${fileNames.join(', ')}`;
-        corpora.push({ name: corpusName, lang: lang, files: xmlFiles });
+        corpora.push({ name: corpusName, lang: lang, files: corpusFiles });
     });
 }
 
+let typeChoice = 'types';
+const typeChoiceSelect = document.getElementById('type-choice');
+typeChoiceSelect.addEventListener('change', () => {
+    typeChoice = typeChoiceSelect.value;
+});
+
 const counterSpan = document.getElementById('counter');
-async function computeTTRFromXml(corpusName, lang, xmlFiles) {
+async function computeTTRFromXml(corpusName, lang, corpusFiles) {
     const lemmas = new Set();
     const ttrValues = [];
-    if (xmlFiles.length > 0) {
-        for (let i = 0; i < xmlFiles.length; i++) {
+    if (corpusFiles.length > 0) {
+        for (let i = 0; i < corpusFiles.length; i++) {
             counterSpan.textContent = `${corpusName} : traitement du fichier ${
                 i + 1
-            } sur ${xmlFiles.length}`;
-            let xmlString = await readXML(xmlFiles[i]);
-            function readXML(xmlFile) {
-                return new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const xmlString = e.target.result;
-                        resolve(xmlString);
-                    };
-                    reader.readAsText(xmlFile);
-                });
-            }
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
-            const words = xmlDoc.getElementsByTagName('w');
-            for (let j = 0; j < words.length; j++) {
-                const anaElements = words[j].getElementsByTagName('txm:ana');
-                for (let k = 0; k < anaElements.length; k++) {
-                    if (
-                        anaElements[k].getAttribute('type') === `#${lang}lemma`
-                    ) {
-                        const lemma = anaElements[k].textContent;
+            } sur ${corpusFiles.length}`;
+            if (corpusFiles[i].type === 'text/xml') {
+                let xmlString = await readXML(corpusFiles[i]);
+                function readXML(xmlFile) {
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const xmlString = e.target.result;
+                            resolve(xmlString);
+                        };
+                        reader.readAsText(xmlFile);
+                    });
+                }
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(
+                    xmlString,
+                    'application/xml'
+                );
+                const words = xmlDoc.getElementsByTagName('w');
+                for (let j = 0; j < words.length; j++) {
+                    if (typeChoice === 'types') {
+                        const lemma = words[j]
+                            .getElementsByTagName('txm:form')[0]
+                            .textContent.toLowerCase();
                         lemmas.add(lemma);
+                        const ttr = lemmas.size;
+                        ttrValues.push(ttr);
+                    } else if (typeChoice === 'lemmas') {
+                        const anaElements =
+                            words[j].getElementsByTagName('txm:ana');
+                        for (let k = 0; k < anaElements.length; k++) {
+                            if (
+                                anaElements[k].getAttribute('type') ===
+                                `#${lang}lemma`
+                            ) {
+                                const lemma =
+                                    anaElements[k].textContent.toLowerCase();
+                                lemmas.add(lemma);
+                                const ttr = lemmas.size;
+                                ttrValues.push(ttr);
+                            }
+                        }
+                    }
+                }
+            } else if (corpusFiles[i].type === 'text/plain') {
+                if (typeChoice === 'types') {
+                    typeChoice = 'normal';
+                } else if (typeChoice === 'lemmas') {
+                    typeChoice = 'root';
+                }
+                let txtString = await readTXT(corpusFiles[i]);
+                function readTXT(file) {
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const txtString = e.target.result;
+                            resolve(txtString);
+                        };
+                        reader.readAsText(file);
+                    });
+                }
+                let doc;
+                if (lang === 'en') {
+                    doc = nlp(txtString);
+                } else if (lang === 'fr') {
+                    doc = frCompromise(txtString);
+                }
+                if (typeChoice === 'root') {
+                    doc.compute('root');
+                }
+                doc = doc.json();
+                for (let d of doc) {
+                    let terms = d.terms;
+                    for (let t of terms) {
+                        let lemma = t.root || t.normal;
+                        lemmas.add(lemma.toLowerCase());
                         const ttr = lemmas.size;
                         ttrValues.push(ttr);
                     }
@@ -112,11 +181,10 @@ async function generateDataSet(corpora) {
     const dataSet = [];
     let labels = new Set();
     for (let c of corpora) {
-        const index = corpora.indexOf(c) + 1;
         const corpusName = c.name;
         const lang = c.lang;
-        const xmlFiles = c.files;
-        const ttrValues = await computeTTRFromXml(corpusName, lang, xmlFiles);
+        const corpusFiles = c.files;
+        const ttrValues = await computeTTRFromXml(corpusName, lang, corpusFiles);
         const data = [];
         const interval = Math.ceil(ttrValues.length / 1000);
         ttrValues.forEach((ttr, index) => {
@@ -188,12 +256,13 @@ computeBtn.addEventListener('click', async () => {
             },
         },
     });
+    document.querySelector('div.chart-container').style.display = 'block';
     computeBtn.style.display = 'none';
     dlGraphBtn.style.display = 'inline-block';
     dlGraphBtn.addEventListener('click', () => {
         const link = document.createElement('a');
         link.href = graph.toBase64Image();
-        link.download = 'graphe.png';
+        link.download = 'graph.png';
         link.click();
     });
     dlDataBtn.style.display = 'inline-block';
@@ -218,7 +287,7 @@ computeBtn.addEventListener('click', async () => {
         var url = window.URL.createObjectURL(myBlob);
         var anchor = document.createElement('a');
         anchor.href = url;
-        anchor.download = `ttr.csv`;
+        anchor.download = `data.csv`;
         anchor.click();
         window.URL.revokeObjectURL(url);
     });
