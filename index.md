@@ -39,7 +39,7 @@ Une extension 4-en-1 qui rassemble [BlueskyScraper](https://fmoncomble.github.io
 
 Moncomble, F. (2024). _SocialCorpusScraper_ (Version 0.4) [JavaScript]. Arras, France : Université d’Artois. Disponible à l’adresse : https://fmoncomble.github.io/SocialCorpusScraper/
 
-### ![graph (1)](https://github.com/user-attachments/assets/19c87c0c-f5c4-400a-bfb3-5d5450476898) [Ratio type/token](https://fmoncomble.github.io/ttr/index.html)
+### ![graph (1)](https://github.com/user-attachments/assets/19c87c0c-f5c4-400a-bfb3-5d5450476898) [Ratio type/token](https://fmoncomble.github.io/ttr/)
 Une application web permettant de générer une courbe de progression du ratio type/token d'un ou plusieurs corpus pour estimer leur diversité lexicale.  
 
 ## Autres
