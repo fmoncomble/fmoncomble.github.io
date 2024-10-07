@@ -212,7 +212,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Post to Bluesky
     bskyBtn.addEventListener('click', () => {
-        postToBluesky();
+        if (!bskyToken || !bskyRefreshToken) {
+            window.alert('Authenticate to bluesky first!');
+            return;
+        } else {
+            postToBluesky();
+        }
     });
     async function postToBluesky() {
         // Refresh token
