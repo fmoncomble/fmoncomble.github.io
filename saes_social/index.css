@@ -1,0 +1,226 @@
+body {
+    padding: 20px;
+    font-family: system-ui;
+}
+
+.header {
+    width: 50vw;
+    text-align: center;
+    font-family: 'Optima', system-ui;
+    font-weight: bold;
+    color: darkblue;
+    text-shadow: 0 0 5px #eee;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 50vw;
+    align-items: center;
+}
+
+.auth-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    align-items: center;
+}
+
+.compose-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    padding: 10px;
+}
+
+
+.text-div,
+.img-div,
+.btn-div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+textarea {
+    border: solid 1px gray;
+    border-radius: 5px;
+    width: 100%;
+    height: 20em;
+    background-color: white;
+    box-shadow: 0 0 10px gray;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.counter {
+    width: 100%;
+    text-align: right;
+    font-family: system-ui;
+    color: gray;
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.dropzone {
+    position: relative;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 0 10px gray inset;
+    background-color: #eee;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+
+div#img-instructions {
+    color: gray;
+}
+
+.img-preview {
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.img-preview div {
+    position: relative;
+    margin: 5px;
+}
+
+.img-preview img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.remove-btn {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+    position: absolute !important;
+    width: 30px;
+    height: 30px;
+    top: 10px;
+    left: 10px;
+}
+
+.remove-btn:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+div.overlay {
+    display: none;
+    background-color: #eee;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 9;
+    justify-content: space-around;
+}
+
+div.overlay-hint {
+    display: flex;
+    flex-direction: column;
+    font-size: xx-large;
+    color: black;
+    text-shadow: 0 0 10px white;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
+.buttons {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+button {
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button.x-btn {
+    background-color: black;
+    color: white;
+}
+
+button.x-btn:hover {
+    background-color: darkslategray;
+}
+
+button.bsky-btn {
+    background-color: rgb(0, 133, 255);
+    color: white;
+}
+
+button.bsky-btn:hover {
+    background-color: #0077e6;
+}
+
+button.masto-btn {
+    background-color: #6364ff;
+    color: white;
+}
+
+button.masto-btn:hover {
+    background-color: #563acc;
+}
+
+button.reset-masto {
+    display: none;
+}
+
+dialog {
+    font-family: system-ui;
+    flex-direction: column;
+    text-align: center;
+    box-shadow: 0 0 10px gray;
+    border: none;
+    border-radius: 10px;
+    background-color: white;
+}
+
+dialog div {
+    margin: 5px;
+}
+
+div.instance-input {
+    display: inline-block;
+    margin: 10px;
+}
+
+dialog input {
+    border: solid 1px gray;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+dialog button {
+    background-color: #6364ff;
+    color: white;
+}
+
+dialog button:hover {
+    background-color: #563acc;
+}

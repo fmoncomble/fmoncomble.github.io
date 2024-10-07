@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SAES Social</title>
+        <script src="index.js" type="text/javascript"></script>
+        <link rel="stylesheet" type="text/css" href="index.css" />
+    </head>
+    <body>
+        <h1 class="header">SAES Social</h1>
+        <div class="wrapper">
+            <div id="auth-wrapper" class="auth-wrapper">
+                <!-- <button id="x-auth-btn" class="x-btn">Authorize with 𝕏</button> -->
+                <button id="bsky-auth-btn" class="bsky-btn">
+                    Authorize with Bluesky
+                </button>
+                <button if="masto-auth-btn" class="masto-btn">
+                    Authorize with Mastodon
+                </button>
+            </div>
+            <div id="compose-wrapper" class="compose-wrapper">
+                <div class="text-div">
+                    <textarea
+                        id="post-text"
+                        placeholder="Type post here"
+                    ></textarea>
+                    <div id="counter" class="counter">
+                        <span id="char-count">0</span>/280
+                    </div>
+                </div>
+                <div class="img-div">
+                    <div id="dropzone" class="dropzone">
+                        <div id="img-instructions">Drop up to 4 pictures here</div>
+                        <div id="overlay" class="overlay">
+                            <div class="overlay-hint">➕</div>
+                        </div>
+                        <div id="img-preview" class="img-preview"></div>
+                    </div>
+                </div>
+                <div class="btn-div">
+                    <div class="buttons">
+                        <button id="x-btn" class="x-btn">Post to 𝕏</button>
+                        <button id="bsky-btn" class="bsky-btn">
+                            Post to Bluesky
+                        </button>
+                        <button id="masto-btn" class="masto-btn">
+                            Post to Mastodon
+                        </button>
+                        <button id="reset-masto" class="reset-masto masto-btn">
+                            Reset Mastodon
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <dialog id="bsky-dialog">
+            <h2>Authenticate with Bluesky</h2>
+            <div class="id-input">
+                <label for="id-input">Username: 
+                    <input
+                        type="text"
+                        id="id-input"
+                        name="id-input"
+                        placeholder="Bluesky username"
+                    />
+                </label>
+            </div>
+            <div class="pwd-input">
+                <label for="pwd-input">Password: 
+                    <input
+                        type="password"
+                        id="pwd-input"
+                        name="pwd-input"
+                        placeholder="Bluesky password"
+                    />
+                </label>
+            </div>
+            <div>
+                <button id="bsky-ok-btn" class="bsky-btn">OK</button>
+            </div>
+        </dialog>
+        <dialog id="masto-dialog">
+            <h2>Enter your Mastodon instance:</h2>
+            <div class="instance-input">
+                <label for="instance-input"
+                    >https://
+                    <input
+                        type="text"
+                        name="instance-input"
+                        id="instance-input"
+                        placeholder="mastodon.instance"
+                    />
+                </label>
+            </div>
+            <div>
+                <button id="masto-ok-btn">OK</button>
+            </div>
+        </dialog>
+    </body>
+</html>
