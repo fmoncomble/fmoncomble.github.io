@@ -36,7 +36,6 @@ body {
     padding: 10px;
 }
 
-
 .text-div,
 .img-div,
 .btn-div {
@@ -158,6 +157,12 @@ button {
     padding: 5px 10px;
     font-weight: bold;
     cursor: pointer;
+}
+
+button:disabled {
+    color: gray !important;
+    background-color: #ddd !important;
+    cursor: not-allowed;
 }
 
 button.x-btn {
