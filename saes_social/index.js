@@ -34,6 +34,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const idInput = document.getElementById('id-input');
             const pwdInput = document.getElementById('pwd-input');
             const okBtn = document.getElementById('bsky-ok-btn');
+            window.addEventListener('click', (e) => {
+                if (e.target == bskyDialog) {
+                    bskyDialog.close();
+                }
+            })
             okBtn.addEventListener('click', async () => {
                 bskyId = idInput.value.trim();
                 bskyPwd = pwdInput.value.trim();
