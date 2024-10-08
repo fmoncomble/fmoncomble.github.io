@@ -19,6 +19,15 @@ body {
     align-items: center;
 }
 
+@media (max-aspect-ratio: 1/1) {
+    .header {
+        width: 100vw;
+    };
+    .wrapper {
+        width: 90vw;
+    }
+}
+
 .auth-wrapper {
     display: flex;
     flex-direction: row;
@@ -26,6 +35,39 @@ body {
     width: 100%;
     padding: 10px;
     align-items: center;
+}
+
+.auth-btn {
+    width: 200px;
+}
+
+.ok-btn {
+    width: 55px;
+    height: 35px;
+}
+
+.spinner {
+    border: solid 3px white;
+    border-radius: 50%;
+    width: 17px;
+    height: 17px;
+    animation: spin 1s linear infinite;
+    display: none;
+    margin: 0;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.bsky-auth-spinner {
+    border-left: solid 3px #004280;
 }
 
 .compose-wrapper {
@@ -42,12 +84,14 @@ body {
     display: flex;
     flex-direction: column;
     width: 100%;
+    box-sizing: border-box;
 }
 
 textarea {
     border: solid 1px gray;
     border-radius: 5px;
     width: 100%;
+    box-sizing:border-box;
     height: 20em;
     background-color: white;
     box-shadow: 0 0 10px gray;
@@ -72,7 +116,8 @@ textarea {
     box-shadow: 0 0 10px gray inset;
     background-color: #eee;
     width: 100%;
-    height: 70px;
+    box-sizing: border-box;
+    height: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -149,6 +194,7 @@ div.overlay-hint {
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
+    box-sizing: border-box;
 }
 
 button {
@@ -157,6 +203,7 @@ button {
     padding: 5px 10px;
     font-weight: bold;
     cursor: pointer;
+    height: 35px;
 }
 
 button:disabled {

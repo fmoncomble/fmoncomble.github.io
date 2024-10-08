@@ -10,10 +10,10 @@
         <div class="wrapper">
             <div id="auth-wrapper" class="auth-wrapper">
                 <!-- <button id="x-auth-btn" class="x-btn">Authorize with 𝕏</button> -->
-                <button id="bsky-auth-btn" class="bsky-btn">
+                <button id="bsky-auth-btn" class="bsky-btn auth-btn">
                     Authorize with Bluesky
                 </button>
-                <button if="masto-auth-btn" class="masto-btn" disabled>
+                <button if="masto-auth-btn" class="masto-btn auth-btn" disabled>
                     Authorize with Mastodon
                 </button>
             </div>
@@ -75,7 +75,7 @@
                 </label>
             </div>
             <div>
-                <button id="bsky-ok-btn" class="bsky-btn">OK</button>
+                <button id="bsky-ok-btn" class="bsky-btn ok-btn">OK</button>
             </div>
         </dialog>
         <dialog id="masto-dialog">
@@ -92,7 +92,7 @@
                 </label>
             </div>
             <div>
-                <button id="masto-ok-btn">OK</button>
+                <button id="masto-ok-btn" class="masto-btn ok-btn">OK</button>
             </div>
         </dialog>
     </body>

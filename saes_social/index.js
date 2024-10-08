@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     let bskyDid = sessionStorage.getItem('bsky_did');
     checkCredentials();
     function checkCredentials() {
-        console.log(`Tokens: ${bskyToken} ——— ${bskyRefreshToken}`);
         if (
             !bskyId ||
             !bskyPwd ||
@@ -39,43 +38,54 @@ document.addEventListener('DOMContentLoaded', async () => {
                 bskyId = idInput.value.trim();
                 bskyPwd = pwdInput.value.trim();
                 if (bskyId && bskyPwd) {
-                    sessionStorage.setItem('bsky_id', bskyId);
-                    sessionStorage.setItem('bsky_pwd', bskyPwd);
-                    bskyAuthBtn.textContent = 'Reset Bluesky';
-                    await loginToBluesky();
-                    async function loginToBluesky() {
-                        try {
-                            const res = await fetch(
-                                'https://bsky.social/xrpc/com.atproto.server.createSession',
-                                {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        identifier: bskyId,
-                                        password: bskyPwd,
-                                    }),
-                                }
-                            );
-                            const data = await res.json();
-                            bskyToken = data.accessJwt;
-                            bskyRefreshToken = data.refreshJwt;
-                            bskyDid = data.did;
-                            sessionStorage.setItem('bsky_token', bskyToken);
-                            sessionStorage.setItem(
-                                'bsky_refresh_token',
-                                bskyRefreshToken
-                            );
-                            sessionStorage.setItem('bsky_did', bskyDid);
-                            checkCredentials();
-                        } catch (error) {
-                            console.error(
-                                ('Could not login to Bluesky: ', error)
-                            );
-                        }
-                    }
-                    bskyDialog.close();
+                    okBtn.textContent = null;
+                    const spinner = document.createElement('div');
+                    spinner.classList.add('spinner', 'bsky-auth-spinner');
+                    spinner.style.display = 'inline-flex';
+                    okBtn.appendChild(spinner);
+                    // sessionStorage.setItem('bsky_id', bskyId);
+                    // sessionStorage.setItem('bsky_pwd', bskyPwd);
+                    // await loginToBluesky();
+                    // async function loginToBluesky() {
+                    //     try {
+                    //         const res = await fetch(
+                    //             'https://bsky.social/xrpc/com.atproto.server.createSession',
+                    //             {
+                    //                 method: 'POST',
+                    //                 headers: {
+                    //                     'Content-Type': 'application/json',
+                    //                 },
+                    //                 body: JSON.stringify({
+                    //                     identifier: bskyId,
+                    //                     password: bskyPwd,
+                    //                 }),
+                    //             }
+                    //         );
+                    //         if (res.ok) {
+                    //             bskyAuthBtn.textContent = '✔︎';
+                    //             const data = await res.json();
+                    //             bskyToken = data.accessJwt;
+                    //             bskyRefreshToken = data.refreshJwt;
+                    //             bskyDid = data.did;
+                    //             sessionStorage.setItem('bsky_token', bskyToken);
+                    //             sessionStorage.setItem(
+                    //                 'bsky_refresh_token',
+                    //                 bskyRefreshToken
+                    //             );
+                    //             sessionStorage.setItem('bsky_did', bskyDid);
+                    //             setTimeout(() => {
+                    //                 checkCredentials();
+                    //             }, 1000);
+                    //         }
+                    //     } catch (error) {
+                    //         console.error(
+                    //             ('Could not login to Bluesky: ', error)
+                    //         );
+                    //     }
+                    // }
+                    // spinner.remove();
+                    // okBtn.textContent = 'OK';
+                    // bskyDialog.close();
                 }
             });
             bskyDialog.showModal();
@@ -149,7 +159,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const imgElement = document.createElement('img');
         const removeBtn = document.createElement('div');
         removeBtn.classList.add('remove-btn');
-        removeBtn.textContent = '✖︎';
+        removeBtn.textContent = '❌';
         removeBtn.addEventListener('click', () => {
             const index = media.indexOf(img);
             media.splice(index, 1);
@@ -178,6 +188,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function postToX() {
         if (media.length > 0) {
             let clipboardItem;
+            const clipboardItems = [];
             for (m of media) {
                 const reader = new FileReader();
                 reader.readAsDataURL(m);
@@ -186,12 +197,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                         resolve(e.target.result);
                     };
                 });
-                const img = await fetch(src).then((res) => res.blob());
-                if (img.type !== 'image/png') {
-                    window.alert('Only PNG images for 𝕏!');
-                    return;
+                if (m.type === 'image/png') {
+                    clipboardItem = new ClipboardItem({ [m.type]: m });
+                    clipboardItems.push(clipboardItem);
                 } else {
-                    clipboardItem = new ClipboardItem({ [img.type]: img });
+                    const img = new Image();
+                    img.src = src;
+                    await new Promise((resolve) => {
+                        img.onload = resolve;
+                    });
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    const blob = await new Promise((resolve) => {
+                        canvas.toBlob(resolve, 'image/png');
+                    });
+                    clipboardItem = new ClipboardItem({ [blob.type]: blob });
+                    clipboardItems.push(clipboardItem);
                 }
             }
             try {
@@ -200,7 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         'Only the last image will be copied to the clipboard'
                     );
                 }
-                await navigator.clipboard.write([clipboardItem]);
+                await navigator.clipboard.write(clipboardItems);
             } catch (error) {
                 console.error('Could not write images to the clipboard', error);
             }
@@ -223,7 +247,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Refresh token
         bskyToken = await refreshToken();
         async function refreshToken() {
-            console.log('Refreshing token');
             try {
                 const res = await fetch(
                     'https://bsky.social/xrpc/com.atproto.server.refreshSession',
@@ -236,7 +259,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 );
                 const data = await res.json();
-                console.log('Refresh data: ', data);
                 bskyToken = data.accessJwt;
                 bskyRefreshToken = data.refreshJwt;
                 sessionStorage.setItem('bsky_token', bskyToken);
@@ -288,7 +310,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 images: images,
             };
         }
-        console.log('Post: ', post);
         try {
             const res = await fetch(
                 'https://bsky.social/xrpc/com.atproto.repo.createRecord',
