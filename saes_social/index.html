@@ -29,7 +29,19 @@
                 </div>
                 <div class="img-div">
                     <div id="dropzone" class="dropzone">
-                        <div id="img-instructions">Drop up to 4 pictures here</div>
+                        <div class="dz-click" for="img-upload">
+                            <input
+                                type="file"
+                                id="img-upload"
+                                name="img-upload"
+                                class="img-upload"
+                                multiple
+                                accept="image/*"
+                            />
+                        </div>
+                        <div id="img-instructions">
+                            <div>Click or drop up to 4 pictures here</div>
+                        </div>
                         <div id="overlay" class="overlay">
                             <div class="overlay-hint">➕</div>
                         </div>
@@ -55,7 +67,8 @@
         <dialog id="bsky-dialog">
             <h2>Authenticate with Bluesky</h2>
             <div class="id-input">
-                <label for="id-input">Username: 
+                <label for="id-input"
+                    >Username:
                     <input
                         type="text"
                         id="id-input"
@@ -65,7 +78,8 @@
                 </label>
             </div>
             <div class="pwd-input">
-                <label for="pwd-input">Password: 
+                <label for="pwd-input"
+                    >Password:
                     <input
                         type="password"
                         id="pwd-input"

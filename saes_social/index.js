@@ -43,49 +43,49 @@ document.addEventListener('DOMContentLoaded', async () => {
                     spinner.classList.add('spinner', 'bsky-auth-spinner');
                     spinner.style.display = 'inline-flex';
                     okBtn.appendChild(spinner);
-                    // sessionStorage.setItem('bsky_id', bskyId);
-                    // sessionStorage.setItem('bsky_pwd', bskyPwd);
-                    // await loginToBluesky();
-                    // async function loginToBluesky() {
-                    //     try {
-                    //         const res = await fetch(
-                    //             'https://bsky.social/xrpc/com.atproto.server.createSession',
-                    //             {
-                    //                 method: 'POST',
-                    //                 headers: {
-                    //                     'Content-Type': 'application/json',
-                    //                 },
-                    //                 body: JSON.stringify({
-                    //                     identifier: bskyId,
-                    //                     password: bskyPwd,
-                    //                 }),
-                    //             }
-                    //         );
-                    //         if (res.ok) {
-                    //             bskyAuthBtn.textContent = '✔︎';
-                    //             const data = await res.json();
-                    //             bskyToken = data.accessJwt;
-                    //             bskyRefreshToken = data.refreshJwt;
-                    //             bskyDid = data.did;
-                    //             sessionStorage.setItem('bsky_token', bskyToken);
-                    //             sessionStorage.setItem(
-                    //                 'bsky_refresh_token',
-                    //                 bskyRefreshToken
-                    //             );
-                    //             sessionStorage.setItem('bsky_did', bskyDid);
-                    //             setTimeout(() => {
-                    //                 checkCredentials();
-                    //             }, 1000);
-                    //         }
-                    //     } catch (error) {
-                    //         console.error(
-                    //             ('Could not login to Bluesky: ', error)
-                    //         );
-                    //     }
-                    // }
-                    // spinner.remove();
-                    // okBtn.textContent = 'OK';
-                    // bskyDialog.close();
+                    sessionStorage.setItem('bsky_id', bskyId);
+                    sessionStorage.setItem('bsky_pwd', bskyPwd);
+                    await loginToBluesky();
+                    async function loginToBluesky() {
+                        try {
+                            const res = await fetch(
+                                'https://bsky.social/xrpc/com.atproto.server.createSession',
+                                {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        identifier: bskyId,
+                                        password: bskyPwd,
+                                    }),
+                                }
+                            );
+                            if (res.ok) {
+                                bskyAuthBtn.textContent = '✔︎';
+                                const data = await res.json();
+                                bskyToken = data.accessJwt;
+                                bskyRefreshToken = data.refreshJwt;
+                                bskyDid = data.did;
+                                sessionStorage.setItem('bsky_token', bskyToken);
+                                sessionStorage.setItem(
+                                    'bsky_refresh_token',
+                                    bskyRefreshToken
+                                );
+                                sessionStorage.setItem('bsky_did', bskyDid);
+                                setTimeout(() => {
+                                    checkCredentials();
+                                }, 1000);
+                            }
+                        } catch (error) {
+                            console.error(
+                                ('Could not login to Bluesky: ', error)
+                            );
+                        }
+                    }
+                    spinner.remove();
+                    okBtn.textContent = 'OK';
+                    bskyDialog.close();
                 }
             });
             bskyDialog.showModal();
@@ -153,6 +153,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     });
+
+    const imgUpload = document.getElementById('img-upload');
+    imgInstructions.onclick = () => {
+        imgUpload.click();
+    };
+    imgUpload.addEventListener('change', (e) => {
+        let imgs = e.target.files;
+        for (let img of imgs) {
+            if (media.length < 4) {
+                // let file = img.getAsFile();
+                media.push(img);
+                displayThumbnail(img);
+            } else {
+                window.alert('Too many pictures');
+                return;
+            }
+        }
+    })
 
     function displayThumbnail(img) {
         const div = document.createElement('div');
