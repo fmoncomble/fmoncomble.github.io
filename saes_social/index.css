@@ -257,8 +257,7 @@ button.masto-btn:hover {
     background-color: #563acc;
 }
 
-button.bsky-btn,
-button.masto-btn {
+button.post-btn {
     width: 132px;
 }
 
