@@ -221,6 +221,7 @@ button {
     font-weight: bold;
     cursor: pointer;
     height: 35px;
+    transition: background-color 0.2s;
 }
 
 button:disabled {
@@ -256,8 +257,13 @@ button.masto-btn:hover {
     background-color: #563acc;
 }
 
-button.reset-masto {
-    display: none;
+button.bsky-btn,
+button.masto-btn {
+    width: 132px;
+}
+
+.masto-spinner {
+    border-left: solid 3px #563acc;
 }
 
 dialog {

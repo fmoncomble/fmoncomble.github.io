@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const xBtn = document.getElementById('x-btn');
     const bskyBtn = document.getElementById('bsky-btn');
     const mastoBtn = document.getElementById('masto-btn');
-    const resetMasto = document.getElementById('reset-masto');
 
     // const xAuthBtn = document.getElementById('x-auth-btn');
 
@@ -14,8 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     let bskyToken = sessionStorage.getItem('bsky_token');
     let bskyRefreshToken = sessionStorage.getItem('bsky_refresh_token');
     let bskyDid = sessionStorage.getItem('bsky_did');
-    checkCredentials();
-    function checkCredentials() {
+    checkBskyCredentials();
+    function checkBskyCredentials() {
         if (
             !bskyId ||
             !bskyPwd ||
@@ -24,8 +23,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             !bskyDid
         ) {
             bskyAuthBtn.textContent = 'Authorize with Bluesky';
+            bskyBtn.disabled = true;
         } else {
             bskyAuthBtn.textContent = 'Reset Bluesky';
+            bskyBtn.disabled = false;
         }
     }
     bskyAuthBtn.addEventListener('click', async () => {
@@ -38,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (e.target == bskyDialog) {
                     bskyDialog.close();
                 }
-            })
+            });
             okBtn.addEventListener('click', async () => {
                 bskyId = idInput.value.trim();
                 bskyPwd = pwdInput.value.trim();
@@ -79,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 );
                                 sessionStorage.setItem('bsky_did', bskyDid);
                                 setTimeout(() => {
-                                    checkCredentials();
+                                    checkBskyCredentials();
                                 }, 1000);
                             }
                         } catch (error) {
@@ -105,14 +106,150 @@ document.addEventListener('DOMContentLoaded', async () => {
             bskyToken = null;
             bskyRefreshToken = null;
             bskyDid = null;
-            checkCredentials();
+            checkBskyCredentials();
         }
     });
 
+    // Authorize Mastodon
     const mastoAuthBtn = document.getElementById('masto-auth-btn');
-    const composeWrapper = document.getElementById('compose-wrapper');
-    let mastoToken = sessionStorage.getItem('masto-token');
+    let mastoInstance = localStorage.getItem('masto_instance');
+    let mastoClientId = localStorage.getItem(`${mastoInstance}_id`);
+    let mastoClientSecret = localStorage.getItem(`${mastoInstance}_secret`);
+    let mastoToken = sessionStorage.getItem('masto_token');
+    checkMastoCredentials();
+    function checkMastoCredentials() {
+        if (!mastoToken) {
+            mastoAuthBtn.textContent = 'Authorize with Mastodon';
+            mastoBtn.disabled = true;
+        } else if (mastoToken) {
+            mastoAuthBtn.textContent = 'Reset Mastodon';
+            mastoBtn.disabled = false;
+        }
+    }
 
+    window.onload = async function () {
+        if (!mastoToken && mastoInstance) {
+            const urlParams = new URLSearchParams(window.location.search);
+            code = urlParams.get('code');
+            if (code) {
+                mastoToken = await getMastoToken(code);
+                if (mastoToken) {
+                    sessionStorage.setItem('masto_token', mastoToken);
+                    checkMastoCredentials();
+                }
+            }
+        }
+    };
+
+    mastoAuthBtn.addEventListener('click', async () => {
+        if (!mastoToken) {
+            const mastoDialog = document.getElementById('masto-dialog');
+            const instanceInput = document.getElementById('instance-input');
+            const okBtn = document.getElementById('masto-ok-btn');
+            okBtn.addEventListener('click', async () => {
+                mastoInstance = instanceInput.value.trim();
+                localStorage.setItem('masto_instance', mastoInstance);
+                if (!mastoClientId && !mastoClientSecret) {
+                    await createMastoApp();
+                }
+                getMastoAuth();
+            });
+            mastoDialog.showModal();
+        } else if (mastoToken) {
+            revokeMastoToken();
+        }
+    });
+
+    const redirectUri = window.location.href.split('?')[0];
+    async function createMastoApp() {
+        const createAppUrl = `https://${mastoInstance}/api/v1/apps`;
+        try {
+            const response = await fetch(createAppUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    client_name: 'SAES Social',
+                    redirect_uris: redirectUri,
+                    scopes: 'write',
+                    website: redirectUri,
+                }),
+            });
+            if (!response.ok) {
+                if (response.status === 429) {
+                    window.alert('Server busy: try again later');
+                    return;
+                }
+                console.error('Error registering app: ', response.status);
+                return;
+            }
+            const data = await response.json();
+            mastoClientId = data.client_id;
+            mastoClientSecret = data.client_secret;
+            localStorage.setItem(`${mastoInstance}_id`, mastoClientId);
+            localStorage.setItem(`${mastoInstance}_secret`, mastoClientSecret);
+        } catch (error) {
+            console.error('Error registering app: ', error);
+        }
+    }
+
+    function getMastoAuth() {
+        const scope = 'write';
+        const authUrl = `https://${mastoInstance}/oauth/authorize?response_type=code&client_id=${mastoClientId}&redirect_uri=${encodeURIComponent(
+            redirectUri
+        )}&scope=${encodeURIComponent(scope)}`;
+        window.location.href = authUrl;
+    }
+
+    async function getMastoToken(authCode) {
+        const tokenUrl = `https://${mastoInstance}/oauth/token`;
+        try {
+            const response = await fetch(tokenUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    code: authCode,
+                    client_id: mastoClientId,
+                    client_secret: mastoClientSecret,
+                    redirect_uri: redirectUri,
+                    grant_type: 'authorization_code',
+                }),
+            });
+            const data = await response.json();
+            return data.access_token;
+        } catch (error) {
+            console.error('Error fetching token: ', error);
+        }
+    }
+
+    async function revokeMastoToken() {
+        const formData = new FormData();
+        formData.append('client_id', mastoClientId);
+        formData.append('client_secret', mastoClientSecret);
+        formData.append('token', mastoToken);
+        const response = await fetch(`https://${mastoInstance}/oauth/revoke`, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: formData,
+        });
+        if (response.status === 403) {
+            const error = await response.json();
+            console.error('Token could not be revoked: ', error);
+            window.alert(
+                'Could not reset Mastodon authorization: ' +
+                    error.error_description
+            );
+        } else {
+            sessionStorage.removeItem('masto_token');
+            mastoToken = null;
+            checkMastoCredentials();
+        }
+    }
+
+    // Handle posting interface
     const counter = document.getElementById('counter');
     const charCount = document.getElementById('char-count');
     let textLength = 0;
@@ -175,7 +312,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
         }
-    })
+    });
 
     function displayThumbnail(img) {
         const div = document.createElement('div');
@@ -211,7 +348,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function postToX() {
         if (media.length > 0) {
             let clipboardItem;
-            const clipboardItems = [];
+            // const clipboardItems = [];
             for (m of media) {
                 const reader = new FileReader();
                 reader.readAsDataURL(m);
@@ -222,7 +359,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
                 if (m.type === 'image/png') {
                     clipboardItem = new ClipboardItem({ [m.type]: m });
-                    clipboardItems.push(clipboardItem);
+                    // clipboardItems.push(clipboardItem);
                 } else {
                     const img = new Image();
                     img.src = src;
@@ -238,7 +375,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         canvas.toBlob(resolve, 'image/png');
                     });
                     clipboardItem = new ClipboardItem({ [blob.type]: blob });
-                    clipboardItems.push(clipboardItem);
+                    // clipboardItems.push(clipboardItem);
                 }
             }
             try {
@@ -247,7 +384,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         'Only the last image will be copied to the clipboard'
                     );
                 }
-                await navigator.clipboard.write(clipboardItems);
+                await navigator.clipboard.write([clipboardItem]);
             } catch (error) {
                 console.error('Could not write images to the clipboard', error);
             }
@@ -260,13 +397,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Post to Bluesky
     bskyBtn.addEventListener('click', () => {
         if (!bskyToken || !bskyRefreshToken) {
-            window.alert('Authenticate to bluesky first!');
+            window.alert('Authenticate with Bluesky before posting!');
+            bskyAuthBtn.style.backgroundColor = '#cc0000';
+            bskyAuthBtn.focus();
+            setTimeout(() => {
+                bskyAuthBtn.removeAttribute('style');
+            }, 1000);
             return;
         } else {
             postToBluesky();
         }
     });
     async function postToBluesky() {
+        bskyBtn.textContent = null;
+        const spinner = document.createElement('div');
+        spinner.classList.add('spinner', 'bsky-auth-spinner');
+        spinner.style.display = 'inline-flex';
+        bskyBtn.appendChild(spinner);
         // Refresh token
         bskyToken = await refreshToken();
         async function refreshToken() {
@@ -297,11 +444,42 @@ document.addEventListener('DOMContentLoaded', async () => {
             for (m of media) {
                 const reader = new FileReader();
                 reader.readAsDataURL(m);
-                const src = await new Promise((resolve) => {
+                let src = await new Promise((resolve) => {
                     reader.onload = function (e) {
                         resolve(e.target.result);
                     };
                 });
+                if (src.length > 1 * 1024 * 1024) {
+                    const img = new Image();
+                    img.src = src;
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const maxWidth = 800;
+                    const maxHeight = 800;
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height *= maxWidth / width;
+                            width = maxWidth
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width *= maxHeight / height;
+                            height = maxHeight;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    let quality = 0.9;
+                    let dataUrl = canvas.toDataURL([m.type], quality);
+                    while (dataUrl.length > 1 * 1024 * 1024 && quality > 0.1) {
+                        quality -= 0.1;
+                        dataUrl = canvas.toDataURL([m.type], quality);
+                    }
+                    src = dataUrl;
+                }
                 const image = await fetch(src).then((res) => res.blob());
                 try {
                     const res = await fetch(
@@ -354,43 +532,107 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const uriParts = data.uri.split('/');
                 const rev = uriParts[uriParts.length - 1];
                 const postUrl = `https://bsky.app/profile/${bskyDid}/post/${rev}`;
+                spinner.remove();
+                bskyBtn.textContent = 'Post to Bluesky';
                 window.open(postUrl);
+            } else {
+                const errorData = await res.json();
+                console.error('Could not post to Bluesky: ', errorData);
             }
         } catch (error) {
             console.error('Could not post message: ', error);
         }
     }
 
-    let mastoInstance = sessionStorage.getItem('masto-instance');
-    if (mastoInstance) {
-        resetMasto.style.display = 'flex';
-    }
+    // Post to Mastodon
     mastoBtn.addEventListener('click', () => {
-        if (!mastoInstance) {
-            const mastoDialog = document.getElementById('masto-dialog');
-            const instanceInput = document.getElementById('instance-input');
-            const okBtn = document.getElementById('ok-btn');
-            okBtn.addEventListener('click', () => {
-                mastoInstance = instanceInput.value.trim();
-                sessionStorage.setItem('masto-instance', mastoInstance);
-                resetMasto.style.display = 'flex';
-                mastoDialog.close();
-                postToMasto();
-            });
-            mastoDialog.showModal();
-        } else {
-            postToMasto();
-        }
-        function postToMasto() {
-            const postText = encodeURIComponent(textarea.value.trim());
-            const url = `https://${mastoInstance}/home?text=${postText}`;
-            window.open(url);
-        }
+        postToMasto();
     });
 
-    resetMasto.addEventListener('click', () => {
-        sessionStorage.removeItem('masto-instance');
-        mastoInstance = null;
-        resetMasto.style.display = 'none';
-    });
+    async function postToMasto() {
+        mastoBtn.textContent = null;
+        const spinner = document.createElement('div');
+        spinner.classList.add('spinner', 'masto-spinner');
+        spinner.style.display = 'inline-flex';
+        mastoBtn.appendChild(spinner);
+        let mediaIds;
+        if (media.length > 0) {
+            mediaIds = await uploadMediaToMasto(media);
+        }
+        const postText = textarea.value.trim();
+        try {
+            const res = await fetch(
+                `https://${mastoInstance}/api/v1/statuses`,
+                {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${mastoToken}`,
+                        'Content-Type': 'application/json',
+                        scope: 'write',
+                    },
+                    body: JSON.stringify({
+                        status: postText,
+                        media_ids: mediaIds,
+                        visibility: 'public',
+                    }),
+                }
+            );
+            if (!res.ok) {
+                if (res.status === 401) {
+                    window.alert('You are not authorized');
+                    return;
+                }
+                const errorData = await res.json();
+                console.error('Error posting toot: ', errorData);
+                window.alert('Could not post to Mastodon.');
+                return;
+            }
+            const data = await res.json();
+            const postUrl = data.url;
+            spinner.remove();
+            mastoBtn.textContent = 'Post to Mastodon';
+            window.open(postUrl);
+        } catch (error) {
+            console.error('Could not post to Mastodon: ', error);
+        }
+    }
+
+    async function uploadMediaToMasto(media) {
+        const mediaIds = [];
+        for (let m of media) {
+            const formData = new FormData();
+            formData.append('file', m);
+            try {
+                const res = await fetch(
+                    `https://${mastoInstance}/api/v2/media`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            Authorization: `Bearer ${mastoToken}`,
+                            scope: 'write',
+                        },
+                        body: formData,
+                    }
+                );
+                if (!res.ok) {
+                    if (res.status === 401) {
+                        window.alert('You are not authorized');
+                        return;
+                    }
+                    const errorData = await res.json();
+                    console.error('Error uploading media: ', errorData);
+                    window.alert(
+                        'A media file could not be uploaded: ' + errorData.error
+                    );
+                    return;
+                }
+                const data = await res.json();
+                const id = data.id;
+                mediaIds.push(id);
+            } catch (error) {
+                console.error('Upload error: ', error);
+            }
+        }
+        return mediaIds;
+    }
 });
