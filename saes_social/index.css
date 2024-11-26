@@ -168,6 +168,8 @@ div#img-instructions {
     justify-content: space-around;
     align-items: center;
     background-color: rgba(255, 255, 255, 0.5);
+    color: #cc0000;
+    font-weight: bold;
     cursor: pointer;
     border-radius: 50%;
     border: none;
@@ -198,6 +200,7 @@ div.overlay-hint {
     display: flex;
     flex-direction: column;
     font-size: xx-large;
+    font-weight: bold;
     color: black;
     text-shadow: 0 0 10px white;
     justify-content: center;
@@ -263,6 +266,10 @@ button.post-btn {
 
 .masto-spinner {
     border-left: solid 3px #563acc;
+}
+
+.x-spinner {
+    border-left: solid 3px gray;
 }
 
 dialog {

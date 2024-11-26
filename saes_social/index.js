@@ -4,7 +4,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     const bskyBtn = document.getElementById('bsky-btn');
     const mastoBtn = document.getElementById('masto-btn');
 
-    // const xAuthBtn = document.getElementById('x-auth-btn');
+    // Authorize 𝕏/Twitter
+    const xAuthBtn = document.getElementById('x-auth-btn');
+    xAuthBtn.addEventListener('click', async () => {
+        if (xAuthBtn.textContent === 'Reset 𝕏') {
+            try {
+                const res = await fetch('reset_auth.php');
+                if (res.ok) {
+                    xAuthBtn.textContent = 'Authorize with 𝕏';
+                    xBtn.disabled = true;
+                } else {
+                    console.error('Could not reset 𝕏 auth data');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        } else {
+            window.location.href =
+                'https://prendrelangue.fr/saes_social/start_auth.php';
+        }
+    });
+    checkXCredentials();
+    async function checkXCredentials() {
+        try {
+            const res = await fetch('check_token.php');
+            console.log('X token check response: ', res);
+            if (res.ok) {
+                const data = await res.json();
+                console.log('X token check response data: ', data);
+                if (data.success) {
+                    xAuthBtn.textContent = 'Reset 𝕏';
+                    xBtn.disabled = false;
+                } else {
+                    xAuthBtn.textContent = 'Authorize with 𝕏';
+                    xBtn.disabled = true;
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     // Authorize Bluesky
     const bskyAuthBtn = document.getElementById('bsky-auth-btn');
@@ -173,7 +212,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     client_name: 'SAES Social',
                     redirect_uris: redirectUri,
                     scopes: 'write',
-                    website: redirectUri,
+                    website: 'https://saesfrance.org/',
                 }),
             });
             if (!response.ok) {
@@ -253,6 +292,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const counter = document.getElementById('counter');
     const charCount = document.getElementById('char-count');
     let textLength = 0;
+
+    textarea.addEventListener('click', () => {
+        if (xBtn.disabled && bskyBtn.disabled && mastoBtn.disabled) {
+            window.alert(
+                'Authorize with at least one service before writing your post.'
+            );
+        }
+    });
 
     textarea.addEventListener('input', () => {
         textLength = textarea.value.length;
@@ -340,58 +387,52 @@ document.addEventListener('DOMContentLoaded', async () => {
         div.appendChild(removeBtn);
     }
 
-    // Post to X/Twitter
+    // Post to 𝕏/Twitter
     xBtn.addEventListener('click', () => {
         postToX();
     });
 
     async function postToX() {
-        if (media.length > 0) {
-            let clipboardItem;
-            // const clipboardItems = [];
-            for (m of media) {
-                const reader = new FileReader();
-                reader.readAsDataURL(m);
-                const src = await new Promise((resolve) => {
-                    reader.onload = function (e) {
-                        resolve(e.target.result);
-                    };
-                });
-                if (m.type === 'image/png') {
-                    clipboardItem = new ClipboardItem({ [m.type]: m });
-                    // clipboardItems.push(clipboardItem);
-                } else {
-                    const img = new Image();
-                    img.src = src;
-                    await new Promise((resolve) => {
-                        img.onload = resolve;
-                    });
-                    const canvas = document.createElement('canvas');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0);
-                    const blob = await new Promise((resolve) => {
-                        canvas.toBlob(resolve, 'image/png');
-                    });
-                    clipboardItem = new ClipboardItem({ [blob.type]: blob });
-                    // clipboardItems.push(clipboardItem);
-                }
-            }
-            try {
-                if (media.length > 1) {
-                    window.alert(
-                        'Only the last image will be copied to the clipboard'
-                    );
-                }
-                await navigator.clipboard.write([clipboardItem]);
-            } catch (error) {
-                console.error('Could not write images to the clipboard', error);
-            }
+        xBtn.textContent = null;
+        const spinner = document.createElement('div');
+        spinner.classList.add('spinner', 'x-spinner');
+        spinner.style.display = 'inline-flex';
+        xBtn.appendChild(spinner);
+        const postText = textarea.value.trim();
+        const formData = new FormData();
+        formData.append('tweetText', postText);
+        for (let i = 0; i < media.length; i++) {
+            formData.append('tweetImages[]', media[i]);
         }
-        const url = 'https://x.com/intent/post?text=';
-        const postText = encodeURIComponent(textarea.value.trim());
-        window.open(url + postText);
+
+        try {
+            const res = await fetch(
+                'https://prendrelangue.fr/saes_social/main.php',
+                {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include',
+                }
+            );
+            if (res.ok) {
+                const data = await res.json(); // Await the response text
+                if (data.success) {
+                    spinner.remove();
+                    xBtn.textContent = 'Post to 𝕏';
+                    window.open(data.tweetUrl, '_blank');
+                } else {
+                    console.error('Failed to post tweet: ', data.error);
+                }
+            } else {
+                console.error(
+                    'Failed to post tweet: ',
+                    res.status,
+                    res.statusText
+                );
+            }
+        } catch (error) {
+            console.error('Could not post tweet: ', error);
+        }
     }
 
     // Post to Bluesky
@@ -461,7 +502,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (width > height) {
                         if (width > maxWidth) {
                             height *= maxWidth / width;
-                            width = maxWidth
+                            width = maxWidth;
                         }
                     } else {
                         if (height > maxHeight) {

@@ -2,6 +2,8 @@
 <html>
     <head>
         <title>SAES Social</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charset="UTF-8">
         <script src="index.js" type="text/javascript"></script>
         <link rel="stylesheet" type="text/css" href="index.css" />
     </head>
@@ -9,10 +11,10 @@
         <h1 class="header">SAES Social</h1>
         <div class="wrapper">
             <div id="auth-wrapper" class="auth-wrapper">
-                <!-- <button id="x-auth-btn" class="x-btn">Authorize with 𝕏</button> -->
                 <button id="bsky-auth-btn" class="bsky-btn auth-btn">
                     Authorize with Bluesky
                 </button>
+                <button id="x-auth-btn" class="x-btn auth-btn">Authorize with 𝕏</button>
                 <button id="masto-auth-btn" class="masto-btn auth-btn">
                     Authorize with Mastodon
                 </button>
@@ -50,11 +52,11 @@
                 </div>
                 <div class="btn-div">
                     <div class="buttons">
-                        <button id="bsky-btn" class="bsky-btn post-btn">
+                        <button id="bsky-btn" class="bsky-btn post-btn" disabled>
                             Post to Bluesky
                         </button>
-                        <button id="x-btn" class="x-btn">Post to 𝕏</button>
-                        <button id="masto-btn" class="masto-btn post-btn">
+                        <button id="x-btn" class="x-btn post-btn" disabled>Post to 𝕏</button>
+                        <button id="masto-btn" class="masto-btn post-btn" disabled>
                             Post to Mastodon
                         </button>
                     </div>
