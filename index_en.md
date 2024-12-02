@@ -27,7 +27,7 @@ Moncomble, F. (2024). *MastoScraper* (Version 0.8) [JavaScript]. Arras, France: 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/660dab7e-a8e4-42d1-9318-c43f261b6a34) [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/)
 Scrape and download Bluesky posts
 
-Moncomble, F. (2024). *BlueskyScraper* (Version 0.2) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/blueskyscraper/
+Moncomble, F. (2024). *BlueskyScraper* (Version 0.3) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/blueskyscraper/
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/4b3f83d5-b87d-43e7-8590-2bf3a3f0c9b4) [RedditScraper](https://fmoncomble.github.io/redditscraper/)
 Scrape and download Reddit posts
@@ -37,7 +37,7 @@ Moncomble, F. (2024). _RedditScraper_ (Version 0.4) [JavaScript]. Arras, France:
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/25a619f7-4076-4e98-9300-ebf137ba4f59) [SocialCorpusScraper](https://fmoncomble.github.io/SocialCorpusScraper/)
 A 4-in-1 bundle of [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/), [MastoScraper](https://fmoncomble.github.io/mastoscraper/), [RedditScraper](https://fmoncomble.github.io/redditscraper/) and [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/)  
   
-Moncomble, F. (2024). _SocialCorpusScraper_ (Version 0.4) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/SocialCorpusScraper/
+Moncomble, F. (2024). _SocialCorpusScraper_ (Version 0.5) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/SocialCorpusScraper/
   
   
 ## Other

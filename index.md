@@ -27,7 +27,7 @@ Moncomble, F. (2024). *MastoScraper* (Version 0.8) [JavaScript]. Arras, France :
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/b0d1f345-1d7b-48ad-8ff9-665225de6f47) [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/README_fr.html)
 Une extension pour extraire et télécharger des posts Bluesky
 
-Moncomble, F. (2024). *BlueskyScraper* (Version 0.2) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/blueskyscraper/  
+Moncomble, F. (2024). *BlueskyScraper* (Version 0.3) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/blueskyscraper/  
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/d668b511-a384-496e-a881-5a319ebe62aa) [RedditScraper](https://fmoncomble.github.io/redditscraper/README_fr.html)
 Une extension pour extraire et télécharger des posts Reddit
@@ -37,7 +37,7 @@ Moncomble, F. (2024). _RedditScraper_ (Version 0.4) [JavaScript]. Arras, France 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/a4691a34-7c7b-4267-b3fe-8472989d10ab) [SocialCorpusScraper](https://fmoncomble.github.io/SocialCorpusScraper/README_fr.html)
 Une extension 4-en-1 qui rassemble [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/README_fr.html), [MastoScraper](https://fmoncomble.github.io/mastoscraper/), [RedditScraper](https://fmoncomble.github.io/redditscraper/README_fr.html) et [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/).
 
-Moncomble, F. (2024). _SocialCorpusScraper_ (Version 0.4) [JavaScript]. Arras, France : Université d’Artois. Disponible à l’adresse : https://fmoncomble.github.io/SocialCorpusScraper/
+Moncomble, F. (2024). _SocialCorpusScraper_ (Version 0.5) [JavaScript]. Arras, France : Université d’Artois. Disponible à l’adresse : https://fmoncomble.github.io/SocialCorpusScraper/
 
 ### ![graph (1)](https://github.com/user-attachments/assets/19c87c0c-f5c4-400a-bfb3-5d5450476898) [Ratio type/token](https://fmoncomble.github.io/ttr/)
 Une application web permettant de générer une courbe de progression du ratio type/token d'un ou plusieurs corpus pour estimer leur diversité lexicale.  
