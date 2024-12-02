@@ -46,6 +46,6 @@ Une application web permettant de générer une courbe de progression du ratio t
 ### [![mastothreader](https://github.com/user-attachments/assets/522725e4-87e6-4dc8-8350-f1448bba3ad5)](https://fmoncomble.github.io/mastothreader/)
 Une appli web pour créer et publier des fils sur Mastodon.
 
-<a rel="me" href="https://mastodon.online/@f_moncomble"></a>
+<a rel="me" href="https://mastodon.online/@f_moncomble" style="display: none"></a>
 
 
