@@ -27,7 +27,7 @@ Moncomble, F. (2024). *MastoScraper* (Version 0.8) [JavaScript]. Arras, France :
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/b0d1f345-1d7b-48ad-8ff9-665225de6f47) [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/README_fr.html)
 Une extension pour extraire et télécharger des posts Bluesky
 
-Moncomble, F. (2024). *BlueskyScraper* (Version 0.3) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/blueskyscraper/  
+Moncomble, F. (2024). *BlueskyScraper* (Version 0.4) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/blueskyscraper/  
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/d668b511-a384-496e-a881-5a319ebe62aa) [RedditScraper](https://fmoncomble.github.io/redditscraper/README_fr.html)
 Une extension pour extraire et télécharger des posts Reddit

@@ -1351,6 +1351,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     },
                     columns: worksheet.columns.map((col) => ({
                         name: col.header,
+                        filterButton: true,
                     })),
                     rows: rows,
                 });
