@@ -38,7 +38,11 @@ Moncomble, F. (2024). _RedditScraper_ (Version 0.4) [JavaScript]. Arras, France:
 A 4-in-1 bundle of [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/), [MastoScraper](https://fmoncomble.github.io/mastoscraper/), [RedditScraper](https://fmoncomble.github.io/redditscraper/) and [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/)  
   
 Moncomble, F. (2024). _SocialCorpusScraper_ (Version 0.5) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/SocialCorpusScraper/
-  
+
+### ![icon-32](https://github.com/user-attachments/assets/eb86bbd8-1452-4b7c-9c48-fea3b569289a) [DiscordScraper](https://fmoncomble.github.io/DiscordScraper/)
+Scrape and download Discord messages
+
+Moncomble, F. (2025). _DiscordScraper_ (Version 0.1) [JavaScript]. Arras, France : Université d'Artois. Available at: https://fmoncomble.github.io/DiscordScraper/
   
 ## Other
 ### [![mastothreader](https://github.com/user-attachments/assets/9cd73eb0-e845-43a4-964f-e8dc1ca4e227)](https://fmoncomble.github.io/mastothreader/)
