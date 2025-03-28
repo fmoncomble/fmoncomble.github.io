@@ -38,6 +38,11 @@ Moncomble, F. (2024). _RedditScraper_ (Version 0.4) [JavaScript]. Arras, France:
 A 4-in-1 bundle of [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/), [MastoScraper](https://fmoncomble.github.io/mastoscraper/), [RedditScraper](https://fmoncomble.github.io/redditscraper/) and [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/)  
   
 Moncomble, F. (2024). _SocialCorpusScraper_ (Version 0.5) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/SocialCorpusScraper/  
+
+### ![icon-32](https://github.com/user-attachments/assets/eb86bbd8-1452-4b7c-9c48-fea3b569289a) [DiscordScraper](https://fmoncomble.github.io/DiscordScraper/)
+Scrape and download Discord messages
+
+Moncomble, F. (2025). _DiscordScraper_ (Version 0.1) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/DiscordScraper/  
   
 ### [Project Gutenberg Corpus Builder](https://gutencorpus.prendrelangue.fr/)  
 A web application to search for ebooks in the [Gutenberg Project](https://www.gutenberg.org) database and download them as an archive of pre-formatted texts for use in corpus software such as [AntConc](https://www.laurenceanthony.net/software/antconc/), [TXM](https://txm.gitpages.huma-num.fr/textometrie/en/) or [Iramuteq](http://www.iramuteq.org/).  
