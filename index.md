@@ -37,7 +37,7 @@ Moncomble, F. (2024). _RedditScraper_ (Version 0.4) [JavaScript]. Arras, France 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/a4691a34-7c7b-4267-b3fe-8472989d10ab) [SocialCorpusScraper](https://fmoncomble.github.io/SocialCorpusScraper/README_fr.html)
 Une extension 4-en-1 qui rassemble [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/README_fr.html), [MastoScraper](https://fmoncomble.github.io/mastoscraper/), [RedditScraper](https://fmoncomble.github.io/redditscraper/README_fr.html) et [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/).
 
-Moncomble, F. (2024). _SocialCorpusScraper_ (Version 0.5) [JavaScript]. Arras, France : Université d’Artois. Disponible à l’adresse : https://fmoncomble.github.io/SocialCorpusScraper/  
+Moncomble, F. (2025). _SocialCorpusScraper_ (Version 0.6) [JavaScript]. Arras, France : Université d’Artois. Disponible à l’adresse : https://fmoncomble.github.io/SocialCorpusScraper/  
 
 ### ![icon-32](https://github.com/user-attachments/assets/eb86bbd8-1452-4b7c-9c48-fea3b569289a) [DiscordScraper](https://fmoncomble.github.io/DiscordScraper/)
 Une extension pour extraire et télécharger des messages Discord
