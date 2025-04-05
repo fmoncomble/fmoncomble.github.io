@@ -52,5 +52,5 @@ Moncomble, F. (2025). *𝕏-Scraper* (Version 0.5) [JavaScript]. Arras, France: 
   
   
 ## Other
-### [![mastothreader](https://github.com/user-attachments/assets/9cd73eb0-e845-43a4-964f-e8dc1ca4e227)](https://fmoncomble.github.io/mastothreader/)
+### [![mastothreader](https://github.com/user-attachments/assets/9cd73eb0-e845-43a4-964f-e8dc1ca4e227)](https://mastothreader.prendrelangue.fr/)
 A web app to create and publish threads to Mastodon

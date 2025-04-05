@@ -53,7 +53,7 @@ Une extension pour extraire et télécharger des tweets.
 Moncomble, F. (2025). *𝕏-Scraper* (Version 0.5) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/X-scraper/  
 
 ## Autres
-### [![mastothreader](https://github.com/user-attachments/assets/522725e4-87e6-4dc8-8350-f1448bba3ad5)](https://fmoncomble.github.io/mastothreader/)
+### [![mastothreader](https://github.com/user-attachments/assets/522725e4-87e6-4dc8-8350-f1448bba3ad5)](https://mastothreader.prendrelangue.fr/)
 Une appli web pour créer et publier des fils sur Mastodon.
 
 <a rel="me" href="https://mastodon.online/@f_moncomble" style="display: none"></a>
