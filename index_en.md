@@ -4,30 +4,36 @@ Senior lecturer in English linguistics, Université d'Artois, Arras, France
 ([Version française](index.md))
   
 ## Corpus tools
-### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/eac5cbba-5921-46ba-91ba-2b385e9d2c8a) [Press corpus scraper](https://fmoncomble.github.io/press-corpus-scraper/README_EN.html)
-An extension for extracting and downloading press articles for text mining.  
-   
-Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.9) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/press-corpus-scraper/
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/9db6a418-7e2f-49f5-b1ff-82e3970bac14) [APP Extractor](https://fmoncomble.github.io/APP_extractor/)
 Extract and download documents from [The American Presidency Project](https://www.presidency.ucsb.edu/)  
   
-Moncomble, F. (2024). *APP_Extractor* (Version 0.7.2) [JavaScript]. Arras, France: Université d’Artois. Available from: https://fmoncomble.github.io/APP_extractor/ (First version 2023)
+Moncomble, F. (2024). *APP_Extractor* (Version 0.7.2) [JavaScript]. Arras, France: Université d’Artois. Available from: https://fmoncomble.github.io/APP_extractor/ (First version 2023)  
 
-### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/dd10a477-2dc5-4c06-b52a-3fd17e53987a) [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/)
-Scrape tweets
+### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/660dab7e-a8e4-42d1-9318-c43f261b6a34) [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/)
+Scrape and download Bluesky posts
 
-Moncomble, F. (2025). *𝕏-Scraper* (Version 0.5) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/X-scraper/
+Moncomble, F. (2024). *BlueskyScraper* (Version 0.4) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/blueskyscraper/  
+
+### ![icon-32](https://github.com/user-attachments/assets/eb86bbd8-1452-4b7c-9c48-fea3b569289a) [DiscordScraper](https://fmoncomble.github.io/DiscordScraper/)
+Scrape and download Discord messages
+
+Moncomble, F. (2025). _DiscordScraper_ (Version 0.1) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/DiscordScraper/  
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/1a8680a1-af32-4ddb-b498-9b4e21661278) [MastoScraper](https://fmoncomble.github.io/mastoscraper/)
 Scrape and download toots (posts on Mastodon)  
   
 Moncomble, F. (2024). *MastoScraper* (Version 0.8) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/mastoscraper/  
 
-### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/660dab7e-a8e4-42d1-9318-c43f261b6a34) [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/)
-Scrape and download Bluesky posts
-
-Moncomble, F. (2024). *BlueskyScraper* (Version 0.4) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/blueskyscraper/
+### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/eac5cbba-5921-46ba-91ba-2b385e9d2c8a) [Press corpus scraper](https://fmoncomble.github.io/press-corpus-scraper/README_EN.html)
+An extension for extracting and downloading press articles for text mining.  
+   
+Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.9) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/press-corpus-scraper/  
+  
+### [Project Gutenberg Corpus Builder](https://gutencorpus.prendrelangue.fr/)  
+A web application to search for ebooks in the [Gutenberg Project](https://www.gutenberg.org) database and download them as an archive of pre-formatted texts for use in corpus software such as [AntConc](https://www.laurenceanthony.net/software/antconc/), [TXM](https://txm.gitpages.huma-num.fr/textometrie/en/) or [Iramuteq](http://www.iramuteq.org/).  
+  
+Moncomble. F. (2025). _Project Gutenberg Corpus Builder_. Arras, France: Université d'Artois. https://gutencorpus.prendrelangue.fr/  
 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/4b3f83d5-b87d-43e7-8590-2bf3a3f0c9b4) [RedditScraper](https://fmoncomble.github.io/redditscraper/)
 Scrape and download Reddit posts
@@ -39,15 +45,10 @@ A 4-in-1 bundle of [BlueskyScraper](https://fmoncomble.github.io/blueskyscraper/
   
 Moncomble, F. (2025). _SocialCorpusScraper_ (Version 0.6) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/SocialCorpusScraper/  
 
-### ![icon-32](https://github.com/user-attachments/assets/eb86bbd8-1452-4b7c-9c48-fea3b569289a) [DiscordScraper](https://fmoncomble.github.io/DiscordScraper/)
-Scrape and download Discord messages
+### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/dd10a477-2dc5-4c06-b52a-3fd17e53987a) [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/)
+Scrape tweets
 
-Moncomble, F. (2025). _DiscordScraper_ (Version 0.1) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/DiscordScraper/  
-  
-### [Project Gutenberg Corpus Builder](https://gutencorpus.prendrelangue.fr/)  
-A web application to search for ebooks in the [Gutenberg Project](https://www.gutenberg.org) database and download them as an archive of pre-formatted texts for use in corpus software such as [AntConc](https://www.laurenceanthony.net/software/antconc/), [TXM](https://txm.gitpages.huma-num.fr/textometrie/en/) or [Iramuteq](http://www.iramuteq.org/).  
-  
-Moncomble. F. (2025). _Project Gutenberg Corpus Builder_. Arras, France: Université d'Artois. https://gutencorpus.prendrelangue.fr/  
+Moncomble, F. (2025). *𝕏-Scraper* (Version 0.5) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/X-scraper/
   
   
 ## Other
