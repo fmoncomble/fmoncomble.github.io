@@ -136,7 +136,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tokenParam = params.get('token');
     if (!token && tokenParam) {
         tokenInput.value = tokenParam;
-        saveToken();
+        await saveToken();
+        window.location.replace('https://fmoncomble.github.io/voeux/saisie.html');
     }
     async function saveToken() {
         if (tokenInput.value && !token) {
@@ -767,7 +768,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         yesBtn.appendChild(spinner);
         let data = await uploadFile();
         let message =
-            '<p>Votre fichier de vœux a été envoyé.</p><p>Pensez à vous déconnecter avant de quitter cette page.</p>';
+            '<p>Votre fichier de vœux a été envoyé.</p><p>Si vous êtes sur un ordinateur partagé,<br/>Pensez à vous déconnecter avant de quitter cette page.</p>';
         if (!data) {
             const download = window.confirm(
                 "Le fichier n'a pas pu être envoyé.\nSouhaitez-vous le télécharger ?"
@@ -794,6 +795,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         okBtn.classList.add('wishes-ui');
         okBtn.textContent = 'OK';
         okBtn.onclick = () => {
+            window.location.replace('https://fmoncomble.github.io/voeux/saisie.html');
             confirmDialog.close();
             location.reload();
         };
