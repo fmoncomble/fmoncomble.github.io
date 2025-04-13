@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const authDiv = document.getElementById('auth-div');
     const fileInput = document.getElementById('file-input');
+    const dropboxBtn = document.getElementById('get-dropbox-files');
     const eraseBtn = document.getElementById('erase-btn');
     const compileBtn = document.getElementById('compile-btn');
     const courseList = document.getElementById('course-list');
@@ -134,10 +135,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (servicesFile.length === 0) {
                 fileExist.textContent += `(le fichier est vide)`;
             }
-            const actionChoiceDiv = document.getElementById('action-choice');
-            actionChoiceDiv.style.display = 'block';
-            eraseBtn.style.display = 'inline';
-            compileBtn.textContent = 'Mettre à jour';
+            // const actionChoiceDiv = document.getElementById('action-choice');
+            // actionChoiceDiv.style.display = 'block';
+            // eraseBtn.style.display = 'inline';
+            // compileBtn.textContent = 'Mettre à jour';
         }
     }
 
@@ -185,15 +186,150 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Load individual wish files
-    let files;
+    let files = [];
     fileInput.addEventListener('change', () => {
         const fileList = [];
         files = fileInput.files;
-        for (let f of files) {
-            fileList.push(f.name);
+        if (files.length > 0) {
+            for (let f of files) {
+                fileList.push(f.name);
+            }
+            fileName.textContent = fileList.join(', ');
+            const actionChoiceDiv = document.getElementById('action-choice');
+            actionChoiceDiv.style.display = 'block';
+            eraseBtn.style.display = 'inline';
+            if (servicesFile.length > 0) {
+                compileBtn.textContent = 'Mettre à jour';
+            }
         }
-        fileName.textContent = fileList.join(', ');
     });
+
+    // Retrieve wish files from Dropbox
+    dropboxBtn.addEventListener('click', async () => {
+        const spinner = document.createElement('span');
+        spinner.classList.add('spinner');
+        spinner.style.display = 'inline-block';
+        dropboxBtn.innerHTML = null;
+        dropboxBtn.disabled = true;
+        dropboxBtn.appendChild(spinner);
+        await getWishFiles();
+    });
+    async function getWishFiles() {
+        let formData = new FormData();
+        formData.append('action', 'list_folder');
+        let res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
+            method: 'POST',
+            body: formData,
+        });
+        if (res.ok) {
+            let data = await res.json();
+            if (data.success) {
+                let fileEntries = data.message.entries;
+                if (fileEntries.length > 0) {
+                    dropboxBtn.textContent = 'Fichiers trouvés';
+                    const fileList = [];
+                    for (let entry of fileEntries) {
+                        if (
+                            entry['.tag'] === 'file' &&
+                            entry.name.endsWith('.json')
+                        ) {
+                            dropboxBtn.textContent = `Fichier ${
+                                fileEntries.indexOf(entry) + 1
+                            }/${fileEntries.length}...`;
+                            let entryFormData = new FormData();
+                            entryFormData.append('action', 'get_file');
+                            entryFormData.append('path', entry.path_lower);
+                            let res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
+                                method: 'POST',
+                                body: entryFormData,
+                            });
+                            if (res.ok) {
+                                let data = await res.json();
+                                if (data.success) {
+                                    let file = JSON.stringify(data.message);
+                                    let blob = new Blob([file], {
+                                        type: 'application/json',
+                                    });
+                                    let fileName = entry.name;
+                                    let fileObj = new File([blob], fileName, {
+                                        type: 'application/json',
+                                    });
+                                    files.push(fileObj);
+                                    fileList.push(fileName);
+                                } else {
+                                    window.alert(
+                                        `Impossible de récupérer le fichier ${entry.name}`
+                                    );
+                                    dropboxBtn.textContent =
+                                        'Importer depuis Dropbox';
+                                    dropboxBtn.disabled = false;
+                                    return;
+                                }
+                            } else {
+                                window.alert(
+                                    `Erreur PHP pour le fichier ${entry.name}`
+                                );
+                                dropboxBtn.textContent =
+                                    'Importer depuis Dropbox';
+                                dropboxBtn.disabled = false;
+                                return;
+                            }
+                        }
+                    }
+                    dropboxBtn.textContent = 'Importer depuis Dropbox';
+                    dropboxBtn.disabled = false;
+                    fileName.innerHTML = `${fileList.length} fichier(s) récupéré(s) :`;
+                    const displaySpan = document.createElement('span');
+                    displaySpan.textContent = 'Afficher';
+                    displaySpan.classList.add('wishes-ui', 'display-span');
+                    displaySpan.onclick = () => {
+                        let fileNameList =
+                            document.getElementById('filename-list');
+                        if (!fileNameList) {
+                            fileNameList = document.createElement('ul');
+                            fileNameList.id = 'filename-list';
+                            fileNameList.classList.add('filename-list');
+                            for (let fileName of fileList) {
+                                const item = document.createElement('li');
+                                item.textContent = fileName;
+                                fileNameList.appendChild(item);
+                            }
+                            fileName.after(fileNameList);
+                            displaySpan.textContent = 'Masquer';
+                        } else {
+                            fileNameList.remove();
+                            displaySpan.textContent = 'Afficher';
+                        }
+                    };
+                    fileName.appendChild(displaySpan);
+                    // fileName.textContent = fileList.join(', ');
+                    const actionChoiceDiv =
+                        document.getElementById('action-choice');
+                    actionChoiceDiv.style.display = 'block';
+                    eraseBtn.style.display = 'inline';
+                    if (servicesFile.length > 0) {
+                        compileBtn.textContent = 'Mettre à jour';
+                    }
+                } else {
+                    fileName.textContent = 'Aucun fichier trouvé';
+                    dropboxBtn.textContent = 'Importer depuis Dropbox';
+                    dropboxBtn.disabled = false;
+                    return;
+                }
+            } else {
+                window.alert(
+                    `Erreur lors de la requête Dropbox : ${data.message}`
+                );
+                dropboxBtn.textContent = 'Importer depuis Dropbox';
+                dropboxBtn.disabled = false;
+                return;
+            }
+        } else {
+            console.error("Erreur lors de l'appel au script PHP");
+            window.alert('Erreur PHP');
+            return;
+        }
+    }
 
     function readWishes(file) {
         return new Promise((resolve, reject) => {
@@ -1474,7 +1610,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Alert before closing window
     function compareData() {
-        if (saved || JSON.stringify(remoteFile) == JSON.stringify(servicesFile)) {
+        if (
+            saved ||
+            JSON.stringify(remoteFile) == JSON.stringify(servicesFile)
+        ) {
             window.removeEventListener('beforeunload', warnClose);
         } else {
             window.addEventListener('beforeunload', warnClose);

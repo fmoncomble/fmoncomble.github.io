@@ -25,13 +25,12 @@
                     <h2>Compiler le fichier de services</h2>
                 </div>
                 <div>
-                    Charger le(s) fichier(s) de vœux individuel(s) :
                     <label
                         for="file-input"
                         class="wishes-ui"
                         id="file-input-label"
                     >
-                        Sélectionner
+                        Charger des fichiers
                         <input
                             name="file-input"
                             id="file-input"
@@ -42,6 +41,9 @@
                             style="display: none"
                         />
                     </label>
+                    <button id="get-dropbox-files" class="wishes-ui">
+                        Importer depuis Dropbox
+                    </button>
                     <dialog id="existing-prof-dialog" class="wishes-ui">
                         <div>
                             Les vœux de <span id="prof-id"></span> sont déjà
@@ -56,12 +58,8 @@
                     </dialog>
                     <span id="file-name" class="wishes-ui"></span>
                 </div>
-                <div>
-                    <div
-                        id="action-choice"
-                        class="wishes-ui"
-                        style="display: none"
-                    >
+                <div id="action-choice" class="wishes-ui" style="display: none">
+                    <div>
                         <br />
                         Écraser ou mettre à jour les données existantes ?
                     </div>

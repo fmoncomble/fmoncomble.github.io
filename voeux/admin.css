@@ -35,7 +35,8 @@ div#file-exist {
 }
 
 label#file-input-label {
-    height: 32px;
+    display: inline-block;
+    height: 18px;
     border: none;
     background-color: darkblue;
     border-radius: 4px;
@@ -44,13 +45,36 @@ label#file-input-label {
     font-size: small;
     font-weight: normal;
     padding: 8px;
+    margin-right: 10px;
 }
 
 label#file-input-label:hover {
     background-color: #0000cc;
 }
 
-#file-name {
+button#get-dropbox-files {
+    width: 200px;
+}
+
+button:disabled {
+    background-color: #80808080 !important;
+    cursor: not-allowed !important;
+    color: black !important;
+}
+
+.display-span {
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 1rem;
+}
+
+.display-span:hover {
+    color: darkblue;
+}
+
+#file-name,
+.filename-list {
     margin-left: 10px;
     font-size: small;
 }

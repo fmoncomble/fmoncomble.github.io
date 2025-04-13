@@ -188,6 +188,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let jsonFile = {};
 
+    // Initialize inputs
+    const inputs = Array.from(document.querySelectorAll('input'));
+    inputs.forEach((input) => {
+        input.value = '';
+        input.removeAttribute('style');
+        if (input.type === 'checkbox') {
+            input.checked = true;
+        }
+    });
+
     goBtn.onclick = start;
     teacherInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
@@ -195,7 +205,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    function start() {
+    async function start() {
         if (!understand) {
             instrDialog.showModal();
         }
@@ -203,17 +213,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.alert('Entrez votre nom');
             teacherInput.focus();
             return;
-        }
-        const dispoContainer = document.getElementById('container-2');
-        dispoContainer.style.display = 'block';
-        jsonFile = null;
-        const addedCourses = document.getElementById('added-courses');
-        addedCourses.style.display = 'none';
-        saveBtn.style.display = 'none';
-        const addedCoursesList = document.getElementById('added-courses-list');
-        const items = addedCoursesList.querySelectorAll('div');
-        for (let i of items) {
-            i.remove();
         }
         const teachers = new Set();
         for (t of teacherData) {
@@ -225,6 +224,38 @@ document.addEventListener('DOMContentLoaded', async () => {
                 'Le nom saisi ne fait pas partie de la liste.\nContactez Florent Moncomble et Guillaume Winter pour vous ajouter'
             );
             return;
+        }
+        const exist = await checkFile();
+        async function checkFile() {
+            let formData = new FormData();
+            formData.append('query', tName);
+            formData.append('action', 'check');
+            let res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
+                method: 'POST',
+                body: formData,
+            });
+            if (res.ok) {
+                const data = await res.json();
+                return data.success;
+            }
+        }
+        if (exist) {
+            let overwrite = window.confirm('Un fichier existe déjà à votre nom.\nSouhaitez-vous le remplacer ?');
+            if (!overwrite) {
+                teacherInput.value = null;
+                return;
+            }
+        }
+        const dispoContainer = document.getElementById('container-2');
+        dispoContainer.style.display = 'block';
+        jsonFile = null;
+        const addedCourses = document.getElementById('added-courses');
+        addedCourses.style.display = 'none';
+        saveBtn.style.display = 'none';
+        const addedCoursesList = document.getElementById('added-courses-list');
+        const items = addedCoursesList.querySelectorAll('div');
+        for (let i of items) {
+            i.remove();
         }
         const tStatus = teacherData.find((t) => t.name === tName).status;
         if (tStatus) {
@@ -666,13 +697,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     let saved = false;
 
     yesBtn.onclick = async () => {
-        await downloadFile();
+        // await downloadFile();
+        const spinner = document.createElement('div');
+        spinner.classList.add('spinner');
+        yesBtn.innerHTML = null;
+        yesBtn.appendChild(spinner);
+        let data = await uploadFile();
+        let message = '<p>Votre fichier de vœux a été envoyé.</p><p>Pensez à vous déconnecter avant de quitter cette page.</p>';
+        if (!data.success) {
+            const download = window.confirm('Le fichier n\'a pas pu être envoyé.\nSouhaitez-vous le télécharger ?');
+            if (download) {
+                message = '<p>Votre fichier de vœux est téléchargé et prêt à être envoyé.</p><p>Pensez à vous déconnecter avant de quitter cette page.</p>';
+                await downloadFile();
+            } else {
+                spinner.remove();
+                yesBtn.textContent = 'Réessayer';
+                return;
+            }
+        }
         saved = true;
+        spinner.remove();
+        yesBtn.textContent = 'Confirmer';
         checkData();
         confirmDialog.innerHTML = null;
         const doneDiv = document.createElement('div');
-        doneDiv.innerHTML =
-            'Votre fichier de vœux est téléchargé et prêt à être envoyé.<br>Pensez à vous déconnecter avant de quitter cette page.';
+        doneDiv.innerHTML = message;
         doneDiv.style.textAlign = 'center';
         const okBtn = document.createElement('button');
         okBtn.classList.add('wishes-ui');
@@ -686,6 +735,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         confirmDialog.appendChild(doneDiv);
         confirmDialog.appendChild(okBtn);
     };
+
+    async function uploadFile() {
+        const date = new Date().toISOString().split('-')[0];
+        const name = tName.replaceAll(' ', '_');
+        const myBlob = new Blob([JSON.stringify(jsonFile)], {
+            type: 'text/plain',
+        });
+        let formData = new FormData();
+        formData.append('file', myBlob, `Vœux_${name}_${date}.json`);
+        formData.append('action', 'upload');
+        const res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
+            method: 'POST',
+            body: formData,
+        });
+        if (res.ok) {
+            const data = await res.json();
+            return data.success;
+        } else {
+            return false;
+        }
+    }
+
     function downloadFile() {
         return new Promise((resolve) => {
             const date = new Date().toISOString().split('-')[0];
