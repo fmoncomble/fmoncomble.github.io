@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         instrDialog.showModal();
     });
 
+    const footer = document.querySelector('.footer');
+    footer.textContent += `-${new Date().getFullYear()}`;
+
     // Get dropbox token
     let dropboxToken;
     async function getDropboxToken() {
