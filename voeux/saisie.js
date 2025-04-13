@@ -28,6 +28,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         instrDialog.showModal();
     });
 
+    // Get dropbox token
+    let dropboxToken;
+    async function getDropboxToken() {
+        const form = new FormData();
+        form.append('action', 'get_token');
+        const res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
+            method: 'POST',
+            body: form,
+        });
+        if (res.ok) {
+            let data = await res.json();
+            if (data.success) {
+                let message = data.message;
+                let token = message.access_token;
+                return token;
+            } else {
+                console.error('Error getting Dropbox token', data.message);
+                return null;
+            }
+        } else {
+            console.error('PHP error');
+            return null;
+        }
+    }
+
     // Function to handle instructions
     let understand = sessionStorage.getItem('understand');
     const comprisBtn = instrDialog.querySelector('#compris');
@@ -225,22 +250,53 @@ document.addEventListener('DOMContentLoaded', async () => {
             );
             return;
         }
+        let checkAttempts = 0;
         const exist = await checkFile();
         async function checkFile() {
+            dropboxToken = await getDropboxToken();
+            checkAttempts++;
+            const date = new Date().toISOString().split('-')[0];
+            let query = `${tName}_${date}`;
             let formData = new FormData();
-            formData.append('query', tName);
+            formData.append('query', query);
             formData.append('action', 'check');
+            formData.append('token', dropboxToken);
             let res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
                 method: 'POST',
                 body: formData,
             });
             if (res.ok) {
                 const data = await res.json();
-                return data.success;
+                if (!data.success) {
+                    if (data.status === 401) {
+                        if (checkAttempts < 4) {
+                            dropboxToken = await getDropboxToken();
+                            checkFile();
+                            return;
+                        } else {
+                            console.error(
+                                'Could not authenticate',
+                                data.message
+                            );
+                            return false;
+                        }
+                    } else {
+                        console.error('Error checking for file', data.message);
+                        return false;
+                    }
+                } else {
+                    if (data.message === 'File not found') {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
             }
         }
         if (exist) {
-            let overwrite = window.confirm('Un fichier existe déjà à votre nom.\nSouhaitez-vous le remplacer ?');
+            let overwrite = window.confirm(
+                'Un fichier existe déjà à votre nom.\nSouhaitez-vous le remplacer ?'
+            );
             if (!overwrite) {
                 teacherInput.value = null;
                 return;
@@ -696,6 +752,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const noBtn = document.getElementById('no-btn');
     let saved = false;
 
+    let uploadAttempts = 0;
     yesBtn.onclick = async () => {
         // await downloadFile();
         const spinner = document.createElement('div');
@@ -703,11 +760,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         yesBtn.innerHTML = null;
         yesBtn.appendChild(spinner);
         let data = await uploadFile();
-        let message = '<p>Votre fichier de vœux a été envoyé.</p><p>Pensez à vous déconnecter avant de quitter cette page.</p>';
-        if (!data.success) {
-            const download = window.confirm('Le fichier n\'a pas pu être envoyé.\nSouhaitez-vous le télécharger ?');
+        let message =
+            '<p>Votre fichier de vœux a été envoyé.</p><p>Pensez à vous déconnecter avant de quitter cette page.</p>';
+        if (!data) {
+            const download = window.confirm(
+                "Le fichier n'a pas pu être envoyé.\nSouhaitez-vous le télécharger ?"
+            );
             if (download) {
-                message = '<p>Votre fichier de vœux est téléchargé et prêt à être envoyé.</p><p>Pensez à vous déconnecter avant de quitter cette page.</p>';
+                message =
+                    '<p>Votre fichier de vœux est téléchargé et prêt à être envoyé.</p><p>Pensez à vous déconnecter avant de quitter cette page.</p>';
                 await downloadFile();
             } else {
                 spinner.remove();
@@ -737,21 +798,40 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     async function uploadFile() {
+        uploadAttempts++;
         const date = new Date().toISOString().split('-')[0];
         const name = tName.replaceAll(' ', '_');
         const myBlob = new Blob([JSON.stringify(jsonFile)], {
             type: 'text/plain',
         });
         let formData = new FormData();
-        formData.append('file', myBlob, `Vœux_${name}_${date}.json`);
+        formData.append('file', myBlob, `${name}_${date}.json`);
         formData.append('action', 'upload');
+        formData.append('token', dropboxToken);
         const res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
             method: 'POST',
             body: formData,
         });
         if (res.ok) {
             const data = await res.json();
-            return data.success;
+            if (!data.success) {
+                if (data.status === 401) {
+                    if (uploadAttempts < 4) {
+                        dropboxToken = await getDropboxToken();
+                        uploadFile();
+                        return;
+                    } else {
+                        console.error('Could not authenticate', data.message);
+                        return false;
+                    }
+                } else {
+                    console.error('Error uploading file', data.message);
+                    return false;
+                }
+            } else {
+                uploadAttempts = 0;
+                return true;
+            }
         } else {
             return false;
         }
@@ -912,7 +992,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function checkData() {
-        if (!saved &&
+        if (
+            !saved &&
             jsonFile &&
             ((jsonFile.Cours && jsonFile.Cours.length > 0) ||
                 (jsonFile.Dispos && jsonFile.Dispos.length > 0))

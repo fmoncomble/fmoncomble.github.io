@@ -205,6 +205,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Retrieve wish files from Dropbox
+    let attempts = 0;
     dropboxBtn.addEventListener('click', async () => {
         const spinner = document.createElement('span');
         spinner.classList.add('spinner');
@@ -214,9 +215,41 @@ document.addEventListener('DOMContentLoaded', async () => {
         dropboxBtn.appendChild(spinner);
         await getWishFiles();
     });
+    async function getDropboxToken() {
+        const form = new FormData();
+        form.append('action', 'get_token');
+        const res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
+            method: 'POST',
+            body: form,
+        });
+        if (res.ok) {
+            let data = await res.json();
+            if (data.success) {
+                let message = data.message;
+                let token = message.access_token;
+                return token;
+            } else {
+                console.error('Error getting Dropbox token', data.message);
+                return null;
+            }
+        } else {
+            console.error('PHP error');
+            return null;
+        }
+    }
     async function getWishFiles() {
+        // Get dropbox token
+        let dropboxToken = await getDropboxToken();
+        if (!dropboxToken) {
+            dropboxBtn.textContent = 'Importer depuis Dropbox';
+            dropboxBtn.disabled = false;
+            return;
+        }
+        // List files in Dropbox folder
+        attempts++;
         let formData = new FormData();
         formData.append('action', 'list_folder');
+        formData.append('token', dropboxToken);
         let res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
             method: 'POST',
             body: formData,
@@ -238,6 +271,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             }/${fileEntries.length}...`;
                             let entryFormData = new FormData();
                             entryFormData.append('action', 'get_file');
+                            entryFormData.append('token', dropboxToken);
                             entryFormData.append('path', entry.path_lower);
                             let res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
                                 method: 'POST',
@@ -317,12 +351,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                     return;
                 }
             } else {
-                window.alert(
-                    `Erreur lors de la requête Dropbox : ${data.message}`
-                );
-                dropboxBtn.textContent = 'Importer depuis Dropbox';
-                dropboxBtn.disabled = false;
-                return;
+                if (data.status === 401) {
+                    if (attempts < 4) {
+                        dropboxToken = await getDropboxToken();
+                        if (dropboxToken) {
+                            getWishFiles();
+                            return;
+                        } else {
+                            console.error(
+                                'Could not refresh Dropbox token to check for files.'
+                            );
+                            return;
+                        }
+                    }
+                } else {
+                    console.error('Error listing Dropbox folder', data.message);
+                    dropboxBtn.textContent = 'Importer depuis Dropbox';
+                    dropboxBtn.disabled = false;
+                    return;
+                }
             }
         } else {
             console.error("Erreur lors de l'appel au script PHP");
