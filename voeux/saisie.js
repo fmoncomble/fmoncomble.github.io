@@ -132,6 +132,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     checkToken();
+    const params = new URLSearchParams(window.location.search);
+    const tokenParam = params.get('token');
+    if (!token && tokenParam) {
+        tokenInput.value = tokenParam;
+        saveToken();
+    }
     async function saveToken() {
         if (tokenInput.value && !token) {
             localStorage.setItem(
