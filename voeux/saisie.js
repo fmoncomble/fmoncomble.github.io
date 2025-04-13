@@ -140,7 +140,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!token && tokenParam) {
         tokenInput.value = tokenParam;
         await saveToken();
-        window.location.replace('https://fmoncomble.github.io/voeux/saisie.html');
+        // window.location.replace('https://fmoncomble.github.io/voeux/saisie.html');
+        window.location.replace('http://localhost:8000/voeux/saisie.html');
     }
     async function saveToken() {
         if (tokenInput.value && !token) {
@@ -771,14 +772,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         yesBtn.appendChild(spinner);
         let data = await uploadFile();
         let message =
-            '<p>Votre fichier de vœux a été envoyé.</p><p>Si vous êtes sur un ordinateur partagé,<br/>Pensez à vous déconnecter avant de quitter cette page.</p>';
+            '<p>Votre fichier de vœux a été envoyé.</p><p>Cliquez ci-dessous pour vous déconnecter.</p>';
         if (!data) {
             const download = window.confirm(
                 "Le fichier n'a pas pu être envoyé.\nSouhaitez-vous le télécharger ?"
             );
             if (download) {
                 message =
-                    '<p>Votre fichier de vœux est téléchargé et prêt à être envoyé.</p><p>Pensez à vous déconnecter avant de quitter cette page.</p>';
+                    '<p>Votre fichier de vœux est téléchargé et prêt à être envoyé.</p><p>Cliquez ci-dessous pour vous déconnecter.</p>';
                 await downloadFile();
             } else {
                 spinner.remove();
@@ -798,9 +799,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         okBtn.classList.add('wishes-ui');
         okBtn.textContent = 'OK';
         okBtn.onclick = () => {
-            window.location.replace('https://fmoncomble.github.io/voeux/saisie.html');
+            saveToken();
             confirmDialog.close();
-            location.reload();
         };
         confirmDialog.style.display = 'flex';
         confirmDialog.style.flexDirection = 'column';
