@@ -140,8 +140,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!token && tokenParam) {
         tokenInput.value = tokenParam;
         await saveToken();
-        // window.location.replace('https://fmoncomble.github.io/voeux/saisie.html');
-        window.location.replace('http://localhost:8000/voeux/saisie.html');
+        window.location.replace('https://fmoncomble.github.io/voeux/saisie.html');
+        // window.location.replace('http://localhost:8000/voeux/saisie.html');
     }
     async function saveToken() {
         if (tokenInput.value && !token) {
