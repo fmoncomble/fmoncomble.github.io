@@ -261,10 +261,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (fileEntries.length > 0) {
                     dropboxBtn.textContent = 'Fichiers trouvés';
                     const fileList = [];
+                    const date = new Date().toISOString().split('-')[0];
                     for (let entry of fileEntries) {
                         if (
                             entry['.tag'] === 'file' &&
-                            entry.name.endsWith('.json')
+                            entry.name.endsWith(`_${date}.json`)
                         ) {
                             dropboxBtn.textContent = `Fichier ${
                                 fileEntries.indexOf(entry) + 1
