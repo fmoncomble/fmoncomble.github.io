@@ -1,4 +1,4 @@
-# Florent Moncomble
+# ![Aidan](https://github.com/user-attachments/assets/5e45e883-346a-4c3b-b493-19608484d579) Florent Moncomble
 Senior lecturer in English linguistics, Université d'Artois, Arras, France  
 Contact: florent.moncomble_at_univ-artois.fr  
   
