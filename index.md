@@ -35,7 +35,7 @@ Une application web pour rechercher des livres électroniques dans la base du [G
   
 Moncomble. F. (2025). _Project Gutenberg Corpus Builder_. Arras, France: Université d'Artois. https://gutencorpus.prendrelangue.fr/   
   
-### ![graph (1)](https://github.com/user-attachments/assets/19c87c0c-f5c4-400a-bfb3-5d5450476898) [Ratio formes/tokens](https://fmoncomble.github.io/ttr/)
+### ![ft](https://github.com/user-attachments/assets/4d44142e-469d-41cd-bbbd-646d3afb5018) [Ratio formes/tokens](https://fmoncomble.github.io/ttr/)
 Une application web permettant de générer une courbe de progression du ratio type/token d'un ou plusieurs corpus pour estimer leur diversité lexicale.  
   
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/d668b511-a384-496e-a881-5a319ebe62aa) [RedditScraper](https://fmoncomble.github.io/redditscraper/README_fr.html)
