@@ -1,5 +1,6 @@
 # Florent Moncomble
-Maitre de Conférences en linguistique anglaise, Université d'Artois, Arras, France  
+Maitre de Conférences en linguistique anglaise, Université d'Artois, Arras, France.  
+Contact : florent.moncomble_at_univ-artois.fr  
   
 ([English version](index_en.md))
   

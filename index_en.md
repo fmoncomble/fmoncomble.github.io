@@ -1,5 +1,6 @@
 # Florent Moncomble
 Senior lecturer in English linguistics, Université d'Artois, Arras, France  
+Contact: florent.moncomble_at_univ-artois.fr  
   
 ([Version française](index.md))
   
