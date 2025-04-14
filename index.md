@@ -19,7 +19,7 @@ Une extension pour extraire et télécharger des messages Discord
 
 Moncomble, F. (2025). _DiscordScraper_ (Version 0.1) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/DiscordScraper/  
   
-### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/1a8680a1-af32-4ddb-b498-9b4e21661278) [MastoScraper](https://fmoncomble.github.io/mastoscraper/)
+### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/1a8680a1-af32-4ddb-b498-9b4e21661278) [MastoScraper](https://fmoncomble.github.io/mastoscraper/README_fr.html)
 Une extension pour extraire et télécharger des pouets (posts sur Mastodon)  
     
 Moncomble, F. (2024). *MastoScraper* (Version 0.8) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/mastoscraper/ 
@@ -34,7 +34,7 @@ Une application web pour rechercher des livres électroniques dans la base du [G
   
 Moncomble. F. (2025). _Project Gutenberg Corpus Builder_. Arras, France: Université d'Artois. https://gutencorpus.prendrelangue.fr/   
   
-### ![graph (1)](https://github.com/user-attachments/assets/19c87c0c-f5c4-400a-bfb3-5d5450476898) [Ratio type/token](https://fmoncomble.github.io/ttr/)
+### ![graph (1)](https://github.com/user-attachments/assets/19c87c0c-f5c4-400a-bfb3-5d5450476898) [Ratio formes/tokens](https://fmoncomble.github.io/ttr/)
 Une application web permettant de générer une courbe de progression du ratio type/token d'un ou plusieurs corpus pour estimer leur diversité lexicale.  
   
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/d668b511-a384-496e-a881-5a319ebe62aa) [RedditScraper](https://fmoncomble.github.io/redditscraper/README_fr.html)
@@ -47,7 +47,7 @@ Une extension 4-en-1 qui rassemble [BlueskyScraper](https://fmoncomble.github.io
 
 Moncomble, F. (2025). _SocialCorpusScraper_ (Version 0.6) [JavaScript]. Arras, France : Université d’Artois. Disponible à l’adresse : https://fmoncomble.github.io/SocialCorpusScraper/  
 
-### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/22704e95-1b87-4c5a-a20e-7c161f3853fa) [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/)
+### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/22704e95-1b87-4c5a-a20e-7c161f3853fa) [𝕏-Scraper](https://fmoncomble.github.io/X-scraper/README_fr.html)
 Une extension pour extraire et télécharger des tweets.
 
 Moncomble, F. (2025). *𝕏-Scraper* (Version 0.5) [JavaScript]. Arras, France : Université d'Artois. Disponible à l'adresse : https://fmoncomble.github.io/X-scraper/  
