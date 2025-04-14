@@ -30,7 +30,7 @@ Une extension pour extraire et télécharger des articles de presse à des fins 
   
 Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.9) [JavaScript]. Arras, France : Université d’Artois. Disponible à l’adresse : https://fmoncomble.github.io/press-corpus-scraper/  
   
-### [Project Gutenberg Corpus Builder](https://gutencorpus.prendrelangue.fr/)  
+### ![pgcb](https://github.com/user-attachments/assets/443b4e56-edef-4013-aa37-916ae3371e11) [Project Gutenberg Corpus Builder](https://gutencorpus.prendrelangue.fr/)  
 Une application web pour rechercher des livres électroniques dans la base du [Gutenberg Project](https://www.gutenberg.org) et les télécharger sous forme d'archive de textes pré-formattés pour importation dans des logiciels d'exploitation de corpus tels qu'[AntConc](https://www.laurenceanthony.net/software/antconc/), [TXM](https://txm.gitpages.huma-num.fr/textometrie/en/) or [Iramuteq](http://www.iramuteq.org/).  
   
 Moncomble. F. (2025). _Project Gutenberg Corpus Builder_. Arras, France: Université d'Artois. https://gutencorpus.prendrelangue.fr/   
