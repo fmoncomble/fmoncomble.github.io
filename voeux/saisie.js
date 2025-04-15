@@ -40,10 +40,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         //     method: 'POST',
         //     body: form,
         // });
-        const res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
-            method: 'POST',
-            body: form,
-        });
+        const res = await fetch(
+            'https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php',
+            {
+                method: 'POST',
+                body: form,
+            }
+        );
         if (res.ok) {
             let data = await res.json();
             if (data.success) {
@@ -126,6 +129,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!understand) {
                 firstTimeDialog.showModal();
             }
+            window.onbeforeunload = saveToken;
         } else {
             tokenInput.placeholder = "Jeton d'authentification";
             tokenInput.removeAttribute('style');
@@ -137,7 +141,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             teacherInputDiv.style.display = 'none';
             tokenInput.focus();
         }
-    }     
+    }
     checkToken();
     const params = new URLSearchParams(window.location.search);
     const tokenParam = params.get('token');
@@ -289,10 +293,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             //     method: 'POST',
             //     body: formData,
             // });
-            let res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
-                method: 'POST',
-                body: formData,
-            });
+            let res = await fetch(
+                'https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php',
+                {
+                    method: 'POST',
+                    body: formData,
+                }
+            );
             if (res.ok) {
                 const data = await res.json();
                 if (!data.success) {
@@ -494,7 +501,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         addedCourses.style.display = 'block';
         const addedCoursesList = document.getElementById('added-courses-list');
         addedCoursesList.style.display = 'block';
-        const courseItem = document.getElementById('added-course-item-template');
+        const courseItem = document.getElementById(
+            'added-course-item-template'
+        );
         const entry = courseItem.cloneNode(true);
         entry.id = `entry${i}`;
         entry.setAttribute('course-id', course.id);
@@ -833,10 +842,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         //     method: 'POST',
         //     body: formData,
         // });
-        const res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
-            method: 'POST',
-            body: formData,
-        });
+        const res = await fetch(
+            'https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php',
+            {
+                method: 'POST',
+                body: formData,
+            }
+        );
         if (res.ok) {
             const data = await res.json();
             if (!data.success) {
