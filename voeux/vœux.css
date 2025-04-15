@@ -67,10 +67,10 @@ div#save {
 }
 
 div#added-courses-list {
-    max-height: 250px;
-    overflow-y: scroll;
+    /* max-height: 250px;
+    overflow-y: scroll; */
     width: max-content;
-    scrollbar-width: thin;
+    /* scrollbar-width: thin; */
     border: solid 1px gray;
     border-radius: 4px;
     display: flex;
@@ -103,13 +103,14 @@ button.confirm:hover {
 }
 
 *:disabled {
-    background-color: lightgray !important;
+    background-color: #eee !important;
     color: gray !important;
     opacity: 0.8;
+    cursor: not-allowed;
 }
 
 *:disabled:hover {
-    background-color: lightgray !important;
+    background-color: #eee !important;
     color: gray !important;
     opacity: 0.8;
 }

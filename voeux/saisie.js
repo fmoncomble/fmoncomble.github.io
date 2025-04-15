@@ -36,6 +36,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function getDropboxToken() {
         const form = new FormData();
         form.append('action', 'get_token');
+        // const res = await fetch('dropbox.php', {
+        //     method: 'POST',
+        //     body: form,
+        // });
         const res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
             method: 'POST',
             body: form,
@@ -133,14 +137,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             teacherInputDiv.style.display = 'none';
             tokenInput.focus();
         }
-    }
+    }     
     checkToken();
     const params = new URLSearchParams(window.location.search);
     const tokenParam = params.get('token');
     if (!token && tokenParam) {
         tokenInput.value = tokenParam;
         await saveToken();
-        window.location.replace('https://fmoncomble.github.io/voeux/saisie.html');
+        window.location.replace(
+            'https://fmoncomble.github.io/voeux/saisie.html'
+        );
         // window.location.replace('http://localhost:8000/voeux/saisie.html');
     }
     async function saveToken() {
@@ -242,6 +248,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     async function start() {
+        teacherInput.disabled = true;
+        goBtn.onclick = () => window.location.reload();
         if (!understand) {
             instrDialog.showModal();
         }
@@ -261,7 +269,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             );
             return;
         }
+        // Check if teacher already has file
         let checkAttempts = 0;
+        const spinner = document.createElement('div');
+        spinner.classList.add('spinner');
+        goBtn.innerHTML = null;
+        goBtn.appendChild(spinner);
         const exist = await checkFile();
         async function checkFile() {
             dropboxToken = await getDropboxToken();
@@ -272,6 +285,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             formData.append('query', query);
             formData.append('action', 'check');
             formData.append('token', dropboxToken);
+            // const res = await fetch('dropbox.php', {
+            //     method: 'POST',
+            //     body: formData,
+            // });
             let res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
                 method: 'POST',
                 body: formData,
@@ -289,19 +306,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 'Could not authenticate',
                                 data.message
                             );
+                            spinner.remove();
+                            goBtn.textContent = 'Changer';
                             return false;
                         }
                     } else {
                         console.error('Error checking for file', data.message);
+                        spinner.remove();
+                        goBtn.textContent = 'Changer';
                         return false;
                     }
                 } else {
                     if (data.message === 'File not found') {
+                        spinner.remove();
+                        goBtn.textContent = 'Changer';
                         return false;
                     } else {
+                        spinner.remove();
+                        goBtn.textContent = 'Changer';
                         return true;
                     }
                 }
+            } else {
+                console.error('PHP error');
+                spinner.remove();
+                goBtn.textContent = 'Changer';
+                return false;
             }
         }
         if (exist) {
@@ -319,11 +349,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const addedCourses = document.getElementById('added-courses');
         addedCourses.style.display = 'none';
         saveBtn.style.display = 'none';
-        const addedCoursesList = document.getElementById('added-courses-list');
-        const items = addedCoursesList.querySelectorAll('div');
-        for (let i of items) {
-            i.remove();
-        }
         const tStatus = teacherData.find((t) => t.name === tName).status;
         if (tStatus) {
             teacherStatus.textContent = `Statut : ${tStatus}`;
@@ -469,34 +494,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         addedCourses.style.display = 'block';
         const addedCoursesList = document.getElementById('added-courses-list');
         addedCoursesList.style.display = 'block';
-        const entry = document.createElement('div');
+        const courseItem = document.getElementById('added-course-item-template');
+        const entry = courseItem.cloneNode(true);
         entry.id = `entry${i}`;
-        entry.classList.add('course-entry');
-        const addedCourse = document.createElement('span');
-        addedCourse.style.verticalAlign = 'sub';
         entry.setAttribute('course-id', course.id);
-        const deleteBtn = document.createElement('span');
-        addedCourse.textContent = `${course.filière} — ${course.semestre} — ${course.intitulé} : ${course.volume}h ${course.format}`;
+        const entryInfo = entry.querySelector('div.added-course-item-info');
+        entryInfo.textContent = `${course.filière} — ${course.semestre} — ${course.intitulé} : ${course.volume}h ${course.format}`;
         if (course.format !== 'TD') {
-            addedCourse.textContent += ` = ${course.eqtd}h éq. TD`;
+            entryInfo.textContent += ` = ${course.eqtd}h éq. TD`;
         }
-        deleteBtn.textContent = ' ❌';
-        deleteBtn.style.cursor = 'pointer';
-        deleteBtn.classList.add('btn');
+        const entryNb = entry.querySelector('input.added-course-item-nb');
+        entryNb.max = course.nbgrp;
+        entryNb.value = 1;
+        entryNb.addEventListener('change', () => {
+            const value = entryNb.value;
+            if (value > course.nbgrp) {
+                window.alert(
+                    `Le nombre de groupes maximum pour ce cours est ${course.nbgrp}`
+                );
+                entryNb.value = course.nbgrp;
+            }
+            adjustEntries(course, value);
+        });
+        const deleteBtn = entry.querySelector('button.delete-btn');
         deleteBtn.onclick = () => deleteEntry(course, entry);
-        const duplicateBtn = document.createElement('span');
-        duplicateBtn.textContent = ' ➕';
-        duplicateBtn.style.cursor = 'pointer';
-        duplicateBtn.classList.add('btn');
-        duplicateBtn.addEventListener('click', () =>
-            duplicateEntry(course, entry, addedCourses)
-        );
-        entry.appendChild(addedCourse);
-        entry.appendChild(deleteBtn);
-        entry.appendChild(duplicateBtn);
+        entry.style.display = 'flex';
         updateVol();
         const firstChild = addedCoursesList.firstChild;
         addedCoursesList.insertBefore(entry, firstChild);
+        alternateBackgrounds();
         resetForm();
         checkData();
         i++;
@@ -534,62 +560,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function deleteEntry(course, entry) {
-        const c = jsonFile.Cours.indexOf(course);
-        const deletedCourse = jsonFile.Cours.splice(c, 1);
-        updateVol();
-        entry.remove();
-        const courseId = course.id;
-        const entries = Array.from(
-            document
-                .getElementById('added-courses-list')
-                .querySelectorAll(`div[course-id="${courseId}"]`)
-        );
-        if (entries.length > 0) {
-            const firstEntry = entries[0];
-            const btns = Array.from(firstEntry.querySelectorAll('span.btn'));
-            if (btns.length < 2) {
-                const duplicateBtn = document.createElement('span');
-                duplicateBtn.textContent = ' ➕';
-                duplicateBtn.style.cursor = 'pointer';
-                duplicateBtn.classList.add('btn');
-                duplicateBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    duplicateEntry(course, firstEntry);
-                });
-                firstEntry.appendChild(duplicateBtn);
-            }
-        }
-        checkData();
-    }
-
-    function duplicateEntry(course, entry, addedCourses) {
         const existingCourses = jsonFile.Cours.filter(
             (c) => c.id === course.id
         );
-        if (existingCourses && existingCourses.length >= course.nbgrp) {
-            window.alert('Le nombre de groupes est atteint pour ce cours');
-            return;
+        for (let existingCourse of existingCourses) {
+            const c = jsonFile.Cours.indexOf(existingCourse);
+            jsonFile.Cours.splice(c, 1);
         }
-        jsonFile.Cours.push(course);
-        const newEntry = entry.cloneNode(true);
-        const btns = Array.from(newEntry.querySelectorAll('span.btn'));
-        for (let b of btns) {
-            b.remove();
+        updateVol();
+        entry.remove();
+        alternateBackgrounds();
+        checkData();
+    }
+
+    function adjustEntries(course, value) {
+        const existingCourses = jsonFile.Cours.filter(
+            (c) => c.id === course.id
+        );
+        for (let existingCourse of existingCourses) {
+            const c = jsonFile.Cours.indexOf(existingCourse);
+            jsonFile.Cours.splice(c, 1);
         }
-        newEntry.id = `entry${i}`;
-        const deleteBtn = document.createElement('span');
-        deleteBtn.textContent = ' ❌';
-        deleteBtn.style.cursor = 'pointer';
-        deleteBtn.classList.add('btn');
-        deleteBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            deleteEntry(course, newEntry);
-        });
-        newEntry.appendChild(deleteBtn);
-        entry.after(newEntry);
+        for (let i = 0; i < value; i++) {
+            jsonFile.Cours.push(course);
+        }
         updateVol();
         checkData();
         i++;
+    }
+
+    function alternateBackgrounds() {
+        const entries = Array.from(
+            document.querySelectorAll('div.added-course-item')
+        );
+        for (let i = 0; i < entries.length; i++) {
+            if (i % 2 === 0) {
+                entries[i].style.backgroundColor = 'white';
+            } else {
+                entries[i].style.backgroundColor = '#eee';
+            }
+        }
     }
 
     function resetForm() {
@@ -819,6 +829,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         formData.append('file', myBlob, `${name}_${date}.json`);
         formData.append('action', 'upload');
         formData.append('token', dropboxToken);
+        // const res = await fetch('dropbox.php', {
+        //     method: 'POST',
+        //     body: formData,
+        // });
         const res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
             method: 'POST',
             body: formData,

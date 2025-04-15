@@ -7,7 +7,11 @@
         <script type="application/json" src="profs.json"></script>
         <link rel="stylesheet" type="text/css" href="vœux.css" />
         <link rel="stylesheet" type="text/css" href="saisie.css" />
-        <link rel="icon" href="https://www.univ-artois.fr/core/misc/favicon.ico" type="image/png" />
+        <link
+            rel="icon"
+            href="https://www.univ-artois.fr/core/misc/favicon.ico"
+            type="image/png"
+        />
     </head>
     <body>
         <h1>Saisie des vœux</h1>
@@ -137,7 +141,26 @@
                             <span id="hTotal">0 </span><span id="hc"></span>)</b
                         >
                         <br />
-                        <div id="added-courses-list"></div>
+                        <div id="added-courses-list">
+                            <div
+                                class="added-course-item"
+                                id="added-course-item-template"
+                                style="display: none"
+                            >
+                                <div class="added-course-item-info"></div>
+                                <div class="added-course-item-action">
+                                    <input
+                                        class="added-course-item-nb"
+                                        type="number"
+                                        min="1"
+                                        value="1"
+                                    />
+                                    <button class="delete-btn wishes-ui">
+                                        ❌
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <dialog id="confirm-dialog">
                         <b>Récapitulatif :</b><br />
