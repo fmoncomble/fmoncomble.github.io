@@ -444,6 +444,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const option1 = document.createElement('option');
         option1.textContent = '—';
+        option1.value = '';
         option1.disabled = true;
         option1.selected = true;
         courseInput.appendChild(option1);
@@ -454,6 +455,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const option = document.createElement('option');
             option.value = c.intitulé;
             option.textContent = c.intitulé;
+            option.id = c.id;
             courseInput.appendChild(option);
         }
     }
@@ -531,7 +533,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateVol();
         const firstChild = addedCoursesList.firstChild;
         addedCoursesList.insertBefore(entry, firstChild);
-        alternateBackgrounds();
+        updateDisplay();
         resetForm();
         checkData();
         i++;
@@ -578,7 +580,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         updateVol();
         entry.remove();
-        alternateBackgrounds();
+        updateDisplay();
         checkData();
     }
 
@@ -598,15 +600,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         i++;
     }
 
-    function alternateBackgrounds() {
+    function updateDisplay() {
         const entries = Array.from(
             document.querySelectorAll('div.added-course-item')
+        ).filter((e) => e.id !== 'added-course-item-template');
+        if (entries.length === 0) {
+            const addedCourses = document.getElementById('added-courses');
+            addedCourses.style.display = 'none'; // Hide course list
+        } else { // Alternate background colors
+            for (let i = 0; i < entries.length; i++) {
+                if (i % 2 === 0) {
+                    entries[i].style.backgroundColor = 'white';
+                } else {
+                    entries[i].style.backgroundColor = '#eee';
+                }
+            }
+        }
+        const courseOptions = Array.from(
+            courseInput.querySelectorAll('option')
         );
-        for (let i = 0; i < entries.length; i++) {
-            if (i % 2 === 0) {
-                entries[i].style.backgroundColor = 'white';
-            } else {
-                entries[i].style.backgroundColor = '#eee';
+        for (let o of courseOptions) {
+            let existingOption = entries.find((e) => {
+                return e.getAttribute('course-id') === o.id;
+            });
+            if (existingOption) {
+                o.disabled = true; // Disable option if course already listed
+            } else if (o.textContent !== '—') {
+                o.disabled = false;
             }
         }
     }
@@ -614,7 +634,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function resetForm() {
         courseInfo.textContent = null;
         courseInfo.style.display = 'none';
-        courseInput.value = courseInput.querySelector('option[disabled]').value;
+        courseInput.value = courseInput.querySelector('option[value=""]').value;
         saveBtn.removeAttribute('style');
         saveBtn.style.display = 'none';
     }
