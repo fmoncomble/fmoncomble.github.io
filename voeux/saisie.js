@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         'https://api.github.com/repos/fmoncomble/voeux/contents/cours.json?ref=main';
 
     async function checkToken() {
-        token = localStorage.getItem('saisie-github-token');
+        token = sessionStorage.getItem('saisie-github-token');
         if (token) {
             const res = await fetch(
                 'https://api.github.com/repos/fmoncomble/voeux/contents?ref=main',
@@ -155,13 +155,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     async function saveToken() {
         if (tokenInput.value && !token) {
-            localStorage.setItem(
+            sessionStorage.setItem(
                 'saisie-github-token',
                 tokenInput.value.trim()
             );
             checkToken();
         } else if (token) {
-            localStorage.removeItem('saisie-github-token');
+            sessionStorage.removeItem('saisie-github-token');
             token = null;
             tokenInput.removeAttribute('style');
             tokenInput.type = 'password';
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Get profs and cours files
     async function getFile(url) {
         try {
-            const token = localStorage.getItem('saisie-github-token');
+            const token = sessionStorage.getItem('saisie-github-token');
             const headers = new Headers({
                 Authorization: `Bearer ${token}`,
                 Accept: 'application/vnd.github+json',
