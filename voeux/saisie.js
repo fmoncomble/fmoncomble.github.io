@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (volTotal < tService) {
             hc.textContent = null;
-            hTotal.style.color = 'orange';
+            hTotal.style.color = '#e69500';
         }
         if (tService === Infinity) {
             hTotal.style.color = 'black';
