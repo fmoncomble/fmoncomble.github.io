@@ -1393,7 +1393,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 fSpan.textContent = f.value.toUpperCase();
                 const arrowDiv = document.createElement('div');
                 arrowDiv.classList.add('arrow');
-                arrowDiv.textContent = '▶️';
+                arrowDiv.textContent = '▶';
                 fSpan.appendChild(arrowDiv);
                 fSpan.onclick = () => {
                     if (!fDiv.style.maxHeight) {
@@ -1421,7 +1421,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     sSpan.textContent = s.value;
                     const arrowDiv = document.createElement('div');
                     arrowDiv.classList.add('arrow');
-                    arrowDiv.textContent = '▶️';
+                    arrowDiv.textContent = '▶';
                     sSpan.appendChild(arrowDiv);
                     sSpan.onclick = () => {
                         if (!sDiv.style.maxHeight) {
