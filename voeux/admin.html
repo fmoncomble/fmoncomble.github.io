@@ -7,7 +7,11 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
         <link rel="stylesheet" href="admin.css" type="text/css" />
         <link rel="stylesheet" href="vœux.css" type="text/css" />
-        <link rel="icon" href="https://www.univ-artois.fr/core/misc/favicon.ico" type="image/png" />
+        <link
+            rel="icon"
+            href="https://www.univ-artois.fr/core/misc/favicon.ico"
+            type="image/png"
+        />
         <title>Administration des services</title>
     </head>
     <body>
@@ -75,6 +79,7 @@
                     <button id="compile-btn" class="wishes-ui">Créer</button>
                 </div>
                 <div>
+                    <br />
                     <button
                         id="save-btn"
                         class="wishes-ui"
@@ -386,20 +391,20 @@
                     <div id="course-list-container">
                         <div id="close-course-list">❌</div>
                         <ul id="course-list">
-                            <li id="course-item" style="display: none">
+                            <li id="course-item" class="course-item" style="display: none">
                                 <span
                                     class="course-name"
                                     id="course-name"
                                 ></span
                                 ><br />
-                                <span id="course-teachers-span"
-                                    >Enseignants :
-                                    <span id="course-teachers"></span><br
-                                /></span>
-                                <span id="course-number-span"
+                                <span id="course-number-span" class="course-number-span"
                                     >Cours assurés :
                                     <span id="course-number"></span
                                 ></span>
+                                <span id="course-teachers-span" class="course-teachers-span"
+                                    >Enseignants :
+                                    <span id="course-teachers"></span><br
+                                /></span>
                             </li>
                         </ul>
                         <br />

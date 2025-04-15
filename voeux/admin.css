@@ -113,6 +113,10 @@ div#close-course-list {
     right: 15px;
 }
 
+.course-item {
+    flex-direction: column;
+}
+
 #course-teachers-span,
 #course-number-span,
 #pb-course-number {

@@ -218,10 +218,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function getDropboxToken() {
         const form = new FormData();
         form.append('action', 'get_token');
-        const res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
-            method: 'POST',
-            body: form,
-        });
+        const res = await fetch(
+            'https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php',
+            {
+                method: 'POST',
+                body: form,
+            }
+        );
         if (res.ok) {
             let data = await res.json();
             if (data.success) {
@@ -250,10 +253,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         let formData = new FormData();
         formData.append('action', 'list_folder');
         formData.append('token', dropboxToken);
-        let res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
-            method: 'POST',
-            body: formData,
-        });
+        let res = await fetch(
+            'https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php',
+            {
+                method: 'POST',
+                body: formData,
+            }
+        );
         if (res.ok) {
             let data = await res.json();
             if (data.success) {
@@ -274,10 +280,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                             entryFormData.append('action', 'get_file');
                             entryFormData.append('token', dropboxToken);
                             entryFormData.append('path', entry.path_lower);
-                            let res = await fetch('https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php', {
-                                method: 'POST',
-                                body: entryFormData,
-                            });
+                            let res = await fetch(
+                                'https://prendrelangue.fr/wp-content/uploads/voeux/dropbox.php',
+                                {
+                                    method: 'POST',
+                                    body: entryFormData,
+                                }
+                            );
                             if (res.ok) {
                                 let data = await res.json();
                                 if (data.success) {
@@ -430,7 +439,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             existingProf.Cours.sort(sortByFil);
                             thisDialog.remove();
                             if (i === 0) {
-                                saveBtn.style.display = 'inline-block';
+                                // saveBtn.style.display = 'inline-block';
                                 resolve(true);
                             }
                         };
@@ -439,7 +448,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             servicesFile.splice(index, 1, newJson);
                             thisDialog.remove();
                             if (i === 0) {
-                                saveBtn.style.display = 'inline-block';
+                                // saveBtn.style.display = 'inline-block';
                                 resolve(true);
                             }
                         };
@@ -449,7 +458,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             if (cancels === files.length) {
                                 resolve(false);
                             } else if (i === 0) {
-                                saveBtn.style.display = 'inline-block';
+                                // saveBtn.style.display = 'inline-block';
                                 resolve(true);
                             }
                         };
@@ -462,7 +471,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                             const intB = b.Name.split(' ')[1].toLowerCase();
                             return intA.localeCompare(intB);
                         });
-                        saveBtn.style.display = 'inline-block';
                         resolve(true);
                     }
                 }
@@ -479,6 +487,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             setTimeout(() => {
                 compileBtn.removeAttribute('style');
                 fileName.textContent = null;
+                const actionChoiceDiv =
+                    document.getElementById('action-choice');
+                actionChoiceDiv.style.display = 'none';
+                saveBtn.style.display = 'inline-block';
             }, 1000);
             compareData();
         } else if (!ok) {
@@ -486,7 +498,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Logic to save/update services file
+    // Logic to save/update remote services file
     let saved = false;
     saveBtn.addEventListener('click', async () => {
         if (servicesFile.length === 0) {
@@ -603,6 +615,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     );
     const closeBtn = document.getElementById('close-course-list');
     closeBtn.addEventListener('click', () => {
+        profInput.value = null;
         courseListContainer.style.display = 'none';
     });
     async function buildCourseList(filière, semestre, prof) {
@@ -789,13 +802,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (logic === 'course') {
                         if (courseNb === 0 || courseNb > reqNb) {
                             courseNumberSpan.style.color = '#cc0000';
-                            courseNumberSpan.textContent += ' 🚨';
+                            // courseNumberSpan.textContent += ' 🚨';
                         } else if (courseNb < reqNb) {
                             courseNumberSpan.style.color = 'orange';
-                            courseNumberSpan.textContent += ' ⚠️';
+                            // courseNumberSpan.textContent += ' ⚠️';
                         } else if (courseNb === reqNb) {
                             courseNumberSpan.style.color = 'green';
-                            courseNumberSpan.textContent += ' ✅';
+                            // courseNumberSpan.textContent += ' ✅';
                         }
                     }
                     if (logic === 'prof') {
@@ -804,7 +817,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         );
                         courseTeachersSpan.remove();
                     }
-                    newItem.style.display = 'block';
+                    newItem.style.display = 'flex';
                     parent.appendChild(newItem);
                 }
             }
@@ -1013,10 +1026,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         newPbItem.querySelector('#course-number');
                     pbCourseNumber.textContent = `${courses.length}/${c.nbgrp}`;
                     if (courses.length === 0 || courses.length > c.nbgrp) {
-                        pbCourseNumber.textContent += ` 🚨`;
+                        // pbCourseNumber.textContent += ` 🚨`;
                         pbCourseNumber.style.color = '#cc0000';
                     } else if (courses.length < c.nbgrp) {
-                        pbCourseNumber.textContent += ` ⚠️`;
+                        // pbCourseNumber.textContent += ` ⚠️`;
                         pbCourseNumber.style.color = 'orange';
                     }
                     newPbItem.style.display = 'block';
@@ -1191,18 +1204,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         buildCourseAddSelect();
     });
 
+    let profBackup;
     const profInput2 = document.getElementById('prof-input-2');
     profInput2.addEventListener('click', () => {
         profInput2.value = null;
     });
     const goProfBtn = document.getElementById('go-prof-btn');
+    profInput2.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            goProfBtn.click();
+        }
+    });
     goProfBtn.addEventListener('click', () => {
+        if (profInput2.value === '') {
+            profInput2.focus();
+            return;
+        }
+        profBackup = JSON.parse(JSON.stringify(servicesFile.find((p) => p.Name === profInput2.value)));
         const ensModDiv = document.getElementById('ens-modify');
         const ensModSpan = document.getElementById('ens-modify-name');
         ensModSpan.textContent = profInput2.value;
         ensModDiv.style.display = 'block';
         const servModDiv = document.getElementById('service-modify');
         servModDiv.style.display = 'block';
+        profInput.value = profInput2.value;
+        checkProfBtn.click();
         buildCourseDeleteSelect();
     });
     const filièreSelect3 = document.getElementById('filière-select-3');
@@ -1284,6 +1310,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 c.filière === filière &&
                 c.semestre === semestre
         );
+        const existingCourses = servicesFile
+            .flatMap((t) => t.Cours)
+            .filter((c) => c.id === courseToAdd.id);
+        if (existingCourses.length >= courseToAdd.nbgrp) {
+            let override = window.confirm(
+                `Tous les groupes de ce cours sont déjà pourvus.\n\nContinuer ?`
+            );
+            if (!override) {
+                return;
+            }
+        }
         const customVolInput = document.getElementById('custom-vol');
         const customVol = customVolInput.value;
         let customCourseToAdd;
@@ -1328,6 +1365,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             courseAddSpan.textContent += ` sur ${baseService}`;
         }
         courseAddDiv.style.display = 'block';
+        checkProfBtn.click();
         setTimeout(() => {
             courseAddDiv.style.display = 'none';
         }, 1000);
@@ -1370,6 +1408,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             courseDeleteSpan.textContent += ` sur ${baseService}`;
         }
         courseDeleteDiv.style.display = 'block';
+        checkProfBtn.click();
         setTimeout(() => {
             courseDeleteDiv.style.display = 'none';
         }, 1000);
@@ -1433,9 +1472,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const cancelChangesBtn = document.getElementById('cancel-changes-btn');
     cancelChangesBtn.addEventListener('click', () => {
+        const profIndex = servicesFile.findIndex(
+            (p) => p.Name === profInput2.value
+        );
+        servicesFile.splice(profIndex, 1, profBackup);
+        profBackup = null;
         const servModDiv = document.getElementById('service-modify');
         servModDiv.style.display = 'none';
         profInput2.value = null;
+        closeBtn.click();
     });
 
     // Course sorting functions
