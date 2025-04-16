@@ -1457,6 +1457,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         saveChgSpinner.style.display = 'inline-block';
         const success = await saveFile(servicesFile);
         if (success) {
+            profBackup = null;
             saveChgSpinner.style.display = 'none';
             btnText.textContent = '✔︎';
             saveChangesBtn.style.backgroundColor = 'green';
