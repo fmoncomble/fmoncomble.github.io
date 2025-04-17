@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const okBtn = firstTimeDialog.querySelector('button#ok-btn');
     okBtn.addEventListener('click', () => {
         firstTimeDialog.close();
+        teacherInput.focus();
     });
     const instrDialog = document.getElementById('instructions-dialog');
     instrDiv.addEventListener('click', () => {
@@ -125,6 +126,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         buildCourseList();
                     }
                 }
+                teacherInput.focus();
             }
             if (!understand) {
                 firstTimeDialog.showModal();
