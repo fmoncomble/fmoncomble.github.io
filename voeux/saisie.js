@@ -254,7 +254,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     async function start() {
-        teacherInput.disabled = true;
         goBtn.onclick = () => window.location.reload();
         if (!understand) {
             instrDialog.showModal();
@@ -268,13 +267,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         for (t of teacherData) {
             teachers.add(t.name);
         }
-        tName = teacherInput.value;
         if (!teachers.has(teacherInput.value)) {
             window.alert(
                 'Le nom saisi ne fait pas partie de la liste.\nContactez Florent Moncomble et Guillaume Winter pour vous ajouter'
             );
             return;
         }
+        teacherInput.disabled = true;
+        tName = teacherInput.value;
         // Check if teacher already has file
         let checkAttempts = 0;
         const spinner = document.createElement('div');

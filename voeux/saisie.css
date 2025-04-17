@@ -105,6 +105,10 @@ div#instructions {
     cursor: pointer;
 }
 
+dialog#first-time div p {
+    line-height: 2em;
+}
+
 dialog#confirm-dialog,
 dialog#instructions-dialog {
     text-align: left !important;
