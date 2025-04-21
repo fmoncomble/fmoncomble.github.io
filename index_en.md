@@ -31,7 +31,7 @@ Moncomble, F. (2024). *MastoScraper* (Version 0.8) [JavaScript]. Arras, France: 
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/eac5cbba-5921-46ba-91ba-2b385e9d2c8a) [Press corpus scraper](https://fmoncomble.github.io/press-corpus-scraper/README_EN.html)
 An extension for extracting and downloading press articles for text mining.  
    
-Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.9) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/press-corpus-scraper/  
+Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.12) [JavaScript]. Arras, France: Université d’Artois. Available at: https://fmoncomble.github.io/press-corpus-scraper/  
   
 ### ![pgcb](https://github.com/user-attachments/assets/3f14e396-ad93-433d-947c-3c077fb87246) [Project Gutenberg Corpus Builder](https://gutencorpus.prendrelangue.fr/)  
 A web application to search for ebooks in the [Gutenberg Project](https://www.gutenberg.org) database and download them as an archive of pre-formatted texts for use in corpus software such as [AntConc](https://www.laurenceanthony.net/software/antconc/), [TXM](https://txm.gitpages.huma-num.fr/textometrie/en/) or [Iramuteq](http://www.iramuteq.org/).  
