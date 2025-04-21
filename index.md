@@ -5,6 +5,9 @@ Contact : florent.moncomble_at_univ-artois.fr
 ([English version](index_en.md))
   
 ## Outils de corpus
+
+Certains des outils ci-dessous existent sous forme d'applications web et sont listés [ici](https://corpustools.prendrelangue.fr/).
+
 ### ![icon-32](https://github.com/fmoncomble/fmoncomble.github.io/assets/59739627/e6c76a48-a2c0-4896-905d-fcb84eed7778) [APP Extractor](https://fmoncomble.github.io/APP_extractor/)
 Une extension pour extraire et télécharger des documents de [The American Presidency Project](https://www.presidency.ucsb.edu/)  
   
