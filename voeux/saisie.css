@@ -93,8 +93,7 @@ td {
 }
 
 td:hover {
-    background-color: #fff5f5
-    ;
+    background-color: #fff5f5;
 }
 
 div#instructions {
@@ -151,6 +150,15 @@ span#meef-warning span {
 input#dispo-check {
     height: 2em;
     width: 2em;
+}
+
+textarea.wishes-ui {
+    width: 95%;
+    height: 70px;
+    resize: none;
+    overflow: scroll;
+    font-family: system-ui, sans-serif;
+    padding: 10px;
 }
 
 button#yes-btn {

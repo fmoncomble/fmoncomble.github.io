@@ -641,6 +641,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         saveBtn.style.display = 'none';
     }
 
+    const remarksTextArea = document.getElementById('remarks');
+    let remarks = remarksTextArea.value;
+
     const confirmDialog = document.getElementById('confirm-dialog');
     sendBtn.onclick = () => {
         if (
@@ -770,6 +773,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 dayList.appendChild(hourList);
             }
             indisposDiv.appendChild(dayList);
+        }
+        const remarksSummary = document.getElementById('remarks-summary');
+        if (remarksTextArea.value) {
+            remarks = remarksTextArea.value;
+            jsonFile.Remarques = remarks;
+            remarksSummary.textContent = `Remarques : ${remarks}`;
         }
         eqtdTotal = Number(parseFloat(Number(eqtdTotal).toFixed(2)));
         const profSummary = document.getElementById('prof-summary');

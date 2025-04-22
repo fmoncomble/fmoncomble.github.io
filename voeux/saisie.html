@@ -39,7 +39,7 @@
                         <span style="font-size: small; font-weight: lighter"
                             >(sensible aux accents)</span
                         >
-                        :
+                        :
                         <input
                             name="teacher-name"
                             id="teacher-name"
@@ -57,7 +57,7 @@
                     <br />
                 </div>
                 <div id="class-choice" class="wishes-ui" style="display: none">
-                    <h2>1. Ajouter des enseignements :</h2>
+                    <h2>1. Ajouter des enseignements :</h2>
                     <div>
                         <label for="filière" class="wishes-ui">
                             <select
@@ -117,7 +117,7 @@
                             </select>
                         </label>
                         <span id="meef-warning" style="display: none"
-                            >⚠️ MEEF : pour les cours rémunérés en heures CM
+                            >⚠️ MEEF : pour les cours rémunérés en heures CM
                             <span>et</span> TD, pensez à ajouter les
                             <span>deux</span> lignes.</span
                         >
@@ -138,7 +138,7 @@
                     </div>
                     <div id="added-courses" class="wishes-ui">
                         <b
-                            >Enseignements enregistrés (Total :
+                            >Enseignements enregistrés (Total :
                             <span id="hTotal">0 </span><span id="hc"></span>)</b
                         >
                         <br />
@@ -165,11 +165,13 @@
                         </div>
                     </div>
                     <dialog id="confirm-dialog">
-                        <b>Récapitulatif :</b><br />
-                        <p>Enseignements :</p>
+                        <b>Récapitulatif :</b><br />
+                        <p>Enseignements :</p>
                         <div id="summary"></div>
-                        <p>Indisponibilités :</p>
+                        <p>Indisponibilités :</p>
                         <div id="indispos"></div>
+                        <br />
+                        <div id="remarks-summary"></div>
                         <br />
                         <div id="prof-summary"></div>
                         <br /><br />
@@ -182,7 +184,7 @@
                         </div>
                     </dialog>
                     <dialog id="missing-info">
-                        <div>Complétez les informations manquantes :</div>
+                        <div>Complétez les informations manquantes :</div>
                         <div id="missing-info-id"></div>
                         <button id="missing-ok-btn" class="wishes-ui">
                             OK
@@ -207,7 +209,7 @@
                 <ol>
                     <li>
                         <p>
-                            <b>Enseignements (à gauche) : </b>
+                            <b>Enseignements (à gauche) : </b>
                         </p>
                         <p>
                             Pour ajouter un enseignement à vos vœux,
@@ -229,7 +231,7 @@
                             <li>
                                 <p>
                                     Le volume horaire de votre service est
-                                    ajusté en temps réel : en
+                                    ajusté en temps réel : en
                                     <span
                                         style="
                                             color: #e69500;
@@ -252,7 +254,7 @@
                         </ul>
                     </li>
                     <li>
-                        <p><b>Indisponibilités (à droite) : </b></p>
+                        <p><b>Indisponibilités (à droite) : </b></p>
                         <ul>
                             <li>
                                 <p>
@@ -272,7 +274,7 @@
                         </ul>
                     </li>
                     <li>
-                        <p><b>Valider :</b></p>
+                        <p><b>Valider :</b></p>
                         <ul>
                             <li>
                                 <p>
@@ -302,7 +304,7 @@
             <div id="container-2" class="container" style="display: none">
                 <div>
                     <h2>
-                        2. Sélectionner les plages horaires d'indisponibilité :
+                        2. Sélectionner les plages horaires d'indisponibilité :
                     </h2>
                 </div>
                 <br />
@@ -420,12 +422,20 @@
                     </table>
                 </div>
                 <br />
+                <div>
+                    <h2>3. Remarques ou demandes spécifiques :</h2>
+                    <textarea 
+                        id="remarks"
+                        class="wishes-ui"
+                        placeholder="Remarques ou demandes spécifiques (salles, matériel, etc.)"
+                    ></textarea>
+                </div>
                 <div id="validation-div">
-                    <h2>3. Valider</h2>
+                    <h2>4. Valider</h2>
                     <button id="send-btn" class="wishes-ui">Valider</button>
                 </div>
             </div>
         </div>
-        <div class="footer">© Florent Moncomble 2024</div>
+        <div class="footer">© Florent Moncomble 2025</div>
     </body>
 </html>

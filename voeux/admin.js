@@ -860,8 +860,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const colHeaders = rows[0].getElementsByTagName('th');
             const profDispos = profFromFile.Dispos;
             if (profDispos && profDispos.length > 0) {
-                dispoDiv.querySelector('div').textContent =
-                    'Indisponibilités :';
+                dispoDiv.querySelector('div').innerHTML =
+                    '<b>Indisponibilités :</b>';
                 const cells = dispoTable.getElementsByTagName('td');
                 for (let c of cells) {
                     c.textContent = '';
@@ -896,6 +896,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                     c.removeAttribute('style');
                 }
                 dispoDiv.style.display = 'block';
+            }
+            const profRemarks = profFromFile.Remarques;
+            const remarksDiv = document.getElementById('remarks');
+            if (profRemarks && profRemarks.length > 0) {
+                remarksDiv.innerHTML += ' ' + profRemarks;
+                remarksDiv.style.display = 'block';
+            } else {
+                remarksDiv.textContent = null;
+                remarksDiv.style.display = 'none';
             }
         }
     }
