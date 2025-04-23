@@ -156,7 +156,6 @@ textarea.wishes-ui {
     width: 95%;
     height: 70px;
     resize: none;
-    overflow: scroll;
     font-family: system-ui, sans-serif;
     padding: 10px;
 }
