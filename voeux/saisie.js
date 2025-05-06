@@ -643,10 +643,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         const deleteBtn = entry.querySelector('button.delete-btn');
         deleteBtn.onclick = () => deleteEntry(course, entry);
         entry.style.display = 'flex';
+        entry.style.backgroundColor = 'rgb(214, 245, 214)';
         updateVol();
         const firstChild = addedCoursesList.firstChild;
         addedCoursesList.insertBefore(entry, firstChild);
-        updateDisplay();
+        await new Promise((resolve) => {
+            setTimeout(() => {
+                updateDisplay();
+                resolve();
+            }, 600);
+        });
         resetForm();
         checkData();
         i++;
@@ -683,7 +689,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    function deleteEntry(course, entry) {
+    async function deleteEntry(course, entry) {
         const existingCourses = jsonFile.Cours.filter(
             (c) => c.id === course.id
         );
@@ -692,8 +698,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             jsonFile.Cours.splice(c, 1);
         }
         updateVol();
-        entry.remove();
-        updateDisplay();
+        entry.style.backgroundColor = '#ffe6e6';
+        await new Promise((resolve) => {
+            setTimeout(() => {
+                entry.remove();
+                updateDisplay();
+                resolve();
+            }, 600);
+        });
         checkData();
     }
 
@@ -726,11 +738,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             addedCourses.style.display = 'none'; // Hide course list
         } else {
             // Alternate background colors
-            for (let i = 0; i < entries.length; i++) {
-                if (i % 2 === 0) {
-                    entries[i].style.backgroundColor = 'white';
+            for (let e of entries) {
+                if (e.nextElementSibling.style.backgroundColor === 'white') {
+                    e.style.backgroundColor = '#eee';
                 } else {
-                    entries[i].style.backgroundColor = '#eee';
+                    e.style.backgroundColor = 'white';
                 }
             }
         }
@@ -1187,7 +1199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         Mercredi: 3,
         Jeudi: 4,
         Vendredi: 5,
-    }
+    };
     function saveDispo(dispo) {
         if (!jsonFile) {
             jsonFile = {};
