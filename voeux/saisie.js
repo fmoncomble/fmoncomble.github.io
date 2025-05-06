@@ -452,7 +452,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             let value = loadedFile.Cours.filter(
                                 (cours) => cours.id === c.id
                             ).length;
-                            await saveCourse(c, value);
+                            await saveCourse(c, value, 'file');
                             adjustEntries(c, value);
                         }
                     }
@@ -590,7 +590,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let volTotal = new Number();
     let volHc = new Number();
 
-    async function saveCourse(course, value) {
+    async function saveCourse(course, value, mode) {
         if (!course) {
             return;
         }
@@ -647,12 +647,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateVol();
         const firstChild = addedCoursesList.firstChild;
         addedCoursesList.insertBefore(entry, firstChild);
-        await new Promise((resolve) => {
-            setTimeout(() => {
-                updateDisplay();
-                resolve();
-            }, 600);
-        });
+        if (!mode) {
+            await new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, 600);
+            });
+        }
+        updateDisplay();
         resetForm();
         checkData();
         i++;
