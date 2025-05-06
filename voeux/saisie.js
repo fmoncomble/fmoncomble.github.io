@@ -928,15 +928,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 profSummary.textContent += ` ⚠️`;
                 if (eqtdTotal < tService) {
                     profSummary.textContent += ` — volume horaire insuffisant`;
-                    let newDiv = document.createElement('div');
-                    newDiv.textContent = `Vous pouvez télécharger le fichier pour reprendre la saisie ultérieurement.`;
-                    profSummary.after(newDiv);
                     yesBtn.disabled = true;
                 } else if (
                     (tHc && eqtdTotal > tService + tHc) ||
                     eqtdTotal > tService * 2
                 ) {
                     profSummary.textContent += ` — volume horaire supérieur à la limite autorisée`;
+                    let newDiv = document.createElement('div');
+                    newDiv.textContent = `Vous pouvez télécharger le fichier pour reprendre la saisie ultérieurement.`;
+                    profSummary.after(newDiv);
                     yesBtn.disabled = true;
                 }
             } else {
