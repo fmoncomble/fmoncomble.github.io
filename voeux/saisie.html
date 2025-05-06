@@ -39,7 +39,7 @@
                         <span style="font-size: small; font-weight: lighter"
                             >(sensible aux accents)</span
                         >
-                        :
+                         :
                         <input
                             name="teacher-name"
                             id="teacher-name"
@@ -53,6 +53,19 @@
                     <button id="go-btn" class="wishes-ui">Commencer</button>
                     <div id="teacher-status"></div>
                     <div id="teacher-service"></div>
+                    <div id="file-load" style="display: none">
+                        Reprendre ou modifier une saisie :
+                        <button id="file-load-btn" class="wishes-ui">
+                            Charger un fichier existant
+                        </button>
+                        <input
+                            type="file"
+                            id="file-input"
+                            class="wishes-ui"
+                            accept=".json"
+                            style="display: none"
+                        />
+                    </div>
                     <div id="instructions">Afficher les instructions</div>
                     <br />
                 </div>
@@ -176,8 +189,10 @@
                         <div id="prof-summary"></div>
                         <br /><br />
                         <div style="text-align: center">
-                            <button id="yes-btn" class="wishes-ui">
-                                Confirmer</button
+                            <button id="dl-btn" class="wishes-ui">
+                                Télécharger</button
+                            ><button id="yes-btn" class="wishes-ui">
+                                Envoyer</button
                             ><button id="no-btn" class="wishes-ui reset-btn">
                                 Annuler
                             </button>
@@ -207,6 +222,17 @@
                     <p><b>Mode d'emploi</b></p>
                 </div>
                 <ol>
+                    <li>
+                        <p>
+                            Pour reprendre une saisie non terminée ou modifier
+                            vos vœux, cliquez sur
+                            <span class="btn-span"
+                                >Charger un fichier existant</span
+                            >
+                            et sélectionnez le fichier JSON que vous avez
+                            téléchargé précédemment.
+                        </p>
+                    </li>
                     <li>
                         <p>
                             <b>Enseignements (à gauche) : </b>
@@ -278,12 +304,17 @@
                         <ul>
                             <li>
                                 <p>
-                                    Renseignez aussi précisément que possible tout besoin spécifique de salle ou de matériel, en détaillant les enseignements concernés.
+                                    Renseignez aussi précisément que possible
+                                    tout besoin spécifique de salle ou de
+                                    matériel, en détaillant les enseignements
+                                    concernés.
                                 </p>
                             </li>
                             <li>
                                 <p>
-                                    Vous pouvez ajouter toute remarque ou information pertinente pour l'élaboration de votre service.
+                                    Vous pouvez ajouter toute remarque ou
+                                    information pertinente pour l'élaboration de
+                                    votre service.
                                 </p>
                             </li>
                         </ul>
@@ -294,10 +325,17 @@
                             <li>
                                 <p>
                                     Quand vous avez terminé, cliquez sur
-                                    <span class="btn-span">Valider</span>,
+                                    <span class="btn-span">Valider</span> et
                                     vérifiez le récapitulatif et cliquez sur
-                                    <span class="btn-span">Confirmer</span>
+                                    <span class="btn-span">Envoyer</span>
                                     pour envoyer votre fichier de vœux.
+                                </p>
+                                <p>
+                                    Si vous n'avez pas terminé, vous pouvez
+                                    aussi
+                                    <span class="btn-span">Télécharger</span> le
+                                    fichier pour reprendre la saisie
+                                    ultérieurement.
                                 </p>
                             </li>
                             <li>
@@ -439,7 +477,7 @@
                 <br />
                 <div>
                     <h2>3. Remarques ou demandes spécifiques :</h2>
-                    <textarea 
+                    <textarea
                         id="remarks"
                         class="wishes-ui"
                         placeholder="Remarques ou demandes spécifiques (salles, matériel, etc.)"

@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const goBtn = document.getElementById('go-btn');
     const teacherStatus = document.getElementById('teacher-status');
     const teacherService = document.getElementById('teacher-service');
+    const fileLoadDiv = document.getElementById('file-load');
+    const fileLoadBtn = document.getElementById('file-load-btn');
+    const fileInput = document.getElementById('file-input');
     const courseChoiceDiv = document.getElementById('class-choice');
     const filièreInput = document.getElementById('filière');
     const semestreInput = document.getElementById('semestre');
@@ -13,9 +16,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const courseInfo = document.getElementById('course-info');
     const saveDiv = document.getElementById('save');
     const saveBtn = document.getElementById('save-btn');
+    const addedCourses = document.getElementById('added-courses');
+    const addedCoursesList = document.getElementById('added-courses-list');
     const sendBtn = document.getElementById('send-btn');
     const hTotal = document.getElementById('hTotal');
     const hc = document.getElementById('hc');
+    const table = document.querySelector('table');
+    const tableCells = Array.from(document.querySelectorAll('td'));
+    const dispoCheck = document.querySelector('input#dispo-check');
+    let noIndispo = true;
+    let isGliding = false;
+    const remarksTextArea = document.getElementById('remarks');
+    remarksTextArea.value = null;
 
     const instrDiv = document.getElementById('instructions');
     const firstTimeDialog = document.getElementById('first-time');
@@ -173,8 +185,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             authSaveBtn.classList.remove('reset-btn');
             tokenInput.placeholder = "Jeton d'authentification";
             teacherInput.value = null;
+            teacherInput.disabled = false;
             teacherStatus.textContent = null;
             teacherService.textContent = null;
+            goBtn.textContent = 'Commencer';
+            fileLoadBtn.disabled = false;
+            remarksTextArea.value = null;
             const container1 = document.getElementById('container-1');
             const divs = Array.from(container1.children);
             for (let div of divs) {
@@ -185,6 +201,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const container2 = document.getElementById('container-2');
             container2.style.display = 'none';
             teacherInputDiv.style.display = 'none';
+            window.location.reload();
         }
     }
 
@@ -240,7 +257,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const inputs = Array.from(document.querySelectorAll('input'));
     inputs.forEach((input) => {
         input.value = '';
-        input.removeAttribute('style');
+        if (input.id !== 'file-input') {
+            input.removeAttribute('style');
+        }
         if (input.type === 'checkbox') {
             input.checked = true;
         }
@@ -345,7 +364,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (exist) {
             let overwrite = window.confirm(
-                'Un fichier existe déjà à votre nom.\nSouhaitez-vous le remplacer ?'
+                'Vous avez déjà envoyé vos vœux.\nSouhaitez-vous les remplacer ?'
             );
             if (!overwrite) {
                 teacherInput.value = null;
@@ -390,6 +409,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             tHc = customHc;
             teacherService.textContent += ` (${tHc} HC max)`;
         }
+        fileLoadDiv.style.display = 'block';
         filièreInput.value = 'LLCER';
         filière = 'LLCER';
         semestreInput.value = 'S1';
@@ -397,6 +417,93 @@ document.addEventListener('DOMContentLoaded', async () => {
         buildCourseList();
         courseChoiceDiv.style.display = 'block';
     }
+
+    // Load existing file
+    fileLoadBtn.addEventListener('click', () => {
+        fileInput.click();
+    });
+    fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const contents = e.target.result;
+                let loadedFile = JSON.parse(contents);
+                if (loadedFile.Name !== tName) {
+                    window.alert('Le fichier n’est pas à votre nom.');
+                    return;
+                }
+                let cours = loadedFile.Cours;
+                if (cours && cours.length) {
+                    const courseItems = Array.from(addedCoursesList.children);
+                    for (cI of courseItems) {
+                        if (cI.id !== 'added-course-item-template') {
+                            cI.remove();
+                        }
+                    }
+                    if (jsonFile && jsonFile.Cours) {
+                        jsonFile.Cours = [];
+                    }
+                    for (let c of cours) {
+                        if (
+                            !jsonFile ||
+                            !jsonFile.Cours.find((cours) => cours.id === c.id)
+                        ) {
+                            let value = loadedFile.Cours.filter(
+                                (cours) => cours.id === c.id
+                            ).length;
+                            await saveCourse(c, value);
+                            adjustEntries(c, value);
+                        }
+                    }
+                }
+                let remarques = loadedFile.Remarques;
+                if (remarques) {
+                    remarksTextArea.value = remarques;
+                    jsonFile.Remarques = remarques;
+                }
+                let indispos = loadedFile.Dispos;
+                if (indispos && indispos.length) {
+                    const rows = table.getElementsByTagName('tr');
+                    const colHeaders = rows[0].getElementsByTagName('th');
+                    for (let c of tableCells) {
+                        c.textContent = '';
+                        c.removeAttribute('style');
+                    }
+                    if (jsonFile && jsonFile.Dispos) {
+                        jsonFile.Dispos = [];
+                    }
+                    for (let d of indispos) {
+                        let rowIndex, colIndex;
+                        for (let i = 0; i < rows.length; i++) {
+                            const rowHeader =
+                                rows[i].getElementsByTagName('th')[0];
+                            if (rowHeader && rowHeader.textContent === d.hour) {
+                                rowIndex = i;
+                                break;
+                            }
+                        }
+                        for (let j = 0; j < colHeaders.length; j++) {
+                            if (colHeaders[j].textContent === d.day) {
+                                colIndex = j;
+                                break;
+                            }
+                        }
+                        const dCell = rows[rowIndex].cells[colIndex];
+                        select(dCell, d.day, d.hour);
+                    }
+                } else {
+                    for (let c of tableCells) {
+                        c.textContent = null;
+                        c.removeAttribute('style');
+                    }
+                    dispoCheck.checked = true;
+                }
+                fileLoadBtn.disabled = true;
+            };
+            reader.readAsText(file);
+        }
+    });
 
     // Limit available semester options according to filière
     filièreInput.addEventListener('change', () => {
@@ -483,7 +590,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     let volTotal = new Number();
     let volHc = new Number();
 
-    function saveCourse(course) {
+    async function saveCourse(course, value) {
+        if (!course) {
+            return;
+        }
         if (!tName) {
             window.alert('Entrez votre nom');
             teacherInput.focus();
@@ -501,9 +611,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             jsonFile.Cours.push(course);
         }
         saveBtn.style.backgroundColor = 'green';
-        const addedCourses = document.getElementById('added-courses');
         addedCourses.style.display = 'block';
-        const addedCoursesList = document.getElementById('added-courses-list');
         addedCoursesList.style.display = 'block';
         const courseItem = document.getElementById(
             'added-course-item-template'
@@ -529,6 +637,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             adjustEntries(course, value);
         });
+        if (value) {
+            entryNb.value = value;
+        }
         const deleteBtn = entry.querySelector('button.delete-btn');
         deleteBtn.onclick = () => deleteEntry(course, entry);
         entry.style.display = 'flex';
@@ -586,7 +697,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         checkData();
     }
 
-    function adjustEntries(course, value) {
+    function adjustEntries(course, value, entry) {
         const existingCourses = jsonFile.Cours.filter(
             (c) => c.id === course.id
         );
@@ -596,6 +707,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         for (let i = 0; i < value; i++) {
             jsonFile.Cours.push(course);
+        }
+        if (entry) {
+            const entryNb = entry.querySelector('input.added-course-item-nb');
+            entryNb.value = value;
         }
         updateVol();
         checkData();
@@ -609,7 +724,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (entries.length === 0) {
             const addedCourses = document.getElementById('added-courses');
             addedCourses.style.display = 'none'; // Hide course list
-        } else { // Alternate background colors
+        } else {
+            // Alternate background colors
             for (let i = 0; i < entries.length; i++) {
                 if (i % 2 === 0) {
                     entries[i].style.backgroundColor = 'white';
@@ -641,10 +757,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         saveBtn.style.display = 'none';
     }
 
-    const remarksTextArea = document.getElementById('remarks');
     let remarks = remarksTextArea.value;
 
     const confirmDialog = document.getElementById('confirm-dialog');
+    const dlBtn = document.getElementById('dl-btn');
+    const yesBtn = document.getElementById('yes-btn');
+    const noBtn = document.getElementById('no-btn');
     sendBtn.onclick = () => {
         if (
             !jsonFile ||
@@ -796,33 +914,52 @@ document.addEventListener('DOMContentLoaded', async () => {
                 profSummary.textContent += ` ⚠️`;
                 if (eqtdTotal < tService) {
                     profSummary.textContent += ` — volume horaire insuffisant`;
+                    yesBtn.disabled = true;
                 } else if (
                     (tHc && eqtdTotal > tService + tHc) ||
                     eqtdTotal > tService * 2
                 ) {
                     profSummary.textContent += ` — volume horaire supérieur à la limite autorisée`;
+                    yesBtn.disabled = true;
                 }
             } else {
                 profSummary.style.color = 'green';
+                yesBtn.disabled = false;
             }
         }
         confirmDialog.showModal();
     };
 
-    const yesBtn = document.getElementById('yes-btn');
-    const noBtn = document.getElementById('no-btn');
     let saved = false;
 
     let uploadAttempts = 0;
+    dlBtn.onclick = async () => {
+        await downloadFile();
+        confirmDialog.innerHTML = null;
+        const doneDiv = document.createElement('div');
+        doneDiv.innerHTML =
+            '<p>Votre fichier de vœux est téléchargé.</p><p>Cliquez ci-dessous pour vous déconnecter.</p>';
+        doneDiv.style.textAlign = 'center';
+        const okBtn = document.createElement('button');
+        okBtn.classList.add('wishes-ui');
+        okBtn.textContent = 'OK';
+        okBtn.onclick = () => {
+            saveToken();
+            confirmDialog.close();
+        };
+        confirmDialog.style.display = 'flex';
+        confirmDialog.style.flexDirection = 'column';
+        confirmDialog.appendChild(doneDiv);
+        confirmDialog.appendChild(okBtn);
+    };
     yesBtn.onclick = async () => {
-        // await downloadFile();
         const spinner = document.createElement('div');
         spinner.classList.add('spinner');
         yesBtn.innerHTML = null;
         yesBtn.appendChild(spinner);
         let data = await uploadFile();
         let message =
-            '<p>Votre fichier de vœux a été envoyé.</p><p>Cliquez ci-dessous pour vous déconnecter.</p>';
+            '<p>Votre fichier de vœux a été envoyé.</p><p>Voulez-vous télécharger un fichier de sauvegarde ?</p><p>(Déconseillé sur un ordinateur partagé)</p>';
         if (!data) {
             const download = window.confirm(
                 "Le fichier n'a pas pu être envoyé.\nSouhaitez-vous le télécharger ?"
@@ -845,17 +982,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         const doneDiv = document.createElement('div');
         doneDiv.innerHTML = message;
         doneDiv.style.textAlign = 'center';
+        const btnDiv = document.createElement('div');
         const okBtn = document.createElement('button');
         okBtn.classList.add('wishes-ui');
-        okBtn.textContent = 'OK';
-        okBtn.onclick = () => {
+        okBtn.style.width = '92px';
+        okBtn.textContent = 'Oui';
+        okBtn.onclick = async () => {
+            await downloadFile();
             saveToken();
             confirmDialog.close();
         };
+        const cancelBtn = document.createElement('button');
+        cancelBtn.classList.add('wishes-ui');
+        cancelBtn.classList.add('reset-btn');
+        cancelBtn.style.width = '92px';
+        cancelBtn.textContent = 'Non';
+        cancelBtn.onclick = () => {
+            saveToken();
+            confirmDialog.close();
+        };
+        btnDiv.style.display = 'flex';
+        btnDiv.style.flexDirection = 'row';
+        btnDiv.style.justifyContent = 'space-around';
         confirmDialog.style.display = 'flex';
         confirmDialog.style.flexDirection = 'column';
+        btnDiv.appendChild(okBtn);
+        btnDiv.appendChild(cancelBtn);
         confirmDialog.appendChild(doneDiv);
-        confirmDialog.appendChild(okBtn);
+        confirmDialog.appendChild(btnDiv);
     };
 
     async function uploadFile() {
@@ -926,12 +1080,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // Handle availability table
-    const table = document.querySelector('table');
-    const tableCells = Array.from(document.querySelectorAll('td'));
-    const dispoCheck = document.querySelector('input#dispo-check');
-    let noIndispo = true;
-    let isGliding = false;
-
     dispoCheck.addEventListener('change', () => {
         if (dispoCheck.checked) {
             for (let tc of tableCells) {
@@ -995,9 +1143,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         tc.addEventListener('mouseover', (e) => {
             e.preventDefault();
             if (e.button === 0 && isGliding) {
-                if (isSelecting) {
+                if (!tc.classList.contains('selected')) {
                     select(tc, day, hour);
-                } else if (!isSelecting) {
+                } else if (tc.classList.contains('selected')) {
                     deselect(tc, day, hour);
                 }
             }
@@ -1033,6 +1181,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             deleteDispo(dispo);
         }
     }
+    const days = {
+        Lundi: 1,
+        Mardi: 2,
+        Mercredi: 3,
+        Jeudi: 4,
+        Vendredi: 5,
+    }
     function saveDispo(dispo) {
         if (!jsonFile) {
             jsonFile = {};
@@ -1045,6 +1200,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else if (jsonFile && jsonFile.Dispos) {
             jsonFile.Dispos.push(dispo);
         }
+        jsonFile.Dispos.sort((a, b) => {
+            const dayA = days[a.day];
+            const dayB = days[b.day];
+            if (dayA === dayB) {
+                return a.hour.localeCompare(b.hour);
+            }
+            return dayA - dayB;
+        });
         dispoCheck.checked = false;
         noIndispo = false;
         checkData();

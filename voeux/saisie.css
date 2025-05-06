@@ -183,3 +183,7 @@ button#yes-btn {
         transform: rotate(360deg);
     }
 }
+
+button:disabled {
+    cursor: not-allowed;
+}
