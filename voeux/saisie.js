@@ -590,7 +590,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let volTotal = new Number();
     let volHc = new Number();
 
-    async function saveCourse(course, value, mode) {
+    async function saveCourse(course, value) {
         if (!course) {
             return;
         }
@@ -644,16 +644,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         deleteBtn.onclick = () => deleteEntry(course, entry);
         entry.style.display = 'flex';
         entry.style.backgroundColor = 'rgb(214, 245, 214)';
+        entry.classList.add('fade-out');
         updateVol();
         const firstChild = addedCoursesList.firstChild;
         addedCoursesList.insertBefore(entry, firstChild);
-        if (!mode) {
-            await new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve();
-                }, 600);
-            });
-        }
+        await new Promise((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, 600);
+        });
         updateDisplay();
         resetForm();
         checkData();
@@ -700,15 +699,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             jsonFile.Cours.splice(c, 1);
         }
         updateVol();
+        entry.classList.remove('fade-out');
         entry.style.backgroundColor = '#ffe6e6';
         await new Promise((resolve) => {
             setTimeout(() => {
                 entry.remove();
                 updateDisplay();
+                checkData();
                 resolve();
             }, 600);
         });
-        checkData();
     }
 
     function adjustEntries(course, value, entry) {
