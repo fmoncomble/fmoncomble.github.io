@@ -590,7 +590,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let volTotal = new Number();
     let volHc = new Number();
 
-    async function saveCourse(course, value) {
+    async function saveCourse(course, value, mode) {
         if (!course) {
             return;
         }
@@ -648,11 +648,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateVol();
         const firstChild = addedCoursesList.firstChild;
         addedCoursesList.insertBefore(entry, firstChild);
-        await new Promise((resolve) => {
-            setTimeout(() => {
-                resolve();
-            }, 600);
-        });
+        if (!mode) {
+            await new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, 600);
+            });
+        }
         updateDisplay();
         resetForm();
         checkData();
