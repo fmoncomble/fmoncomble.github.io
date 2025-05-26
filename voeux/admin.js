@@ -900,7 +900,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const profRemarks = profFromFile.Remarques;
             const remarksDiv = document.getElementById('remarks');
             if (profRemarks && profRemarks.length > 0) {
-                remarksDiv.innerHTML += ' ' + profRemarks;
+                remarksDiv.innerHTML = profRemarks;
                 remarksDiv.style.display = 'block';
             } else {
                 remarksDiv.textContent = null;
