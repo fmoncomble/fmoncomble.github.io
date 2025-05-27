@@ -192,3 +192,7 @@ button#yes-btn {
 button:disabled {
     cursor: not-allowed;
 }
+
+div#remarks-summary {
+    white-space: pre-wrap;
+}

@@ -905,7 +905,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             const profRemarks = profFromFile.Remarques;
             if (profRemarks && profRemarks.length > 0) {
-                remarksDiv.innerHTML = profRemarks;
+                remarksDiv.innerHTML = `<b>Remarques :</b><br />${profRemarks}`;
                 remarksDiv.style.display = 'block';
             } else {
                 remarksDiv.textContent = null;

@@ -252,3 +252,7 @@ button#save-changes-btn {
     text-align: center;
     width: 110px;
 }
+
+div#remarks {
+    white-space: pre-wrap;
+}

@@ -912,7 +912,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (remarksTextArea.value) {
             remarks = remarksTextArea.value;
             jsonFile.Remarques = remarks;
-            remarksSummary.textContent = `Remarques : ${remarks}`;
+            remarksSummary.innerHTML = remarks;
         }
         eqtdTotal = Number(parseFloat(Number(eqtdTotal).toFixed(2)));
         const profSummary = document.getElementById('prof-summary');
@@ -943,7 +943,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             } else {
                 profSummary.style.color = 'green';
-                serviceMsg.textContent = `Si tout est OK et que vous avez terminé, cliquez sur « Envoyer ».\nSinon, vous pouvez télécharger le fichier pour reprendre la saisie ultérieurement.`;
+                serviceMsg.innerHTML = `Si tout est OK et que vous avez terminé, cliquez sur « Envoyer ».<br />Sinon, vous pouvez télécharger le fichier pour reprendre la saisie ultérieurement.`;
                 yesBtn.disabled = false;
             }
         }
