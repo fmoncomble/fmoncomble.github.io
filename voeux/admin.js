@@ -170,6 +170,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     setTimeout(() => {
                         eraseBtn.removeAttribute('style');
                         fileName.textContent = null;
+                        const actionChoiceDiv =
+                            document.getElementById('action-choice');
+                        actionChoiceDiv.style.display = 'none';
                         saveBtn.style.display = 'inline-block';
                     }, 1000);
                     compareData();
