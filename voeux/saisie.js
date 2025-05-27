@@ -921,6 +921,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             profSummary.textContent += ` (${eqtdTotal - tService}HC)`;
         }
         if (tService !== Infinity) {
+            let serviceMsg = document.getElementById('service-message');
             if (
                 (tHc && eqtdTotal > tService + tHc) ||
                 eqtdTotal > tService * 2 ||
@@ -930,25 +931,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 profSummary.textContent += ` ⚠️`;
                 if (eqtdTotal < tService) {
                     profSummary.textContent += ` — volume horaire insuffisant`;
-                    let newDiv = document.createElement('div');
-                    newDiv.textContent = `Vous pouvez télécharger le fichier pour reprendre la saisie ultérieurement.`;
-                    profSummary.after(newDiv);
+                    serviceMsg.textContent = `Vous pouvez télécharger le fichier pour reprendre la saisie ultérieurement.`;
                     yesBtn.disabled = true;
                 } else if (
                     (tHc && eqtdTotal > tService + tHc) ||
                     eqtdTotal > tService * 2
                 ) {
                     profSummary.textContent += ` — volume horaire supérieur à la limite autorisée`;
-                    let newDiv = document.createElement('div');
-                    newDiv.textContent = `Vous pouvez télécharger le fichier pour reprendre la saisie ultérieurement.`;
-                    profSummary.after(newDiv);
+                    serviceMsg.textContent = `Vous pouvez télécharger le fichier pour reprendre la saisie ultérieurement.`;
                     yesBtn.disabled = true;
                 }
             } else {
                 profSummary.style.color = 'green';
-                let newDiv = document.createElement('div');
-                newDiv.textContent = `Si tout est OK et que vous avez terminé, cliquez sur « Envoyer ».\nSinon, vous pouvez télécharger le fichier pour reprendre la saisie ultérieurement.`;
-                profSummary.after(newDiv);
+                serviceMsg.textContent = `Si tout est OK et que vous avez terminé, cliquez sur « Envoyer ».\nSinon, vous pouvez télécharger le fichier pour reprendre la saisie ultérieurement.`;
                 yesBtn.disabled = false;
             }
         }
