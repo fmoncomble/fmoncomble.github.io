@@ -623,6 +623,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         courseListContainer.style.display = 'none';
     });
     async function buildCourseList(filière, semestre, prof) {
+        const remarksDiv = document.getElementById('remarks');
+        remarksDiv.textContent = null;
         courseListContainer.style.display = 'block';
         const serviceDiv = document.getElementById('service-div');
         if (serviceDiv) {
@@ -902,7 +904,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 dispoDiv.style.display = 'block';
             }
             const profRemarks = profFromFile.Remarques;
-            const remarksDiv = document.getElementById('remarks');
             if (profRemarks && profRemarks.length > 0) {
                 remarksDiv.innerHTML = profRemarks;
                 remarksDiv.style.display = 'block';
