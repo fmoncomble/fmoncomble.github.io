@@ -946,6 +946,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             } else {
                 profSummary.style.color = 'green';
+                let newDiv = document.createElement('div');
+                newDiv.textContent = `Si tout est OK et que vous avez terminé, cliquez sur « Envoyer ».\nSinon, vous pouvez télécharger le fichier pour reprendre la saisie ultérieurement.`;
+                profSummary.after(newDiv);
                 yesBtn.disabled = false;
             }
         }
