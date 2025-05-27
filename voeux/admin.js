@@ -166,10 +166,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 eraseDialog.remove();
                 ok = await compileWishes();
                 if (ok) {
-                    compileBtn.style.backgroundColor = 'green';
+                    eraseBtn.style.backgroundColor = 'green';
                     setTimeout(() => {
-                        compileBtn.removeAttribute('style');
+                        eraseBtn.removeAttribute('style');
                         fileName.textContent = null;
+                        saveBtn.style.display = 'inline-block';
                     }, 1000);
                     compareData();
                 }
@@ -1229,7 +1230,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             profInput2.focus();
             return;
         }
-        profBackup = JSON.parse(JSON.stringify(servicesFile.find((p) => p.Name === profInput2.value)));
+        profBackup = JSON.parse(
+            JSON.stringify(
+                servicesFile.find((p) => p.Name === profInput2.value)
+            )
+        );
         const ensModDiv = document.getElementById('ens-modify');
         const ensModSpan = document.getElementById('ens-modify-name');
         ensModSpan.textContent = profInput2.value;
