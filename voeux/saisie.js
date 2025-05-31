@@ -566,6 +566,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             option.textContent = c.intitulé;
             option.id = c.id;
             courseInput.appendChild(option);
+            let existingOption = jsonFile?.Cours?.find((cours) => cours.id === c.id);
+            if (existingOption) {
+                option.disabled = true;
+            } else if (option.textContent !== '—') {
+                option.disabled = false;
+            }
         }
     }
 
