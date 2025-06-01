@@ -1218,7 +1218,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         buildCourseAddSelect();
     });
 
-    let profBackup;
+    let profBackup = null;
     const profInput2 = document.getElementById('prof-input-2');
     profInput2.addEventListener('click', () => {
         profInput2.value = null;
@@ -1234,11 +1234,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             profInput2.focus();
             return;
         }
-        profBackup = JSON.parse(
-            JSON.stringify(
-                servicesFile.find((p) => p.Name === profInput2.value)
-            )
+        const existingFile = servicesFile.find(
+            (p) => p.Name === profInput2.value
         );
+        if (existingFile) {
+            profBackup = JSON.parse(JSON.stringify(existingFile));
+        }
         const ensModDiv = document.getElementById('ens-modify');
         const ensModSpan = document.getElementById('ens-modify-name');
         ensModSpan.textContent = profInput2.value;
@@ -1494,7 +1495,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const profIndex = servicesFile.findIndex(
             (p) => p.Name === profInput2.value
         );
-        servicesFile.splice(profIndex, 1, profBackup);
+        if (profBackup) {
+            servicesFile.splice(profIndex, 1, profBackup);
+        } else {
+            servicesFile.splice(profIndex, 1);
+        }
         profBackup = null;
         const servModDiv = document.getElementById('service-modify');
         servModDiv.style.display = 'none';
