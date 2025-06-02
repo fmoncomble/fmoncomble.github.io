@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const params = new URLSearchParams(window.location.search);
     const tokenParam = params.get('token');
     if (!token && tokenParam) {
-        tokenInput.value = tokenParam;
         localStorage.setItem('github-token', token);
         checkToken();
         window.location.replace(
