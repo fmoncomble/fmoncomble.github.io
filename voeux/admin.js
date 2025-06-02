@@ -534,6 +534,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     saveSpinner.style.display = 'none';
                     btnText.textContent = '✔︎';
                     saveBtn.style.backgroundColor = 'green';
+                } else {
+                    saveSpinner.style.display = 'none';
+                    btnText.textContent = '❌';
+                    saveBtn.style.backgroundColor = '#cc0000';
                 }
                 setTimeout(() => {
                     saveBtn.removeAttribute('style');
@@ -560,6 +564,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 saveSpinner.style.display = 'none';
                 btnText.textContent = '✔︎';
                 saveBtn.style.backgroundColor = 'green';
+            } else {
+                saveSpinner.style.display = 'none';
+                btnText.textContent = '❌';
+                saveBtn.style.backgroundColor = '#cc0000';
             }
             setTimeout(() => {
                 saveBtn.removeAttribute('style');
@@ -594,19 +602,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                 headers: headers,
                 body: body,
             });
-            const data = await saveRes.json();
-            sha = data.content.sha;
             if (!saveRes.ok) {
                 if (saveRes.status === 401) {
                     window.alert(
                         "Vous devez entrer un jeton d'authentification"
                     );
-                    throw new Error(saveRes.message);
-                } else if (saveRes.status === 409) {
-                    window.alert('Erreur : ' + saveRes.message);
-                    throw new Error(saveRes.message);
+                    return false;
+                } else {
+                    const errData = await saveRes.json();
+                    window.alert(
+                        'Vous ne disposez pas des autorisations nécessaires : ' +
+                            errData.message
+                    );
+                    return false;
                 }
             } else {
+                const data = await saveRes.json();
+                sha = data.content.sha;
                 saved = true;
                 return true;
             }
@@ -1538,6 +1550,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             saveChgSpinner.style.display = 'none';
             btnText.textContent = '✔︎';
             saveChangesBtn.style.backgroundColor = 'green';
+        } else {
+            saveChgSpinner.style.display = 'none';
+            btnText.textContent = '❌';
+            saveChangesBtn.style.backgroundColor = '#cc0000';
         }
         setTimeout(() => {
             saveChangesBtn.removeAttribute('style');
@@ -1760,6 +1776,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (success) {
                 spinner.style.display = 'none';
                 btnText.textContent = '✔︎';
+            } else {
+                spinner.style.display = 'none';
+                btnText.textContent = '❌';
+                yesBtn.style.backgroundColor = '#cc0000';
             }
             setTimeout(() => {
                 yesBtn.removeAttribute('style');
