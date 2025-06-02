@@ -53,6 +53,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     checkToken();
+    const params = new URLSearchParams(window.location.search);
+    const tokenParam = params.get('token');
+    if (!token && tokenParam) {
+        tokenInput.value = tokenParam;
+        localStorage.setItem('github-token', token);
+        checkToken();
+        window.location.replace(
+            'https://fmoncomble.github.io/voeux/admin.html'
+        );
+        // window.location.replace('http://localhost:8000/voeux/admin.html');
+    }
 
     const resetBtn = document.getElementById('reset-btn');
     resetBtn.addEventListener('click', () => {
