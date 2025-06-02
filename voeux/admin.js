@@ -1088,6 +1088,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 o.disabled = false;
             });
         }
+        semestreSelect.value = 'S1';
     });
 
     const checkCourseBtn = document.getElementById('check-course-btn');
