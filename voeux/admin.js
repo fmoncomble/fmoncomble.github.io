@@ -697,8 +697,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         let courseIndex = 1;
         for (let c of refCourses) {
             const courseId = c.id;
+            const courseFromFile = courseFile.find((i) => i.id === courseId);
             let newItem;
-            let reqNb = Number(c.nbgrp);
+            // let reqNb = Number(c.nbgrp);
+            let reqNb = Number(courseFromFile.nbgrp);
             let tCourses;
             let courseNb;
             if (logic === 'course') {
