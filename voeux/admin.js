@@ -922,6 +922,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             serviceDiv.remove();
         }
         dispoDiv.style.display = 'none';
+        const remarksDiv = document.getElementById('remarks');
+        remarksDiv.textContent = null;
+        remarksDiv.style.display = 'none';
         const courseItemArray = Array.from(courseList.children);
         for (let i = 1; i < courseItemArray.length; i++) {
             courseItemArray[i].textContent;
