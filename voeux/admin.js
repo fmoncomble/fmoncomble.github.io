@@ -803,6 +803,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         courseTeachersSpan.textContent = courseTeachers
                             .map((t) => `${t.name} (${t.count})`)
                             .join(', ');
+                    } else {
+                        newItem.querySelector(
+                            'span#course-teachers-span'
+                        ).remove();
                     }
                     const courseNumberSpan =
                         newItem.querySelector('span#course-number');
