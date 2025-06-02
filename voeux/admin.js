@@ -619,13 +619,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     );
     const closeBtn = document.getElementById('close-course-list');
     closeBtn.addEventListener('click', () => {
+        filièreSelect.value = 'LLCER';
+        semestreSelect.value = 'S1';
         profInput.value = null;
         courseListContainer.style.display = 'none';
     });
     async function buildCourseList(filière, semestre, prof) {
         const remarksDiv = document.getElementById('remarks');
         remarksDiv.textContent = null;
-        courseListContainer.style.display = 'block';
+        courseListContainer.style.display = 'flex';
         const serviceDiv = document.getElementById('service-div');
         if (serviceDiv) {
             serviceDiv.remove();
@@ -860,7 +862,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     serviceDiv.style.color = 'green';
                 }
             }
-            courseList.after(serviceDiv);
+            const courseListDiv = document.querySelector('div.course-list-div');
+            courseListDiv.after(serviceDiv);
             const dispoTable = dispoDiv.querySelector('table');
             const rows = dispoTable.getElementsByTagName('tr');
             const colHeaders = rows[0].getElementsByTagName('th');
@@ -892,7 +895,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     dCell.style.backgroundColor = '#ffe6e6';
                     dCell.textContent = '❌';
                 }
-                dispoDiv.style.display = 'block';
+                dispoDiv.style.display = 'flex';
             } else {
                 dispoDiv.querySelector('div').textContent =
                     'Aucune indisponibilité';
@@ -901,12 +904,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                     c.textContent = null;
                     c.removeAttribute('style');
                 }
-                dispoDiv.style.display = 'block';
+                dispoDiv.style.display = 'flex';
             }
             const profRemarks = profFromFile.Remarques;
             if (profRemarks && profRemarks.length > 0) {
                 remarksDiv.innerHTML = `<b>Remarques :</b><br />${profRemarks}`;
-                remarksDiv.style.display = 'block';
+                remarksDiv.style.display = 'flex';
             } else {
                 remarksDiv.textContent = null;
                 remarksDiv.style.display = 'none';
@@ -916,7 +919,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Function to display problem courses
     function showPbCourses() {
-        courseListContainer.style.display = 'block';
+        courseListContainer.style.display = 'flex';
         const serviceDiv = document.getElementById('service-div');
         if (serviceDiv) {
             serviceDiv.remove();
@@ -1091,6 +1094,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkCourseBtn.addEventListener('click', async () => {
         const filière = filièreSelect.value;
         const semestre = semestreSelect.value;
+        profInput.value = null;
         buildCourseList(filière, semestre, null);
     });
 
@@ -1099,13 +1103,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profList = document.getElementById('prof-list');
     const checkProfBtn = document.getElementById('check-prof-btn');
     checkProfBtn.addEventListener('click', () => {
+        if (profInput.value === '') {
+            profInput.focus();
+            return;
+        }
+        filièreSelect.value = 'LLCER';
+        semestreSelect.value = 'S1';
         const prof = profInput.value;
         buildCourseList(null, null, prof);
     });
     profInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            const prof = profInput.value;
-            buildCourseList(null, null, prof);
+            checkProfBtn.click();
         }
     });
     profInput.addEventListener('click', () => {

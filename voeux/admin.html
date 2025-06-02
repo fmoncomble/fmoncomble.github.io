@@ -15,19 +15,21 @@
         <title>Administration des services</title>
     </head>
     <body>
-        <h1 class="wishes-ui">Administration des services</h1>
-        <div id="auth-div">
-            <span>Authentification OK ✅</span>
-            <button class="wishes-ui reset-btn" id="reset-btn">
-                Déconnecter
-            </button>
-        </div>
-        <div id="file-exist" class="wishes-ui" style="display: none">
-            Fichier de services importé ✓
+        <div class="header">
+            <h1 class="wishes-ui">Administration des services</h1>
+            <div id="auth-div">
+                <span>Authentification OK ✅</span>
+                <button class="wishes-ui reset-btn" id="reset-btn">
+                    Déconnecter
+                </button>
+            </div>
+            <div id="file-exist" class="wishes-ui" style="display: none">
+                Fichier de services importé ✓
+            </div>
         </div>
         <div class="wrapper">
             <div id="container-1" class="container">
-                <div>
+                <div class="container-header">
                     <h2>Compiler le fichier de services</h2>
                 </div>
                 <div>
@@ -305,217 +307,217 @@
                 </dialog>
             </div>
             <div id="container-2" class="container">
-                <div>
-                    <div><h2>Vérifier les données</h2></div>
-                    <div class="data-wrapper">
-                        <div class="data-container">
-                            <div><b>Par formation :</b></div>
-                            <div>
-                                <select id="filière-select" class="wishes-ui">
-                                    <option
-                                        value="LLCER"
-                                        data-level="l"
-                                        selected
-                                    >
-                                        LLCER
-                                    </option>
-                                    <option value="LEA" data-level="l">
-                                        LEA
-                                    </option>
-                                    <option value="MEEF" data-level="m">
-                                        MEEF
-                                    </option>
-                                    <option value="MLLCER" data-level="m">
-                                        Master LLCER
-                                    </option>
-                                    <option value="LMI" data-level="m">
-                                        LMI
-                                    </option>
-                                    <option value="AGREG" data-level="a">
-                                        Agrégation interne
-                                    </option>
-                                </select>
-                                <select id="semestre-select" class="wishes-ui">
-                                    <option value="S1" selected>S1</option>
-                                    <option value="S2">S2</option>
-                                    <option value="S3" data-nota="true">
-                                        S3
-                                    </option>
-                                    <option value="S4" data-nota="true">
-                                        S4
-                                    </option>
-                                    <option
-                                        value="S5"
-                                        data-nota="true"
-                                        data-notm="true"
-                                    >
-                                        S5
-                                    </option>
-                                    <option
-                                        value="S6"
-                                        data-nota="true"
-                                        data-notm="true"
-                                    >
-                                        S6
-                                    </option>
-                                </select>
-                                <button id="check-course-btn" class="wishes-ui">
-                                    Vérifier
-                                </button>
-                            </div>
-                        </div>
-                        <div class="data-container">
-                            <div><b>Par enseignant·e :</b></div>
-                            <div>
-                                <input
-                                    name="prof-input"
-                                    id="prof-input"
-                                    class="wishes-ui"
-                                    type="text"
-                                    placeholder="Prénom Nom"
-                                    list="prof-list"
-                                />
-                                <datalist id="prof-list"></datalist>
-                                <button id="check-prof-btn" class="wishes-ui">
-                                    Vérifier
-                                </button>
-                            </div>
-                        </div>
-                        <div class="data-container">
-                            <div><b>Problèmes :</b></div>
-                            <button id="pb-btn" class="wishes-ui pb-btn">
-                                Afficher
+                <!-- <div> -->
+                <div class="container-header"><h2>Vérifier les données</h2></div>
+                <div class="data-wrapper">
+                    <div class="data-container">
+                        <div><b>Par formation :</b></div>
+                        <div>
+                            <select id="filière-select" class="wishes-ui">
+                                <option value="LLCER" data-level="l" selected>
+                                    LLCER
+                                </option>
+                                <option value="LEA" data-level="l">LEA</option>
+                                <option value="MEEF" data-level="m">
+                                    MEEF
+                                </option>
+                                <option value="MLLCER" data-level="m">
+                                    Master LLCER
+                                </option>
+                                <option value="LMI" data-level="m">LMI</option>
+                                <option value="AGREG" data-level="a">
+                                    Agrégation interne
+                                </option>
+                            </select>
+                            <select id="semestre-select" class="wishes-ui">
+                                <option value="S1" selected>S1</option>
+                                <option value="S2">S2</option>
+                                <option value="S3" data-nota="true">S3</option>
+                                <option value="S4" data-nota="true">S4</option>
+                                <option
+                                    value="S5"
+                                    data-nota="true"
+                                    data-notm="true"
+                                >
+                                    S5
+                                </option>
+                                <option
+                                    value="S6"
+                                    data-nota="true"
+                                    data-notm="true"
+                                >
+                                    S6
+                                </option>
+                            </select>
+                            <button id="check-course-btn" class="wishes-ui">
+                                Vérifier
                             </button>
                         </div>
                     </div>
-                    <div id="course-list-container">
-                        <div id="close-course-list">❌</div>
+                    <div class="data-container">
+                        <div><b>Par enseignant·e :</b></div>
+                        <div>
+                            <input
+                                name="prof-input"
+                                id="prof-input"
+                                class="wishes-ui"
+                                type="text"
+                                placeholder="Prénom Nom"
+                                list="prof-list"
+                            />
+                            <datalist id="prof-list"></datalist>
+                            <button id="check-prof-btn" class="wishes-ui">
+                                Vérifier
+                            </button>
+                        </div>
+                    </div>
+                    <div class="data-container">
+                        <div><b>Problèmes :</b></div>
+                        <button id="pb-btn" class="wishes-ui pb-btn">
+                            Afficher
+                        </button>
+                    </div>
+                </div>
+                <div id="course-list-container">
+                    <div id="close-course-list">❌</div>
+                    <div class="course-list-div">
                         <ul id="course-list">
-                            <li id="course-item" class="course-item" style="display: none">
+                            <li
+                                id="course-item"
+                                class="course-item"
+                                style="display: none"
+                            >
                                 <span
                                     class="course-name"
                                     id="course-name"
                                 ></span
                                 ><br />
-                                <span id="course-number-span" class="course-number-span"
+                                <span
+                                    id="course-number-span"
+                                    class="course-number-span"
                                     >Cours assurés :
                                     <span id="course-number"></span
                                 ></span>
-                                <span id="course-teachers-span" class="course-teachers-span"
+                                <span
+                                    id="course-teachers-span"
+                                    class="course-teachers-span"
                                     >Enseignants :
                                     <span id="course-teachers"></span><br
                                 /></span>
                             </li>
                         </ul>
-                        <br />
-                        <div id="dispos" style="display: none">
-                            <div>
-                                <strong>Indisponibilités :</strong>
-                            </div>
-                            <table>
-                                <tr>
-                                    <th></th>
-                                    <th>Lundi</th>
-                                    <th>Mardi</th>
-                                    <th>Mercredi</th>
-                                    <th>Jeudi</th>
-                                    <th>Vendredi</th>
-                                </tr>
-                                <tr>
-                                    <th>8h - 9h</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>9h - 10h</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>10h - 11h</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>11h - 12h</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>12h - 13h</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>13h - 14h</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>14h - 15h</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>15h - 16h</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>16h - 17h</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>17h - 18h</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>18h - 19h</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </table>
-                        </div>
-                        <br />
-                        <div id="remarks" style="display: none"><strong>Remarques :</strong></div>
                     </div>
                     <br />
+                    <div id="dispos" style="display: none">
+                        <div>
+                            <strong>Indisponibilités :</strong>
+                        </div>
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th>Lundi</th>
+                                <th>Mardi</th>
+                                <th>Mercredi</th>
+                                <th>Jeudi</th>
+                                <th>Vendredi</th>
+                            </tr>
+                            <tr>
+                                <th>8h - 9h</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>9h - 10h</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>10h - 11h</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>11h - 12h</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>12h - 13h</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>13h - 14h</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>14h - 15h</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>15h - 16h</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>16h - 17h</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>17h - 18h</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>18h - 19h</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <br />
+                    <div id="remarks" style="display: none">
+                        <strong>Remarques :</strong>
+                    </div>
                 </div>
+                <!-- <br /> -->
+                <!-- </div> -->
             </div>
             <div id="danger-zone" class="danger-zone">
                 <h2 class="section-header" id="danger-zone-header">

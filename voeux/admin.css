@@ -3,6 +3,10 @@ body {
     background-color: #c4d0e6;
 }
 
+.header {
+    height: 10vh;
+}
+
 h1 {
     text-align: center;
 }
@@ -25,7 +29,7 @@ div#file-exist {
     display: flex;
     flex-direction: column;
     max-width: 99%;
-    margin-bottom: 70px;
+    max-height: 90vh;
 }
 
 @media (min-aspect-ratio: 1/1) {
@@ -92,17 +96,25 @@ button:disabled {
 div#course-list-container {
     position: relative;
     display: none;
+    flex-direction: column;
+    max-height: 80%;
 }
 
-ul#course-list {
+div.course-list-div {
+    display: flex;
+    flex-direction: column;
     background-color: #dbe2f0;
-    max-height: 30em;
-    overflow-y: scroll;
-    box-shadow: inset 0 0 10px #c4d0e6;
-    border-radius: 10px;
+    overflow-y: auto;
+        border-radius: 10px;
     padding: 10px;
     margin: auto 10px;
-    scrollbar-width: none;
+    scrollbar-width: thin;
+}
+
+.container {
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
 }
 
 div#close-course-list {
@@ -110,7 +122,17 @@ div#close-course-list {
     font-size: small;
     position: absolute;
     top: 2px;
-    right: 15px;
+    right: 25px;
+}
+
+ul#course-list {
+    margin: 10px 0;
+    padding: 0;
+}
+
+div#dispos,
+div#remarks {
+    flex-direction: column;
 }
 
 .course-item {
@@ -182,9 +204,14 @@ h2 {
     font-weight: bold;
 }
 
+.container-header {
+    height: 5vh;
+}
+
 .data-wrapper {
     display: flex;
     flex-direction: row;
+    height: 10vh;
 }
 
 .data-container {
