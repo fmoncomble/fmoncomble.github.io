@@ -806,7 +806,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     } else {
                         newItem.querySelector(
                             'span#course-teachers-span'
-                        ).remove();
+                        ).style.display = 'none';
                     }
                     const courseNumberSpan =
                         newItem.querySelector('span#course-number');
