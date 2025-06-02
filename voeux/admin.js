@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let profFile;
     let courseFile;
     async function checkToken() {
-        token = localStorage.getItem('github-token');
+        token = localStorage.getItem('github-admin-token');
         if (token) {
             const res = await fetch(
                 'https://api.github.com/repos/fmoncomble/voeux/contents?ref=main',
@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     "L'authentification a échoué : vérifiez le jeton d'authentification"
                 );
                 token = null;
+                localStorage.removeItem('github-admin-token');
                 authDiv.style.display = 'none';
                 authDialog.showModal();
                 return;
@@ -56,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const params = new URLSearchParams(window.location.search);
     const tokenParam = params.get('token');
     if (!token && tokenParam) {
-        localStorage.setItem('github-token', token);
+        localStorage.setItem('github-admin-token', token);
         window.location.replace(
             'https://fmoncomble.github.io/voeux/admin.html'
         );
@@ -65,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const resetBtn = document.getElementById('reset-btn');
     resetBtn.addEventListener('click', () => {
-        localStorage.removeItem('github-token');
+        localStorage.removeItem('github-admin-token');
         const fileExist = document.getElementById('file-exist');
         fileExist.style.display = 'none';
         checkToken();
@@ -78,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             token = authInput.value.trim();
             authInput.value = null;
-            localStorage.setItem('github-token', token);
+            localStorage.setItem('github-admin-token', token);
             checkToken();
         }
         authDialog.close();
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else {
                 token = authInput.value.trim();
                 authInput.value = null;
-                localStorage.setItem('github-token', token);
+                localStorage.setItem('github-admin-token', token);
                 checkToken();
             }
             authDialog.close();
@@ -105,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function checkVoeuxFile() {
         const url =
             'https://api.github.com/repos/fmoncomble/voeux/contents/services.json?ref=main';
-        const token = localStorage.getItem('github-token');
+        const token = localStorage.getItem('github-admin-token');
         const headers = new Headers({
             Authorization: `Bearer ${token}`,
             Accept: 'application/vnd.github+json',
@@ -575,7 +576,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const finalFile = btoa(String.fromCharCode.apply(null, utf8Array));
         const url =
             'https://api.github.com/repos/fmoncomble/voeux/contents/services.json';
-        const token = localStorage.getItem('github-token');
+        const token = localStorage.getItem('github-admin-token');
         const headers = new Headers({
             Authorization: `Bearer ${token}`,
             Accept: 'application/vnd.github+json',
@@ -1169,7 +1170,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const url =
                 'https://api.github.com/repos/fmoncomble/voeux/contents/profs.json?ref=main';
-            const ghToken = localStorage.getItem('github-token');
+            const ghToken = localStorage.getItem('github-admin-token');
             const headers = new Headers({
                 Authorization: `Bearer ${ghToken}`,
                 Accept: 'application/vnd.github+json',
@@ -1217,7 +1218,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const url =
                 'https://api.github.com/repos/fmoncomble/voeux/contents/cours.json?ref=main';
-            const ghToken = localStorage.getItem('github-token');
+            const ghToken = localStorage.getItem('github-admin-token');
             const headers = new Headers({
                 Authorization: `Bearer ${ghToken}`,
                 Accept: 'application/vnd.github+json',
