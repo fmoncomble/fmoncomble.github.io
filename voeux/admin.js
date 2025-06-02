@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tokenParam = params.get('token');
     if (!token && tokenParam) {
         localStorage.setItem('github-token', token);
-        checkToken();
         window.location.replace(
             'https://fmoncomble.github.io/voeux/admin.html'
         );
