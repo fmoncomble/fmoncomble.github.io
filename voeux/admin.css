@@ -93,6 +93,11 @@ button:disabled {
     margin-left: 30px;
 }
 
+.course-list,
+.course-item {
+    margin-bottom: 0.5rem;
+}
+
 div#course-list-container {
     position: relative;
     display: none;
@@ -105,10 +110,15 @@ div.course-list-div {
     flex-direction: column;
     background-color: #dbe2f0;
     overflow-y: auto;
-        border-radius: 10px;
+    border-radius: 10px;
     padding: 10px;
     margin: auto 10px;
     scrollbar-width: thin;
+}
+
+div.course-list-div.pb-list {
+    border: 3px dashed #cc0000;
+    background-color: #ffffe6;
 }
 
 .container {
@@ -139,9 +149,8 @@ div#remarks {
     flex-direction: column;
 }
 
-#course-teachers-span,
-#course-number-span,
-#pb-course-number {
+.course-teachers-span,
+.course-number-span {
     margin-left: 2rem;
 }
 

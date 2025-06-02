@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const authDialog = document.getElementById('auth-dialog');
     const authInput = document.getElementById('auth-input');
     const authSaveBtn = document.getElementById('auth-save-btn');
+    const courseListDiv = document.querySelector('div.course-list-div');
 
     // Manage authentication
     let token;
@@ -135,10 +136,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (servicesFile.length === 0) {
                 fileExist.textContent += `(le fichier est vide)`;
             }
-            // const actionChoiceDiv = document.getElementById('action-choice');
-            // actionChoiceDiv.style.display = 'block';
-            // eraseBtn.style.display = 'inline';
-            // compileBtn.textContent = 'Mettre à jour';
         }
     }
 
@@ -350,7 +347,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                         }
                     };
                     fileName.appendChild(displaySpan);
-                    // fileName.textContent = fileList.join(', ');
                     const actionChoiceDiv =
                         document.getElementById('action-choice');
                     actionChoiceDiv.style.display = 'block';
@@ -443,7 +439,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                             existingProf.Cours.sort(sortByFil);
                             thisDialog.remove();
                             if (i === 0) {
-                                // saveBtn.style.display = 'inline-block';
                                 resolve(true);
                             }
                         };
@@ -452,7 +447,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                             servicesFile.splice(index, 1, newJson);
                             thisDialog.remove();
                             if (i === 0) {
-                                // saveBtn.style.display = 'inline-block';
                                 resolve(true);
                             }
                         };
@@ -462,7 +456,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                             if (cancels === files.length) {
                                 resolve(false);
                             } else if (i === 0) {
-                                // saveBtn.style.display = 'inline-block';
                                 resolve(true);
                             }
                         };
@@ -623,8 +616,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         semestreSelect.value = 'S1';
         profInput.value = null;
         courseListContainer.style.display = 'none';
+        courseListDiv.classList.remove('pb-list');
     });
     async function buildCourseList(filière, semestre, prof) {
+        courseListDiv.classList.remove('pb-list');
         const remarksDiv = document.getElementById('remarks');
         remarksDiv.textContent = null;
         courseListContainer.style.display = 'flex';
@@ -681,7 +676,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         for (let c of refCourses) {
             const courseId = c.id;
             let newItem;
-            let courseTeachers;
             let reqNb = Number(c.nbgrp);
             let tCourses;
             let courseNb;
@@ -759,7 +753,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 function fillCourseInfo(parent, newItem) {
                     const courseName =
                         newItem.querySelector('span#course-name');
-                    courseTeachers = newItem.querySelector(
+                    const courseTeachersSpan = newItem.querySelector(
                         'span#course-teachers'
                     );
                     courseName.textContent = `${c.intitulé} (${c.volume}h`;
@@ -768,12 +762,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                     courseName.textContent += ' TD)';
                     if (tCourses && tCourses.length > 0) {
-                        for (let i = 0; i < tCourses.length; ) {
-                            const sameTeachers = tCourses.filter(
-                                (c) => c.teacher === tCourses[i].teacher
-                            );
-                            const teacherNameSegments =
-                                tCourses[i].teacher.split(' ');
+                        let courseTeachers = [];
+                        tCourses.forEach((tC) => {
+                            const teacherNameSegments = tC.teacher.split(' ');
                             let teacherFirstName = teacherNameSegments[0];
                             if (
                                 teacherFirstName !== 'ATER' &&
@@ -796,13 +787,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                             const teacherSurname = teacherNameSegments
                                 .slice(1)
                                 .join(' ');
-                            const teacherName = `${teacherFirstName} ${teacherSurname}`;
-                            if (i > 0) {
-                                courseTeachers.textContent += ', ';
+                            const fullName = `${teacherFirstName} ${teacherSurname}`;
+                            const existingTeacher = courseTeachers.find(
+                                (cT) => cT.name === fullName
+                            );
+                            if (!existingTeacher) {
+                                courseTeachers.push({
+                                    name: fullName,
+                                    count: 1,
+                                });
+                            } else {
+                                existingTeacher.count++;
                             }
-                            courseTeachers.textContent += `${teacherName} (${sameTeachers.length})`;
-                            i += sameTeachers.length;
-                        }
+                        });
+                        courseTeachersSpan.textContent = courseTeachers
+                            .map((t) => `${t.name} (${t.count})`)
+                            .join(', ');
                     }
                     const courseNumberSpan =
                         newItem.querySelector('span#course-number');
@@ -810,13 +810,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (logic === 'course') {
                         if (courseNb === 0 || courseNb > reqNb) {
                             courseNumberSpan.style.color = '#cc0000';
-                            // courseNumberSpan.textContent += ' 🚨';
+                            if (courseNb > reqNb) {
+                                courseNumberSpan.style.backgroundColor =
+                                    'yellow';
+                            }
                         } else if (courseNb < reqNb) {
                             courseNumberSpan.style.color = 'orange';
-                            // courseNumberSpan.textContent += ' ⚠️';
                         } else if (courseNb === reqNb) {
                             courseNumberSpan.style.color = 'green';
-                            // courseNumberSpan.textContent += ' ✅';
                         }
                     }
                     if (logic === 'prof') {
@@ -825,7 +826,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         );
                         courseTeachersSpan.remove();
                     }
-                    newItem.style.display = 'flex';
+                    newItem.style.display = 'block';
                     parent.appendChild(newItem);
                 }
             }
@@ -862,7 +863,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     serviceDiv.style.color = 'green';
                 }
             }
-            const courseListDiv = document.querySelector('div.course-list-div');
             courseListDiv.after(serviceDiv);
             const dispoTable = dispoDiv.querySelector('table');
             const rows = dispoTable.getElementsByTagName('tr');
@@ -1024,32 +1024,62 @@ document.addEventListener('DOMContentLoaded', async () => {
                         for (let s of servicesFile) {
                             let sCours = s.Cours.filter((i) => i.id === c.id);
                             if (sCours.length > 0) {
-                                sCours.forEach(() =>
-                                    courseTeachers.push(s.Name)
-                                );
+                                sCours.forEach(() => {
+                                    const teacherNameSegments =
+                                        s.Name.split(' ');
+                                    let teacherFirstName =
+                                        teacherNameSegments[0];
+                                    if (
+                                        teacherFirstName !== 'ATER' &&
+                                        teacherFirstName !== 'LECT'
+                                    ) {
+                                        if (teacherFirstName.includes('-')) {
+                                            let firstNameSegments =
+                                                teacherFirstName.split('-');
+                                            teacherFirstName = '';
+                                            firstNameSegments =
+                                                firstNameSegments.map(
+                                                    (f) => `${f.split('')[0]}.`
+                                                );
+                                            teacherFirstName =
+                                                firstNameSegments.join('-');
+                                        } else {
+                                            teacherFirstName =
+                                                teacherFirstName.split('')[0] +
+                                                '.';
+                                        }
+                                    }
+                                    const teacherSurname = teacherNameSegments
+                                        .slice(1)
+                                        .join(' ');
+                                    const fullName = `${teacherFirstName} ${teacherSurname}`;
+                                    const existingTeacher = courseTeachers.find(
+                                        (cT) => cT.name === fullName
+                                    );
+                                    if (!existingTeacher) {
+                                        courseTeachers.push({
+                                            name: fullName,
+                                            count: 1,
+                                        });
+                                    } else {
+                                        existingTeacher.count++;
+                                    }
+                                });
                             }
                         }
-                        let i = 1;
-                        for (let cT of courseTeachers) {
-                            let firstName = cT.split(' ')[0].split('')[0] + '.';
-                            let surName = cT.split(' ')[1];
-                            let fullName = `${firstName} ${surName}`;
-                            if (i === 1) {
-                                pbCourseTeachers.textContent = fullName;
-                            } else {
-                                pbCourseTeachers.textContent += `, ${fullName}`;
-                            }
-                            i++;
-                        }
+                        pbCourseTeachers.textContent = courseTeachers
+                            .map((t) => `${t.name} (${t.count})`)
+                            .join(', ');
                     }
                     const pbCourseNumber =
                         newPbItem.querySelector('#course-number');
                     pbCourseNumber.textContent = `${courses.length}/${c.nbgrp}`;
                     if (courses.length === 0 || courses.length > c.nbgrp) {
-                        // pbCourseNumber.textContent += ` 🚨`;
                         pbCourseNumber.style.color = '#cc0000';
+                        if (courses.length > c.nbgrp) {
+                            pbCourseNumber.style.backgroundColor = 'yellow';
+                        }
                     } else if (courses.length < c.nbgrp) {
-                        // pbCourseNumber.textContent += ` ⚠️`;
                         pbCourseNumber.style.color = 'orange';
                     }
                     newPbItem.style.display = 'block';
@@ -1057,6 +1087,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
         }
+        courseListDiv.classList.add('pb-list');
     }
 
     const pbBtn = document.getElementById('pb-btn');
