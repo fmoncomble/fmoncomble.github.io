@@ -1721,6 +1721,60 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
         }
+        const recapWorksheet = workbook.addWorksheet('Récapitulatif');
+        recapWorksheet.columns = [
+            { header: 'Filière', key: 'Filière' },
+            { header: 'Semestre', key: 'Semestre' },
+            { header: 'Format', key: 'Format' },
+            { header: 'Intitulé', key: 'Intitulé', width: 30 },
+            { header: 'Volume', key: 'Volume' },
+            { header: 'EqTD', key: 'EqTD' },
+            { header: 'Enseignant', key: 'Enseignant', width: 30 },
+        ];
+        const recapRows = [];
+        for (const teacherName in groupedData) {
+            if (groupedData.hasOwnProperty(teacherName)) {
+                const teacherCourses = groupedData[teacherName];
+                for (const course of teacherCourses) {
+                    recapRows.push([
+                        course.Filière,
+                        course.Semestre,
+                        course.Format,
+                        course.Intitulé,
+                        Number(course.Volume),
+                        Number(course.EqTD),
+                        course.Enseignant,
+                    ]);
+                }
+            }
+        }
+        recapRows.sort((a, b) => {
+            const filA = a[0].toLowerCase();
+            const filB = b[0].toLowerCase();
+            if (filA < filB) return -1;
+            if (filA > filB) return 1;
+            const semA = a[1].toLowerCase();
+            const semB = b[1].toLowerCase();
+            if (semA < semB) return -1;
+            if (semA > semB) return 1;
+            const intA = a[3].toLowerCase();
+            const intB = b[3].toLowerCase();
+            if (intA < intB) return -1;
+            if (intA > intB) return 1;
+        });
+        recapWorksheet.addTable({
+            name: 'RecapTable',
+            ref: 'A1',
+            style: {
+                theme: 'TableStyleMedium9',
+                showRowStripes: true,
+            },
+            columns: recapWorksheet.columns.map((col) => ({
+                name: col.header,
+                filterButton: true,
+            })),
+            rows: recapRows,
+        });
 
         // Write the workbook to a file
         const buffer = await workbook.xlsx.writeBuffer();
