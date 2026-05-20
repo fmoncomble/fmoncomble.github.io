@@ -1,539 +1,511 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script src="admin.js" type="text/javascript"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
-        <link rel="stylesheet" href="admin.css" type="text/css" />
-        <link rel="stylesheet" href="vœux.css" type="text/css" />
-        <link
-            rel="icon"
-            href="https://www.univ-artois.fr/core/misc/favicon.ico"
-            type="image/png"
-        />
-        <title>Administration des services</title>
-    </head>
-    <body>
-        <div class="header">
-            <h1 class="wishes-ui">Administration des services</h1>
-            <div id="auth-div">
-                <span>Authentification OK ✅</span>
-                <button class="wishes-ui reset-btn" id="reset-btn">
-                    Déconnecter
-                </button>
-            </div>
-            <div id="file-exist" class="wishes-ui" style="display: none">
-                Fichier de services importé ✓
-            </div>
-        </div>
-        <div class="wrapper">
-            <div id="container-1" class="container">
-                <div class="container-header">
-                    <h2>Compiler le fichier de services</h2>
-                </div>
-                <div>
-                    <label
-                        for="file-input"
-                        class="wishes-ui"
-                        id="file-input-label"
-                    >
-                        Charger des fichiers
-                        <input
-                            name="file-input"
-                            id="file-input"
-                            class="wishes-ui"
-                            type="file"
-                            accept=".json"
-                            multiple="true"
-                            style="display: none"
-                        />
-                    </label>
-                    <button id="get-dropbox-files" class="wishes-ui">
-                        Importer depuis Dropbox
-                    </button>
-                    <dialog id="existing-prof-dialog" class="wishes-ui">
-                        <div>
-                            Les vœux de <span id="prof-id"></span> sont déjà
-                            enregistrés : ajouter ou remplacer ?
-                        </div>
-                        <button id="add-btn" class="wishes-ui">Ajouter</button
-                        ><button id="replace-btn" class="wishes-ui">
-                            Remplacer</button
-                        ><button id="cancel-btn" class="wishes-ui reset-btn">
-                            Annuler
-                        </button>
-                    </dialog>
-                    <span id="file-name" class="wishes-ui"></span>
-                </div>
-                <div id="action-choice" class="wishes-ui" style="display: none">
-                    <div>
-                        <br />
-                        Écraser ou mettre à jour les données existantes ?
-                    </div>
-                    <button
-                        id="erase-btn"
-                        class="wishes-ui reset-btn"
-                        style="display: none"
-                    >
-                        Écraser
-                    </button>
-                    <button id="compile-btn" class="wishes-ui">Créer</button>
-                </div>
-                <div>
-                    <br />
-                    <button
-                        id="save-btn"
-                        class="wishes-ui"
-                        style="display: none"
-                    >
-                        Synchroniser
-                        <span
-                            id="save-spinner"
-                            class="spinner"
-                            style="display: none"
-                        ></span>
-                    </button>
-                </div>
-                <br />
-                <div>
-                    <h2>Modifier les services</h2>
-                    <div id="prof-choice">
-                        <label for="prof-input" class="wishes-ui"
-                            >Sélectionner un·e enseignant·e :
-                            <input
-                                name="prof-input"
-                                id="prof-input-2"
-                                class="wishes-ui"
-                                type="text"
-                                placeholder="Enseignant·e"
-                                list="prof-list"
-                        /></label>
-                        <button id="go-prof-btn" class="wishes-ui">
-                            Valider
-                        </button>
-                    </div>
-                    <div id="service-modify" style="display: none">
-                        <div
-                            id="ens-modify"
-                            class="wishes-ui"
-                            style="display: none"
-                        >
-                            ▶️ Modifier le service de
-                            <span id="ens-modify-name"></span> :
-                        </div>
-                        <div>
-                            <b>Ajouter un enseignement</b>
-                            <div>
-                                <select id="filière-select-2" class="wishes-ui">
-                                    <option
-                                        value="LLCER"
-                                        selected
-                                        data-level="l"
-                                    >
-                                        LLCER
-                                    </option>
-                                    <option value="LEA" data-level="l">
-                                        LEA
-                                    </option>
-                                    <option value="MEEF" data-level="m">
-                                        MEEF
-                                    </option>
-                                    <option value="MLLCER" data-level="m">
-                                        Master LLCER
-                                    </option>
-                                    <option value="LMI" data-level="m">
-                                        LMI
-                                    </option>
-                                    <option value="AGREG" data-level="a">
-                                        Agrégation interne
-                                    </option>
-                                </select>
-                                <select
-                                    id="semestre-select-2"
-                                    class="wishes-ui"
-                                >
-                                    <option value="S1" selected>S1</option>
-                                    <option value="S2">S2</option>
-                                    <option value="S3" data-nota="true">
-                                        S3
-                                    </option>
-                                    <option value="S4" data-nota="true">
-                                        S4
-                                    </option>
-                                    <option
-                                        value="S5"
-                                        data-nota="true"
-                                        data-notm="true"
-                                    >
-                                        S5
-                                    </option>
-                                    <option
-                                        value="S6"
-                                        data-nota="true"
-                                        data-notm="true"
-                                    >
-                                        S6
-                                    </option>
-                                </select>
-                                <select
-                                    id="course-add-select"
-                                    class="wishes-ui"
-                                ></select>
-                                <input
-                                    id="custom-vol"
-                                    type="number"
-                                    placeholder="Vol. pers."
-                                    class="wishes-ui"
-                                />
-                                <button id="course-add-btn" class="wishes-ui">
-                                    Ajouter
-                                </button>
-                            </div>
-                            <div
-                                id="course-add-div"
-                                class="wishes-ui"
-                                style="display: none"
-                            >
-                                <span id="course-add-span"></span>
-                            </div>
-                        </div>
-                        <div>
-                            <b>Supprimer un enseignement</b>
-                            <div>
-                                <select id="filière-select-3" class="wishes-ui">
-                                    <option
-                                        value="LLCER"
-                                        selected
-                                        data-level="l"
-                                    >
-                                        LLCER
-                                    </option>
-                                    <option value="LEA" data-level="l">
-                                        LEA
-                                    </option>
-                                    <option value="MEEF" data-level="m">
-                                        MEEF
-                                    </option>
-                                    <option value="MLLCER" data-level="m">
-                                        Master LLCER
-                                    </option>
-                                    <option value="LMI" data-level="m">
-                                        LMI
-                                    </option>
-                                    <option value="AGREG" data-level="a">
-                                        Agrégation interne
-                                    </option>
-                                </select>
-                                <select
-                                    id="semestre-select-3"
-                                    class="wishes-ui"
-                                >
-                                    <option value="S1" selected>S1</option>
-                                    <option value="S2">S2</option>
-                                    <option value="S3" data-nota="true">
-                                        S3
-                                    </option>
-                                    <option value="S4" data-nota="true">
-                                        S4
-                                    </option>
-                                    <option
-                                        value="S5"
-                                        data-nota="true"
-                                        data-notm="true"
-                                    >
-                                        S5
-                                    </option>
-                                    <option
-                                        value="S6"
-                                        data-nota="true"
-                                        data-notm="true"
-                                    >
-                                        S6
-                                    </option>
-                                </select>
-                                <select
-                                    id="course-delete-select"
-                                    class="wishes-ui"
-                                ></select>
-                                <button
-                                    id="course-delete-btn"
-                                    class="wishes-ui reset-btn"
-                                >
-                                    Supprimer
-                                </button>
-                            </div>
-                            <div
-                                id="course-delete-div"
-                                class="wishes-ui"
-                                style="display: none"
-                            >
-                                <span id="course-delete-span"></span>
-                            </div>
-                        </div>
-                        <br />
-                        <div>
-                            <button
-                                id="cancel-changes-btn"
-                                class="wishes-ui reset-btn"
-                            >
-                                Annuler
-                            </button>
-                            <button id="save-changes-btn" class="wishes-ui">
-                                Synchroniser
-                                <span
-                                    id="save-chg-spinner"
-                                    class="spinner"
-                                ></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <h2>Exporter pour Excel</h2>
-                    <button id="export-btn" class="wishes-ui">Exporter</button>
-                </div>
-                <dialog id="auth-dialog">
-                    <div><b>Entrez le jeton d'authentification</b></div>
-                    <input
-                        id="auth-input"
-                        class="wishes-ui token-input"
-                        type="password"
-                        placeholder="Jeton d'authentification"
-                    />
-                    <button id="auth-save-btn" class="wishes-ui">
-                        Enregistrer
-                    </button>
-                </dialog>
-            </div>
-            <div id="container-2" class="container">
-                <!-- <div> -->
-                <div class="container-header"><h2>Vérifier les données</h2></div>
-                <div class="data-wrapper">
-                    <div class="data-container">
-                        <div><b>Par formation :</b></div>
-                        <div>
-                            <select id="filière-select" class="wishes-ui">
-                                <option value="LLCER" data-level="l" selected>
-                                    LLCER
-                                </option>
-                                <option value="LEA" data-level="l">LEA</option>
-                                <option value="MEEF" data-level="m">
-                                    MEEF
-                                </option>
-                                <option value="MLLCER" data-level="m">
-                                    Master LLCER
-                                </option>
-                                <option value="LMI" data-level="m">LMI</option>
-                                <option value="AGREG" data-level="a">
-                                    Agrégation interne
-                                </option>
-                            </select>
-                            <select id="semestre-select" class="wishes-ui">
-                                <option value="S1" selected>S1</option>
-                                <option value="S2">S2</option>
-                                <option value="S3" data-nota="true">S3</option>
-                                <option value="S4" data-nota="true">S4</option>
-                                <option
-                                    value="S5"
-                                    data-nota="true"
-                                    data-notm="true"
-                                >
-                                    S5
-                                </option>
-                                <option
-                                    value="S6"
-                                    data-nota="true"
-                                    data-notm="true"
-                                >
-                                    S6
-                                </option>
-                            </select>
-                            <button id="check-course-btn" class="wishes-ui">
-                                Vérifier
-                            </button>
-                        </div>
-                    </div>
-                    <div class="data-container">
-                        <div><b>Par enseignant·e :</b></div>
-                        <div>
-                            <input
-                                name="prof-input"
-                                id="prof-input"
-                                class="wishes-ui"
-                                type="text"
-                                placeholder="Prénom Nom"
-                                list="prof-list"
-                            />
-                            <datalist id="prof-list"></datalist>
-                            <button id="check-prof-btn" class="wishes-ui">
-                                Vérifier
-                            </button>
-                        </div>
-                    </div>
-                    <div class="data-container">
-                        <div><b>Problèmes :</b></div>
-                        <button id="pb-btn" class="wishes-ui pb-btn">
-                            Afficher
-                        </button>
-                    </div>
-                </div>
-                <div id="course-list-container">
-                    <div id="close-course-list">❌</div>
-                    <div class="course-list-div">
-                        <ul id="course-list" class="course-list">
-                            <li
-                                id="course-item"
-                                class="course-item"
-                                style="display: none"
-                            >
-                                <span
-                                    class="course-name"
-                                    id="course-name"
-                                ></span
-                                ><br />
-                                <span
-                                    id="course-number-span"
-                                    class="course-number-span"
-                                    >Cours assurés :
-                                    <span id="course-number"></span
-                                ></span>
-                                <span
-                                    id="course-teachers-span"
-                                    class="course-teachers-span"
-                                    ><em>Enseignant·es</em> :
-                                    <span id="course-teachers"></span><br
-                                /></span>
-                            </li>
-                        </ul>
-                    </div>
-                    <br />
-                    <div id="dispos" style="display: none">
-                        <div>
-                            <strong>Indisponibilités :</strong>
-                        </div>
-                        <table>
-                            <tr>
-                                <th></th>
-                                <th>Lundi</th>
-                                <th>Mardi</th>
-                                <th>Mercredi</th>
-                                <th>Jeudi</th>
-                                <th>Vendredi</th>
-                            </tr>
-                            <tr>
-                                <th>8h - 9h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>9h - 10h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>10h - 11h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>11h - 12h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>12h - 13h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>13h - 14h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>14h - 15h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>15h - 16h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>16h - 17h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>17h - 18h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>18h - 19h</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </table>
-                    </div>
-                    <br />
-                    <div id="remarks" style="display: none">
-                        <strong>Remarques :</strong>
-                    </div>
-                </div>
-                <!-- <br /> -->
-                <!-- </div> -->
-            </div>
-            <div id="danger-zone" class="danger-zone">
-                <h2 class="section-header" id="danger-zone-header">
-                    <span class="danger-span">⚠️ Danger zone ⚠️</span>
-                </h2>
-                <div>
-                    <button
-                        id="erase-services-btn"
-                        class="danger-btn wishes-ui"
-                        style="display: none"
-                    >
-                        Ecraser le fichier de services
-                    </button>
-                </div>
-            </div>
-        </div>
-    </body>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script src="admin.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+		<link rel="stylesheet" href="admin.css" type="text/css" />
+		<link rel="stylesheet" href="vœux.css" type="text/css" />
+		<link
+			rel="icon"
+			href="https://www.univ-artois.fr/core/misc/favicon.ico"
+			type="image/png" />
+		<title>Administration des services</title>
+	</head>
+	<body>
+		<div class="header">
+			<h1 class="wishes-ui">Administration des services</h1>
+			<div id="auth-div">
+				<span>Authentification OK ✅</span>
+				<button class="wishes-ui reset-btn" id="reset-btn">
+					Déconnecter
+				</button>
+			</div>
+			<div id="file-exist" class="wishes-ui" style="display: none">
+				Fichier de services importé ✓
+			</div>
+		</div>
+		<div class="wrapper">
+			<div id="container-1" class="container">
+				<div class="container-header">
+					<h2>Compiler le fichier de services</h2>
+				</div>
+				<div>
+					<label
+						for="file-input"
+						class="wishes-ui"
+						id="file-input-label">
+						Charger des fichiers
+						<input
+							name="file-input"
+							id="file-input"
+							class="wishes-ui"
+							type="file"
+							accept=".json"
+							multiple="true"
+							style="display: none" />
+					</label>
+					<button id="get-dropbox-files" class="wishes-ui">
+						Importer depuis Dropbox
+					</button>
+					<dialog id="existing-prof-dialog" class="wishes-ui">
+						<div>
+							Les vœux de <span id="prof-id"></span> sont déjà
+							enregistrés : ajouter ou remplacer ?
+						</div>
+						<button id="add-btn" class="wishes-ui">Ajouter</button
+						><button id="replace-btn" class="wishes-ui">
+							Remplacer</button
+						><button id="cancel-btn" class="wishes-ui reset-btn">
+							Annuler
+						</button>
+					</dialog>
+					<span id="file-name" class="wishes-ui"></span>
+				</div>
+				<div id="action-choice" class="wishes-ui" style="display: none">
+					<div>
+						<br />
+						Écraser ou mettre à jour les données existantes ?
+					</div>
+					<button
+						id="erase-btn"
+						class="wishes-ui reset-btn"
+						style="display: none">
+						Écraser
+					</button>
+					<button id="compile-btn" class="wishes-ui">Créer</button>
+				</div>
+				<div>
+					<br />
+					<button
+						id="save-btn"
+						class="wishes-ui"
+						style="display: none">
+						Synchroniser
+						<span
+							id="save-spinner"
+							class="spinner"
+							style="display: none"></span>
+					</button>
+				</div>
+				<br />
+				<div>
+					<h2>Modifier les services</h2>
+					<div id="prof-choice">
+						<label for="prof-input" class="wishes-ui"
+							>Sélectionner un·e enseignant·e :
+							<input
+								name="prof-input"
+								id="prof-input-2"
+								class="wishes-ui"
+								type="text"
+								placeholder="Enseignant·e"
+								list="prof-list"
+						/></label>
+						<button id="go-prof-btn" class="wishes-ui">
+							Valider
+						</button>
+					</div>
+					<div id="service-modify" style="display: none">
+						<div
+							id="ens-modify"
+							class="wishes-ui"
+							style="display: none">
+							▶️ Modifier le service de
+							<span id="ens-modify-name"></span> :
+						</div>
+						<div>
+							<b>Ajouter un enseignement</b>
+							<div>
+								<select id="filière-select-2" class="wishes-ui">
+									<option
+										value="LLCER"
+										selected
+										data-level="l">
+										LLCER
+									</option>
+									<option value="LEA" data-level="l">
+										LEA
+									</option>
+									<option value="MEEF" data-level="m">
+										MEEF
+									</option>
+									<option value="MLLCER" data-level="m">
+										Master CITIES
+									</option>
+									<option value="LMI" data-level="m">
+										LMI
+									</option>
+									<option value="AGREG" data-level="a">
+										Agrégation interne
+									</option>
+								</select>
+								<select
+									id="semestre-select-2"
+									class="wishes-ui">
+									<option value="S1" selected>S1</option>
+									<option value="S2">S2</option>
+									<option value="S3" data-nota="true">
+										S3
+									</option>
+									<option value="S4" data-nota="true">
+										S4
+									</option>
+									<option
+										value="S5"
+										data-nota="true"
+										data-notm="true">
+										S5
+									</option>
+									<option
+										value="S6"
+										data-nota="true"
+										data-notm="true">
+										S6
+									</option>
+								</select>
+								<select
+									id="course-add-select"
+									class="wishes-ui"></select>
+								<input
+									id="custom-vol"
+									type="number"
+									placeholder="Vol. pers."
+									class="wishes-ui" />
+								<button id="course-add-btn" class="wishes-ui">
+									Ajouter
+								</button>
+							</div>
+							<div
+								id="course-add-div"
+								class="wishes-ui"
+								style="display: none">
+								<span id="course-add-span"></span>
+							</div>
+						</div>
+						<div>
+							<b>Supprimer un enseignement</b>
+							<div>
+								<select id="filière-select-3" class="wishes-ui">
+									<option
+										value="LLCER"
+										selected
+										data-level="l">
+										LLCER
+									</option>
+									<option value="LEA" data-level="l">
+										LEA
+									</option>
+									<option value="MEEF" data-level="m">
+										MEEF
+									</option>
+									<option value="MLLCER" data-level="m">
+										Master CITIES
+									</option>
+									<option value="LMI" data-level="m">
+										LMI
+									</option>
+									<option value="AGREG" data-level="a">
+										Agrégation interne
+									</option>
+								</select>
+								<select
+									id="semestre-select-3"
+									class="wishes-ui">
+									<option value="S1" selected>S1</option>
+									<option value="S2">S2</option>
+									<option value="S3" data-nota="true">
+										S3
+									</option>
+									<option value="S4" data-nota="true">
+										S4
+									</option>
+									<option
+										value="S5"
+										data-nota="true"
+										data-notm="true">
+										S5
+									</option>
+									<option
+										value="S6"
+										data-nota="true"
+										data-notm="true">
+										S6
+									</option>
+								</select>
+								<select
+									id="course-delete-select"
+									class="wishes-ui"></select>
+								<button
+									id="course-delete-btn"
+									class="wishes-ui reset-btn">
+									Supprimer
+								</button>
+							</div>
+							<div
+								id="course-delete-div"
+								class="wishes-ui"
+								style="display: none">
+								<span id="course-delete-span"></span>
+							</div>
+						</div>
+						<br />
+						<div>
+							<button
+								id="cancel-changes-btn"
+								class="wishes-ui reset-btn">
+								Annuler
+							</button>
+							<button id="save-changes-btn" class="wishes-ui">
+								Synchroniser
+								<span
+									id="save-chg-spinner"
+									class="spinner"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div>
+					<h2>Exporter pour Excel</h2>
+					<button id="export-btn" class="wishes-ui">Exporter</button>
+				</div>
+				<dialog id="auth-dialog">
+					<div><b>Entrez le jeton d'authentification</b></div>
+					<input
+						id="auth-input"
+						class="wishes-ui token-input"
+						type="password"
+						placeholder="Jeton d'authentification" />
+					<button id="auth-save-btn" class="wishes-ui">
+						Enregistrer
+					</button>
+				</dialog>
+			</div>
+			<div id="container-2" class="container">
+				<!-- <div> -->
+				<div class="container-header">
+					<h2>Vérifier les données</h2>
+				</div>
+				<div class="data-wrapper">
+					<div class="data-container">
+						<div><b>Par formation :</b></div>
+						<div>
+							<select id="filière-select" class="wishes-ui">
+								<option value="LLCER" data-level="l" selected>
+									LLCER
+								</option>
+								<option value="LEA" data-level="l">LEA</option>
+								<option value="MEEF" data-level="m">
+									MEEF
+								</option>
+								<option value="MLLCER" data-level="m">
+									Master CITIES
+								</option>
+								<option value="LMI" data-level="m">LMI</option>
+								<option value="AGREG" data-level="a">
+									Agrégation interne
+								</option>
+							</select>
+							<select id="semestre-select" class="wishes-ui">
+								<option value="S1" selected>S1</option>
+								<option value="S2">S2</option>
+								<option value="S3" data-nota="true">S3</option>
+								<option value="S4" data-nota="true">S4</option>
+								<option
+									value="S5"
+									data-nota="true"
+									data-notm="true">
+									S5
+								</option>
+								<option
+									value="S6"
+									data-nota="true"
+									data-notm="true">
+									S6
+								</option>
+							</select>
+							<button id="check-course-btn" class="wishes-ui">
+								Vérifier
+							</button>
+						</div>
+					</div>
+					<div class="data-container">
+						<div><b>Par enseignant·e :</b></div>
+						<div>
+							<input
+								name="prof-input"
+								id="prof-input"
+								class="wishes-ui"
+								type="text"
+								placeholder="Prénom Nom"
+								list="prof-list" />
+							<datalist id="prof-list"></datalist>
+							<button id="check-prof-btn" class="wishes-ui">
+								Vérifier
+							</button>
+						</div>
+					</div>
+					<div class="data-container">
+						<div><b>Problèmes :</b></div>
+						<button id="pb-btn" class="wishes-ui pb-btn">
+							Afficher
+						</button>
+					</div>
+				</div>
+				<div id="course-list-container">
+					<div id="close-course-list">❌</div>
+					<div class="course-list-div">
+						<ul id="course-list" class="course-list">
+							<li
+								id="course-item"
+								class="course-item"
+								style="display: none">
+								<span
+									class="course-name"
+									id="course-name"></span
+								><br />
+								<span
+									id="course-number-span"
+									class="course-number-span"
+									>Cours assurés :
+									<span id="course-number"></span
+								></span>
+								<span
+									id="course-teachers-span"
+									class="course-teachers-span"
+									><em>Enseignant·es</em> :
+									<span id="course-teachers"></span><br
+								/></span>
+							</li>
+						</ul>
+					</div>
+					<br />
+					<div id="dispos" style="display: none">
+						<div>
+							<strong>Indisponibilités :</strong>
+						</div>
+						<table>
+							<tr>
+								<th></th>
+								<th>Lundi</th>
+								<th>Mardi</th>
+								<th>Mercredi</th>
+								<th>Jeudi</th>
+								<th>Vendredi</th>
+							</tr>
+							<tr>
+								<th>8h - 9h</th>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>9h - 10h</th>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>10h - 11h</th>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>11h - 12h</th>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>12h - 13h</th>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>13h - 14h</th>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>14h - 15h</th>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>15h - 16h</th>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>16h - 17h</th>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>17h - 18h</th>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>18h - 19h</th>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+					<br />
+					<div id="remarks" style="display: none">
+						<strong>Remarques :</strong>
+					</div>
+				</div>
+				<!-- <br /> -->
+				<!-- </div> -->
+			</div>
+			<div id="danger-zone" class="danger-zone">
+				<h2 class="section-header" id="danger-zone-header">
+					<span class="danger-span">⚠️ Danger zone ⚠️</span>
+				</h2>
+				<div>
+					<button
+						id="erase-services-btn"
+						class="danger-btn wishes-ui"
+						style="display: none">
+						Ecraser le fichier de services
+					</button>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>

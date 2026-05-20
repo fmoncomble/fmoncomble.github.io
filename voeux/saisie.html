@@ -1,498 +1,483 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script type="text/javascript" src="saisie.js"></script>
-        <script type="application/json" src="profs.json"></script>
-        <link rel="stylesheet" type="text/css" href="vœux.css" />
-        <link rel="stylesheet" type="text/css" href="saisie.css" />
-        <link
-            rel="icon"
-            href="https://www.univ-artois.fr/core/misc/favicon.ico"
-            type="image/png"
-        />
-        <title>Saisie des vœux d’enseignement</title>
-    </head>
-    <body>
-        <h1>Saisie des vœux</h1>
-        <div id="wrapper" class="wrapper">
-            <div id="container-1" class="container">
-                <div id="auth-div" class="wishes-ui">
-                    <label for="token-input" class="wishes-ui">
-                        <h2>Authentification</h2>
-                        <input
-                            name="token-input"
-                            id="token-input"
-                            type="password"
-                            class="wishes-ui token-input"
-                            placeholder="Jeton d'authentification"
-                        />
-                    </label>
-                    <button id="auth-save" class="wishes-ui">
-                        Enregistrer
-                    </button>
-                </div>
-                <div id="teacher-input-div" style="display: none">
-                    <label for="teacher-name" class="wishes-ui">
-                        Nom de l'enseignant·e
-                        <span style="font-size: small; font-weight: lighter"
-                            >(sensible aux accents)</span
-                        >
-                         :
-                        <input
-                            name="teacher-name"
-                            id="teacher-name"
-                            class="wishes-ui"
-                            list="teacher-list"
-                            type="text"
-                            placeholder="Prénom Nom"
-                        />
-                        <datalist id="teacher-list"></datalist>
-                    </label>
-                    <button id="go-btn" class="wishes-ui">Commencer</button>
-                    <div id="teacher-status"></div>
-                    <div id="teacher-service"></div>
-                    <div id="file-load" style="display: none">
-                        Reprendre ou modifier une saisie :
-                        <button id="file-load-btn" class="wishes-ui">
-                            Charger un fichier existant
-                        </button>
-                        <input
-                            type="file"
-                            id="file-input"
-                            class="wishes-ui"
-                            accept=".json"
-                            style="display: none"
-                        />
-                    </div>
-                    <div id="instructions">Afficher les instructions</div>
-                    <br />
-                </div>
-                <div id="class-choice" class="wishes-ui" style="display: none">
-                    <h2>1. Ajouter des enseignements :</h2>
-                    <div>
-                        <label for="filière" class="wishes-ui">
-                            <select
-                                name="filière"
-                                id="filière"
-                                class="wishes-ui wishes-input"
-                            >
-                                <option value="LLCER" data-level="l" selected>
-                                    LLCER
-                                </option>
-                                <option value="LEA" data-level="l">LEA</option>
-                                <option value="MEEF" data-level="m">
-                                    MEEF
-                                </option>
-                                <option value="MLLCER" data-level="m">
-                                    Master LLCER
-                                </option>
-                                <option value="LMI" data-level="m">LMI</option>
-                                <option value="AGREG" data-level="a">
-                                    Agrégation interne
-                                </option>
-                            </select>
-                        </label>
-                        <label for="semestre" class="wishes-ui">
-                            <select
-                                name="semestre"
-                                id="semestre"
-                                class="wishes-ui wishes-input"
-                            >
-                                <option value="S1" selected>S1</option>
-                                <option value="S2">S2</option>
-                                <option value="S3" data-nota="true">S3</option>
-                                <option value="S4" data-nota="true">S4</option>
-                                <option
-                                    value="S5"
-                                    data-nota="true"
-                                    data-notm="true"
-                                >
-                                    S5
-                                </option>
-                                <option
-                                    value="S6"
-                                    data-nota="true"
-                                    data-notm="true"
-                                >
-                                    S6
-                                </option>
-                            </select>
-                        </label>
-                        <label for="cours" class="wishes-ui">
-                            <select
-                                name="cours"
-                                id="cours"
-                                class="wishes-ui wishes-input"
-                            >
-                                <option value="" disabled selected></option>
-                            </select>
-                        </label>
-                        <span id="meef-warning" style="display: none"
-                            >⚠️ MEEF : pour les cours rémunérés en heures CM
-                            <span>et</span> TD, pensez à ajouter les
-                            <span>deux</span> lignes.</span
-                        >
-                    </div>
-                    <div id="save" class="wishes-ui">
-                        <div
-                            id="course-info"
-                            class="wishes-ui"
-                            style="display: none"
-                        ></div>
-                        <button
-                            id="save-btn"
-                            class="wishes-ui"
-                            style="display: none"
-                        >
-                            Ajouter
-                        </button>
-                    </div>
-                    <div id="added-courses" class="wishes-ui">
-                        <b
-                            >Enseignements enregistrés (Total :
-                            <span id="hTotal">0 </span><span id="hc"></span>)</b
-                        >
-                        <br />
-                        <div id="added-courses-list">
-                            <div
-                                class="added-course-item"
-                                id="added-course-item-template"
-                                style="display: none"
-                            >
-                                <div class="added-course-item-info"></div>
-                                <div class="added-course-item-action">
-                                    <span>Groupes : </span>
-                                    <input
-                                        class="added-course-item-nb"
-                                        type="number"
-                                        min="1"
-                                        value="1"
-                                    />
-                                    <button class="delete-btn wishes-ui">
-                                        ❌
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <dialog id="confirm-dialog">
-                        <b>Récapitulatif :</b><br />
-                        <p><b>Enseignements :</b></p>
-                        <div id="summary"></div>
-                        <p><b>Indisponibilités :</b></p>
-                        <div id="indispos"></div>
-                        <br />
-                        <p><b>Remarques :</b></p>
-                        <div id="remarks-summary"></div>
-                        <br />
-                        <div id="prof-summary"></div>
-                        <div id="service-message"></div>
-                        <br /><br />
-                        <div style="text-align: center">
-                            <button id="yes-btn" class="wishes-ui">
-                                Envoyer
-                            </button>
-                            <button id="dl-btn" class="wishes-ui">
-                                Télécharger
-                            </button>
-                            <button id="no-btn" class="wishes-ui reset-btn">
-                                Annuler
-                            </button>
-                        </div>
-                    </dialog>
-                    <dialog id="missing-info">
-                        <div>Complétez les informations manquantes :</div>
-                        <div id="missing-info-id"></div>
-                        <button id="missing-ok-btn" class="wishes-ui">
-                            OK
-                        </button>
-                    </dialog>
-                </div>
-            </div>
-            <dialog id="first-time">
-                <div>
-                    <p>
-                        Commencez à taper votre nom,<br />sélectionnez-le dans
-                        la liste déroulante<br />et cliquez sur
-                        <span class="btn-span">Commencer</span>.
-                    </p>
-                </div>
-                <button id="ok-btn" class="wishes-ui">OK</button>
-            </dialog>
-            <dialog id="instructions-dialog">
-                <div style="text-align: center">
-                    <p><b>Mode d'emploi</b></p>
-                </div>
-                <ol>
-                    <li>
-                        <p>
-                            Pour reprendre une saisie non terminée ou modifier
-                            vos vœux, cliquez sur
-                            <span class="btn-span"
-                                >Charger un fichier existant</span
-                            >
-                            et sélectionnez le fichier JSON que vous avez
-                            téléchargé précédemment.
-                        </p>
-                    </li>
-                    <li>
-                        <p>
-                            <b>Enseignements (à gauche) : </b>
-                        </p>
-                        <p>
-                            Pour ajouter un enseignement à vos vœux,
-                            sélectionnez-le à l'aide des menus déroulants, puis
-                            cliquez sur
-                            <span class="btn-span">Ajouter</span>
-                            à côté de sa description.
-                        </p>
-                        <ul>
-                            <li>
-                                <p>Ajustez le nombre de groupes souhaité.</p>
-                            </li>
-                            <li>
-                                <p>
-                                    Pour supprimer un enseignement, cliquez sur
-                                    le ❌.
-                                </p>
-                            </li>
-                            <li>
-                                <p>
-                                    Le volume horaire de votre service est
-                                    ajusté en temps réel : en
-                                    <span
-                                        style="
-                                            color: #e69500;
-                                            font-weight: bold;
-                                        "
-                                        >orange</span
-                                    >
-                                    s'il est insuffisant,
-                                    <span
-                                        style="color: green; font-weight: bold"
-                                        >vert</span
-                                    >
-                                    s'il est conforme,
-                                    <span style="color: red; font-weight: bold"
-                                        >rouge</span
-                                    >
-                                    s'il dépasse la limite autorisée.
-                                </p>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p><b>Indisponibilités (à droite) : </b></p>
-                        <ul>
-                            <li>
-                                <p>
-                                    Dans le tableau, cliquez sur vos plages
-                                    horaires d'indisponibilité pour les
-                                    sélectionner ❌.<br />
-                                    Vous pouvez aussi cliquer-glisser pour
-                                    sélectionner plusieurs plages.
-                                </p>
-                            </li>
-                            <li>
-                                <p>
-                                    Cliquez (ou cliquez-glissez) à nouveau pour
-                                    désélectionner une ou plusieurs cases ✅.
-                                </p>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p><b>Remarques et demandes spécifiques :</b></p>
-                        <ul>
-                            <li>
-                                <p>
-                                    Renseignez aussi précisément que possible
-                                    tout besoin spécifique de salle ou de
-                                    matériel, en détaillant les enseignements
-                                    concernés.
-                                </p>
-                            </li>
-                            <li>
-                                <p>
-                                    Vous pouvez ajouter toute remarque ou
-                                    information pertinente pour l'élaboration de
-                                    votre service.
-                                </p>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p><b>Valider :</b></p>
-                        <ul>
-                            <li>
-                                <p>
-                                    Quand vous avez terminé, cliquez sur
-                                    <span class="btn-span">Valider</span> et
-                                    vérifiez le récapitulatif. Si tout est prêt,
-                                    cliquez sur
-                                    <span class="btn-span">Envoyer</span>.
-                                </p>
-                                <p>
-                                    Si vous n'avez pas terminé, vous pouvez
-                                    <span class="btn-span">Télécharger</span> le
-                                    fichier pour reprendre la saisie
-                                    ultérieurement.
-                                </p>
-                            </li>
-                            <li>
-                                <p>
-                                    En cas d'échec de l'envoi, vous pouvez
-                                    <span class="btn-span">Télécharger</span> un
-                                    fichier JSON à envoyer par email
-                                    conjointement à Florent Moncomble et
-                                    Guillaume Winter.
-                                </p>
-                            </li>
-                        </ul>
-                    </li>
-                </ol>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script type="text/javascript" src="saisie.js"></script>
+		<script type="application/json" src="profs.json"></script>
+		<link rel="stylesheet" type="text/css" href="vœux.css" />
+		<link rel="stylesheet" type="text/css" href="saisie.css" />
+		<link
+			rel="icon"
+			href="https://www.univ-artois.fr/core/misc/favicon.ico"
+			type="image/png" />
+		<title>Saisie des vœux d’enseignement</title>
+	</head>
+	<body>
+		<h1>Saisie des vœux</h1>
+		<div id="wrapper" class="wrapper">
+			<div id="container-1" class="container">
+				<div id="auth-div" class="wishes-ui">
+					<label for="token-input" class="wishes-ui">
+						<h2>Authentification</h2>
+						<input
+							name="token-input"
+							id="token-input"
+							type="password"
+							class="wishes-ui token-input"
+							placeholder="Jeton d'authentification" />
+					</label>
+					<button id="auth-save" class="wishes-ui">
+						Enregistrer
+					</button>
+				</div>
+				<div id="teacher-input-div" style="display: none">
+					<label for="teacher-name" class="wishes-ui">
+						Nom de l'enseignant·e
+						<span style="font-size: small; font-weight: lighter"
+							>(sensible aux accents)</span
+						>
+						 :
+						<input
+							name="teacher-name"
+							id="teacher-name"
+							class="wishes-ui"
+							list="teacher-list"
+							type="text"
+							placeholder="Prénom Nom" />
+						<datalist id="teacher-list"></datalist>
+					</label>
+					<button id="go-btn" class="wishes-ui">Commencer</button>
+					<div id="teacher-status"></div>
+					<div id="teacher-service"></div>
+					<div id="file-load" style="display: none">
+						Reprendre ou modifier une saisie :
+						<button id="file-load-btn" class="wishes-ui">
+							Charger un fichier existant
+						</button>
+						<input
+							type="file"
+							id="file-input"
+							class="wishes-ui"
+							accept=".json"
+							style="display: none" />
+					</div>
+					<div id="instructions">Afficher les instructions</div>
+					<br />
+				</div>
+				<div id="class-choice" class="wishes-ui" style="display: none">
+					<h2>1. Ajouter des enseignements :</h2>
+					<div>
+						<label for="filière" class="wishes-ui">
+							<select
+								name="filière"
+								id="filière"
+								class="wishes-ui wishes-input">
+								<option value="LLCER" data-level="l" selected>
+									LLCER
+								</option>
+								<option value="LEA" data-level="l">LEA</option>
+								<option value="MEEF" data-level="m">
+									MEEF
+								</option>
+								<option value="MLLCER" data-level="m">
+									Master CITIES
+								</option>
+								<option value="LMI" data-level="m">LMI</option>
+								<option value="AGREG" data-level="a">
+									Agrégation interne
+								</option>
+							</select>
+						</label>
+						<label for="semestre" class="wishes-ui">
+							<select
+								name="semestre"
+								id="semestre"
+								class="wishes-ui wishes-input">
+								<option value="S1" selected>S1</option>
+								<option value="S2">S2</option>
+								<option value="S3" data-nota="true">S3</option>
+								<option value="S4" data-nota="true">S4</option>
+								<option
+									value="S5"
+									data-nota="true"
+									data-notm="true">
+									S5
+								</option>
+								<option
+									value="S6"
+									data-nota="true"
+									data-notm="true">
+									S6
+								</option>
+							</select>
+						</label>
+						<label for="cours" class="wishes-ui">
+							<select
+								name="cours"
+								id="cours"
+								class="wishes-ui wishes-input">
+								<option value="" disabled selected></option>
+							</select>
+						</label>
+						<span id="meef-warning" style="display: none"
+							>⚠️ MEEF : pour les cours rémunérés en heures CM
+							<span>et</span> TD, pensez à ajouter les
+							<span>deux</span> lignes.</span
+						>
+					</div>
+					<div id="save" class="wishes-ui">
+						<div
+							id="course-info"
+							class="wishes-ui"
+							style="display: none"></div>
+						<button
+							id="save-btn"
+							class="wishes-ui"
+							style="display: none">
+							Ajouter
+						</button>
+					</div>
+					<div id="added-courses" class="wishes-ui">
+						<b
+							>Enseignements enregistrés (Total :
+							<span id="hTotal">0 </span><span id="hc"></span>)</b
+						>
+						<br />
+						<div id="added-courses-list">
+							<div
+								class="added-course-item"
+								id="added-course-item-template"
+								style="display: none">
+								<div class="added-course-item-info"></div>
+								<div class="added-course-item-action">
+									<span>Groupes : </span>
+									<input
+										class="added-course-item-nb"
+										type="number"
+										min="1"
+										value="1" />
+									<button class="delete-btn wishes-ui">
+										❌
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<dialog id="confirm-dialog">
+						<b>Récapitulatif :</b><br />
+						<p><b>Enseignements :</b></p>
+						<div id="summary"></div>
+						<p><b>Indisponibilités :</b></p>
+						<div id="indispos"></div>
+						<br />
+						<p><b>Remarques :</b></p>
+						<div id="remarks-summary"></div>
+						<br />
+						<div id="prof-summary"></div>
+						<div id="service-message"></div>
+						<br /><br />
+						<div style="text-align: center">
+							<button id="yes-btn" class="wishes-ui">
+								Envoyer
+							</button>
+							<button id="dl-btn" class="wishes-ui">
+								Télécharger
+							</button>
+							<button id="no-btn" class="wishes-ui reset-btn">
+								Annuler
+							</button>
+						</div>
+					</dialog>
+					<dialog id="missing-info">
+						<div>Complétez les informations manquantes :</div>
+						<div id="missing-info-id"></div>
+						<button id="missing-ok-btn" class="wishes-ui">
+							OK
+						</button>
+					</dialog>
+				</div>
+			</div>
+			<dialog id="first-time">
+				<div>
+					<p>
+						Commencez à taper votre nom,<br />sélectionnez-le dans
+						la liste déroulante<br />et cliquez sur
+						<span class="btn-span">Commencer</span>.
+					</p>
+				</div>
+				<button id="ok-btn" class="wishes-ui">OK</button>
+			</dialog>
+			<dialog id="instructions-dialog">
+				<div style="text-align: center">
+					<p><b>Mode d'emploi</b></p>
+				</div>
+				<ol>
+					<li>
+						<p>
+							Pour reprendre une saisie non terminée ou modifier
+							vos vœux, cliquez sur
+							<span class="btn-span"
+								>Charger un fichier existant</span
+							>
+							et sélectionnez le fichier JSON que vous avez
+							téléchargé précédemment.
+						</p>
+					</li>
+					<li>
+						<p>
+							<b>Enseignements (à gauche) : </b>
+						</p>
+						<p>
+							Pour ajouter un enseignement à vos vœux,
+							sélectionnez-le à l'aide des menus déroulants, puis
+							cliquez sur
+							<span class="btn-span">Ajouter</span>
+							à côté de sa description.
+						</p>
+						<ul>
+							<li>
+								<p>Ajustez le nombre de groupes souhaité.</p>
+							</li>
+							<li>
+								<p>
+									Pour supprimer un enseignement, cliquez sur
+									le ❌.
+								</p>
+							</li>
+							<li>
+								<p>
+									Le volume horaire de votre service est
+									ajusté en temps réel : en
+									<span
+										style="
+											color: #e69500;
+											font-weight: bold;
+										"
+										>orange</span
+									>
+									s'il est insuffisant,
+									<span
+										style="color: green; font-weight: bold"
+										>vert</span
+									>
+									s'il est conforme,
+									<span style="color: red; font-weight: bold"
+										>rouge</span
+									>
+									s'il dépasse la limite autorisée.
+								</p>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<p><b>Indisponibilités (à droite) : </b></p>
+						<ul>
+							<li>
+								<p>
+									Dans le tableau, cliquez sur vos plages
+									horaires d'indisponibilité pour les
+									sélectionner ❌.<br />
+									Vous pouvez aussi cliquer-glisser pour
+									sélectionner plusieurs plages.
+								</p>
+							</li>
+							<li>
+								<p>
+									Cliquez (ou cliquez-glissez) à nouveau pour
+									désélectionner une ou plusieurs cases ✅.
+								</p>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<p><b>Remarques et demandes spécifiques :</b></p>
+						<ul>
+							<li>
+								<p>
+									Renseignez aussi précisément que possible
+									tout besoin spécifique de salle ou de
+									matériel, en détaillant les enseignements
+									concernés.
+								</p>
+							</li>
+							<li>
+								<p>
+									Vous pouvez ajouter toute remarque ou
+									information pertinente pour l'élaboration de
+									votre service.
+								</p>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<p><b>Valider :</b></p>
+						<ul>
+							<li>
+								<p>
+									Quand vous avez terminé, cliquez sur
+									<span class="btn-span">Valider</span> et
+									vérifiez le récapitulatif. Si tout est prêt,
+									cliquez sur
+									<span class="btn-span">Envoyer</span>.
+								</p>
+								<p>
+									Si vous n'avez pas terminé, vous pouvez
+									<span class="btn-span">Télécharger</span> le
+									fichier pour reprendre la saisie
+									ultérieurement.
+								</p>
+							</li>
+							<li>
+								<p>
+									En cas d'échec de l'envoi, vous pouvez
+									<span class="btn-span">Télécharger</span> un
+									fichier JSON à envoyer par email
+									conjointement à Florent Moncomble et
+									Guillaume Winter.
+								</p>
+							</li>
+						</ul>
+					</li>
+				</ol>
 
-                <div style="text-align: center">
-                    <button id="compris" class="wishes-ui">Compris !</button>
-                </div>
-            </dialog>
-            <div id="container-2" class="container" style="display: none">
-                <div>
-                    <h2>
-                        2. Sélectionner les plages horaires d'indisponibilité :
-                    </h2>
-                </div>
-                <br />
-                <div>
-                    <label for="dispo-check" class="dispo-check">
-                        <input
-                            type="checkbox"
-                            id="dispo-check"
-                            class="dispo-check"
-                            name="dispo-check"
-                            checked
-                        />
-                        Aucune indisponibilité
-                    </label>
-                </div>
-                <br />
-                <div>
-                    <table>
-                        <tr>
-                            <th></th>
-                            <th>Lundi</th>
-                            <th>Mardi</th>
-                            <th>Mercredi</th>
-                            <th>Jeudi</th>
-                            <th>Vendredi</th>
-                        </tr>
-                        <tr>
-                            <th>8h - 9h</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>9h - 10h</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>10h - 11h</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>11h - 12h</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>12h - 13h</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>13h - 14h</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>14h - 15h</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>15h - 16h</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>16h - 17h</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>17h - 18h</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>18h - 19h</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </table>
-                </div>
-                <br />
-                <div>
-                    <h2>3. Remarques ou demandes spécifiques :</h2>
-                    <textarea
-                        id="remarks"
-                        class="wishes-ui"
-                        placeholder="Remarques ou demandes spécifiques (salles, matériel, etc.)"
-                    ></textarea>
-                </div>
-                <div id="validation-div">
-                    <h2>4. Valider</h2>
-                    <button id="send-btn" class="wishes-ui">Valider</button>
-                </div>
-            </div>
-        </div>
-        <div class="footer">© Florent Moncomble 2024</div>
-    </body>
+				<div style="text-align: center">
+					<button id="compris" class="wishes-ui">Compris !</button>
+				</div>
+			</dialog>
+			<div id="container-2" class="container" style="display: none">
+				<div>
+					<h2>
+						2. Sélectionner les plages horaires d'indisponibilité :
+					</h2>
+				</div>
+				<br />
+				<div>
+					<label for="dispo-check" class="dispo-check">
+						<input
+							type="checkbox"
+							id="dispo-check"
+							class="dispo-check"
+							name="dispo-check"
+							checked />
+						Aucune indisponibilité
+					</label>
+				</div>
+				<br />
+				<div>
+					<table>
+						<tr>
+							<th></th>
+							<th>Lundi</th>
+							<th>Mardi</th>
+							<th>Mercredi</th>
+							<th>Jeudi</th>
+							<th>Vendredi</th>
+						</tr>
+						<tr>
+							<th>8h - 9h</th>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<th>9h - 10h</th>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<th>10h - 11h</th>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<th>11h - 12h</th>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<th>12h - 13h</th>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<th>13h - 14h</th>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<th>14h - 15h</th>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<th>15h - 16h</th>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<th>16h - 17h</th>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<th>17h - 18h</th>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<th>18h - 19h</th>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+				</div>
+				<br />
+				<div>
+					<h2>3. Remarques ou demandes spécifiques :</h2>
+					<textarea
+						id="remarks"
+						class="wishes-ui"
+						placeholder="Remarques ou demandes spécifiques (salles, matériel, etc.)"></textarea>
+				</div>
+				<div id="validation-div">
+					<h2>4. Valider</h2>
+					<button id="send-btn" class="wishes-ui">Valider</button>
+				</div>
+			</div>
+		</div>
+		<div class="footer">© Florent Moncomble 2024</div>
+	</body>
 </html>

@@ -2,3 +2,8 @@ voeux/profs.json
 voeux/cours.json
 voeux/dropbox.php
 saes_social
+*.DS_Store
+voeux/edt.css
+voeux/edt.html
+voeux/edt.js
+voeux/ressources.json
