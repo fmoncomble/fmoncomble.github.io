@@ -1,294 +1,314 @@
 body {
-    width: auto;
-    background-color: #c4d0e6;
+	width: auto;
+	background-color: #c4d0e6;
 }
 
 .header {
-    height: 10vh;
+	min-height: 10vh;
 }
 
 h1 {
-    text-align: center;
+	text-align: center;
 }
 
 input#token-input {
-    width: 250px;
+	width: 250px;
 }
 
 div#auth-div {
-    color: green;
-    font-weight: bold;
-    text-align: center;
+	color: green;
+	font-weight: bold;
+	text-align: center;
 }
 
 div#file-exist {
-    text-align: center;
+	text-align: center;
 }
 
 .wrapper {
-    display: flex;
-    flex-direction: column;
-    max-width: 99%;
-    max-height: 90vh;
+	display: flex;
+	flex-direction: column;
+	max-width: 99%;
+	max-height: 90vh;
 }
 
 @media (min-aspect-ratio: 1/1) {
-    .wrapper {
-        flex-direction: row;
-    }
+	.wrapper {
+		flex-direction: row;
+	}
 }
 
 label#file-input-label {
-    display: inline-block;
-    height: 18px;
-    border: none;
-    background-color: darkblue;
-    border-radius: 4px;
-    color: white;
-    cursor: pointer;
-    font-size: small;
-    font-weight: normal;
-    padding: 8px;
-    margin-right: 10px;
+	display: inline-block;
+	height: 18px;
+	border: none;
+	background-color: darkblue;
+	border-radius: 4px;
+	color: white;
+	cursor: pointer;
+	font-size: small;
+	font-weight: normal;
+	padding: 8px;
+	margin-right: 10px;
 }
 
 label#file-input-label:hover {
-    background-color: #0000cc;
+	background-color: #0000cc;
 }
 
 button#get-dropbox-files {
-    width: 200px;
+	width: 200px;
 }
 
 button:disabled {
-    background-color: #80808080 !important;
-    cursor: not-allowed !important;
-    color: black !important;
+	background-color: #80808080 !important;
+	cursor: not-allowed !important;
+	color: black !important;
 }
 
 .display-span {
-    text-decoration: underline;
-    font-weight: bold;
-    cursor: pointer;
-    margin-left: 1rem;
+	text-decoration: underline;
+	font-weight: bold;
+	cursor: pointer;
+	margin-left: 1rem;
 }
 
 .display-span:hover {
-    color: darkblue;
+	color: darkblue;
 }
 
 #file-name,
 .filename-list {
-    margin-left: 10px;
-    font-size: small;
+	margin-left: 10px;
+	font-size: small;
 }
 
 .course-name {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 .course-list-header {
-    font-weight: bold;
-    color: darkblue;
-    margin-left: 30px;
+	font-weight: bold;
+	color: darkblue;
+	margin-left: 30px;
 }
 
 .course-list,
 .course-item {
-    margin-bottom: 0.5rem;
+	margin-bottom: 0.5rem;
 }
 
 div#course-list-container {
-    position: relative;
-    display: none;
-    flex-direction: column;
-    max-height: 80%;
+	position: relative;
+	display: none;
+	flex-direction: column;
+	max-height: 80%;
 }
 
 div.course-list-div {
-    display: flex;
-    flex-direction: column;
-    background-color: #dbe2f0;
-    overflow-y: auto;
-    border-radius: 10px;
-    padding: 10px;
-    margin: auto 10px;
-    scrollbar-width: thin;
+	display: flex;
+	flex-direction: column;
+	background-color: #dbe2f0;
+	overflow-y: auto;
+	border-radius: 10px;
+	padding: 10px;
+	margin: auto 10px;
+	scrollbar-width: thin;
 }
 
 div.course-list-div.pb-list {
-    border: 3px dashed #cc0000;
-    background-color: #ffffe6;
+	border: 3px dashed #cc0000;
+	background-color: #ffffe6;
 }
 
 .container {
-    max-height: 85vh;
-    display: flex;
-    flex-direction: column;
+	max-height: 85vh;
+	display: flex;
+	flex-direction: column;
 }
 
 div#close-course-list {
-    cursor: pointer;
-    font-size: small;
-    position: absolute;
-    top: 2px;
-    right: 25px;
+	cursor: pointer;
+	font-size: small;
+	position: absolute;
+	top: 2px;
+	right: 25px;
 }
 
 ul#course-list {
-    margin: 10px 0;
-    padding: 0;
+	margin: 10px 0;
+	padding: 0;
 }
 
 div#dispos,
 div#remarks {
-    flex-direction: column;
+	flex-direction: column;
 }
 
 .course-item {
-    flex-direction: column;
+	flex-direction: column;
 }
 
 .course-teachers-span,
 .course-number-span {
-    margin-left: 2rem;
+	margin-left: 2rem;
 }
 
 #course-number {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 #ens-modify-name {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 h2 {
-    background-color: #a6b8d9;
-    padding: 5px;
-    border-radius: 4px;
+	background-color: #a6b8d9;
+	padding: 5px;
+	border-radius: 4px;
 }
 
 .container {
-    min-width: 50%;
+	min-width: 50%;
 }
 
 .spinner {
-    border: solid 2px #ddd;
-    border-left: solid 2px darkblue;
-    border-radius: 50%;
-    width: 12px;
-    height: 12px;
-    animation: spin 1s linear infinite;
-    display: none;
-    vertical-align: middle;
-    margin-left: 5px;
+	border: solid 2px #ddd;
+	border-left: solid 2px darkblue;
+	border-radius: 50%;
+	width: 12px;
+	height: 12px;
+	animation: spin 1s linear infinite;
+	display: none;
+	vertical-align: middle;
+	margin-left: 5px;
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 #cancel-btn:hover {
-    background-color: red;
+	background-color: red;
 }
 
 #course-add-select,
 #course-delete-select {
-    min-width: 235px;
-    width: auto;
+	min-width: 235px;
+	width: auto;
 }
 
 #course-add-div {
-    color: green;
-    font-weight: bold;
+	color: green;
+	font-weight: bold;
 }
 
 #course-delete-div {
-    color: #cc0000;
-    font-weight: bold;
+	color: #cc0000;
+	font-weight: bold;
 }
 
-.container-header {
-    height: 5vh;
-}
+/* .container-header {
+	height: 5vh;
+	display: flex;
+	background-color: #a6b8d9;
+	padding: 5px;
+	border-radius: 4px;
+	align-items: center;
+} */
 
 .data-wrapper {
-    display: flex;
-    flex-direction: row;
-    height: 10vh;
+	display: flex;
+	flex-direction: row;
+	gap: 2%;
+	margin-top: 0.5rem;
+	justify-content: space-between;
 }
 
 .data-container {
-    width: 30%;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.data-container div {
+	display: flex;
+	gap: 2%;
+	flex-wrap: wrap;
+	width: 100%;
+}
+
+.data-container div button {
+	margin: 0px;
 }
 
 table,
 th,
 td {
-    border: 1px solid black;
-    border-collapse: collapse;
+	border: 1px solid black;
+	border-collapse: collapse;
 }
 
 table {
-    width: 100%;
+	width: 100%;
 }
 
 th,
 td {
-    width: 16%;
-    height: 1.5em;
-    background-color: white;
+	width: 16%;
+	height: 1.5em;
+	background-color: white;
 }
 
 th {
-    background-color: #f2f2f2;
+	background-color: #f2f2f2;
 }
 
 td {
-    text-align: center;
+	text-align: center;
 }
 
 #danger-zone-header {
-    background: none;
-    color: #cc0000 !important;
-    margin: 0;
-    cursor: pointer;
+	background: none;
+	color: #cc0000 !important;
+	margin: 0;
+	cursor: pointer;
 }
 
 .danger-span {
-    background-color: #ffcc00;
-    padding: 1px;
-    vertical-align: sub;
-    border-radius: 4px;
+	background-color: #ffcc00;
+	padding: 1px;
+	vertical-align: sub;
+	border-radius: 4px;
 }
 
 .danger-zone {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: max-content;
-    background: repeating-linear-gradient(
-        45deg,
-        #ffcc00,
-        #ffcc00 20px,
-        black 10px,
-        black 40px
-    );
-    padding: 5px 10px;
-    border-radius: 4px;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: max-content;
+	background: repeating-linear-gradient(
+		45deg,
+		#ffcc00,
+		#ffcc00 20px,
+		black 10px,
+		black 40px
+	);
+	padding: 5px 10px;
+	border-radius: 4px;
 }
 
 button#save-btn,
 button#save-changes-btn {
-    text-align: center;
-    width: 110px;
+	text-align: center;
+	width: 110px;
 }
 
 div#remarks {
-    white-space: pre-wrap;
+	white-space: pre-wrap;
 }
