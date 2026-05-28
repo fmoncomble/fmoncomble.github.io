@@ -102,7 +102,6 @@ div#course-list-container {
 	position: relative;
 	display: none;
 	flex-direction: column;
-	max-height: 80%;
 }
 
 div.course-list-div {
@@ -112,8 +111,10 @@ div.course-list-div {
 	overflow-y: auto;
 	border-radius: 10px;
 	padding: 10px;
-	margin: auto 10px;
+	margin: 0 10px;
 	scrollbar-width: thin;
+	height: 30%;
+	resize: vertical;
 }
 
 div.course-list-div.pb-list {
